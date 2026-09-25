@@ -39,6 +39,31 @@
         "assortedworld:glowstone_seeds"
       ],
       "page": "assortedworld:plants/glowstone_seeds"
+    },
+    {
+      "blocks": [
+        "assortedworld:void_crystal_ore"
+      ],
+      "items": [
+        "assortedworld:void_crystal"
+      ],
+      "page": "assortedworld:end_portals/void_crystal"
+    },
+    {
+      "blocks": [
+        "assortedworld:void_portal_frame"
+      ],
+      "page": "assortedworld:end_portals/frame"
+    },
+    {
+      "blocks": [
+        "assortedworld:ender_flames",
+        "assortedworld:void_portal"
+      ],
+      "items": [
+        "assortedworld:void_striker"
+      ],
+      "page": "assortedworld:end_portals/flames"
     }
   ]
 }

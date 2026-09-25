@@ -5,6 +5,7 @@ import com.grim3212.assorted.lib.util.LibCommonTags;
 import com.grim3212.assorted.world.Constants;
 import com.grim3212.assorted.world.common.block.WorldBlocks;
 import com.grim3212.assorted.world.common.crafting.WorldConditions;
+import com.grim3212.assorted.world.common.item.WorldItems;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -34,6 +35,7 @@ public class WorldRecipes extends ConditionalRecipeProvider {
     @Override
     public void registerConditions() {
         this.addConditions(partEnabled(WorldConditions.Parts.GLOWSTONE_SEEDS), WorldBlocks.GLOWSTONE_SEEDS.getId());
+        this.addConditions(partEnabled(WorldConditions.Parts.VOID_PORTAL_FRAMES), WorldBlocks.VOID_PORTAL_FRAME.getId(), WorldItems.VOID_STRIKER.getId());
     }
 
     @Override
@@ -45,6 +47,10 @@ public class WorldRecipes extends ConditionalRecipeProvider {
 
         // Three glowstone dust around a soul sand, as GrimPack had it
         ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, WorldBlocks.GLOWSTONE_SEEDS.get(), 1).define('G', LibCommonTags.Items.DUSTS_GLOWSTONE).define('S', Items.SOUL_SAND).pattern("GSG").pattern(" G ").unlockedBy("has_glowstone_dust", has(LibCommonTags.Items.DUSTS_GLOWSTONE)).save(this.output, key(name(WorldBlocks.GLOWSTONE_SEEDS.get())));
+
+        // One eye per frame, as a stronghold's ring takes twelve.
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, WorldBlocks.VOID_PORTAL_FRAME.get(), 1).define('O', LibCommonTags.Items.OBSIDIAN).define('E', Items.ENDER_EYE).define('C', WorldItems.VOID_CRYSTAL.get()).pattern("OEO").pattern("OCO").pattern("OOO").unlockedBy("has_void_crystal", has(WorldItems.VOID_CRYSTAL.get())).save(this.output, key(name(WorldBlocks.VOID_PORTAL_FRAME.get())));
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.TOOLS, WorldItems.VOID_STRIKER.get(), 1).requires(Items.FLINT_AND_STEEL).requires(WorldItems.VOID_CRYSTAL.get()).requires(Items.DRAGON_BREATH).unlockedBy("has_void_crystal", has(WorldItems.VOID_CRYSTAL.get())).save(this.output, key(name(WorldItems.VOID_STRIKER.get())));
     }
 
     /**

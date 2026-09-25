@@ -184,7 +184,7 @@ final class WorldgenTests {
 
         Registry<ConfiguredFeature<?, ?>> configured = registries.lookupOrThrow(Registries.CONFIGURED_FEATURE);
         Registry<PlacedFeature> placed = registries.lookupOrThrow(Registries.PLACED_FEATURE);
-        for (String name : List.of("ruin", "spire", "ore_randomite", "patch_gunpowder_reed", "floating_island", "desert_well", "crop_field", "cactus_field", "sand_pillar", "sand_pit", "patch_saplings", "tree_stumps", "patch_melons")) {
+        for (String name : List.of("ruin", "spire", "ore_randomite", "ore_void_crystal", "patch_gunpowder_reed", "floating_island", "desert_well", "crop_field", "cactus_field", "sand_pillar", "sand_pit", "patch_saplings", "tree_stumps", "patch_melons")) {
             Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
             if (configured.getValue(id) == null) {
                 problems.add("configured feature " + id + " is not in the registry");
@@ -255,7 +255,7 @@ final class WorldgenTests {
         Registry<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
         List<String> problems = new ArrayList<>();
 
-        for (String name : List.of("ore_randomite", "patch_gunpowder_reed", "ruin", "spire", "floating_island", "desert_well", "crop_field", "cactus_field", "sand_pillar", "sand_pit", "patch_saplings", "tree_stumps", "patch_melons")) {
+        for (String name : List.of("ore_randomite", "ore_void_crystal", "patch_gunpowder_reed", "ruin", "spire", "floating_island", "desert_well", "crop_field", "cactus_field", "sand_pillar", "sand_pit", "patch_saplings", "tree_stumps", "patch_melons")) {
             Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
             int biomeCount = 0;
             for (Biome biome : biomes) {

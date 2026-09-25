@@ -7,9 +7,11 @@ public class WorldConditions {
 
     public static class Parts {
         public static final String GLOWSTONE_SEEDS = "glowstone_seeds";
+        public static final String VOID_PORTAL_FRAMES = "void_portal_frames";
     }
 
     public static void init() {
         Services.CONDITIONS.registerPartCondition(Parts.GLOWSTONE_SEEDS, () -> WorldCommonMod.COMMON_CONFIG.glowstoneSeedsEnabled.get());
+        Services.CONDITIONS.registerPartCondition(Parts.VOID_PORTAL_FRAMES, () -> WorldCommonMod.COMMON_CONFIG.voidPortalFramesEnabled.get());
     }
 }

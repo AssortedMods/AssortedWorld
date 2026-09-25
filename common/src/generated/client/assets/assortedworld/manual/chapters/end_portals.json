@@ -1,0 +1,60 @@
+{
+  "pages": [
+    {
+      "type": "assortedlib:item",
+      "id": "void_crystal",
+      "items": [
+        "assortedworld:void_crystal_ore",
+        "assortedworld:void_crystal"
+      ],
+      "text": "manual.assortedworld.chapter.end_portals.void_crystal",
+      "title": "manual.assortedworld.chapter.end_portals.void_crystal.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "void_portal_frames"
+        }
+      ],
+      "id": "frame",
+      "recipes": [
+        "assortedworld:void_portal_frame"
+      ],
+      "text": "manual.assortedworld.chapter.end_portals.frame",
+      "title": "manual.assortedworld.chapter.end_portals.frame.title"
+    },
+    {
+      "type": "assortedlib:image",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "void_portal_frames"
+        }
+      ],
+      "height": 104,
+      "id": "building",
+      "image": "assortedworld:textures/gui/manual/void_portals.png",
+      "text": "manual.assortedworld.chapter.end_portals.building",
+      "title": "manual.assortedworld.chapter.end_portals.building.title",
+      "width": 128
+    },
+    {
+      "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "void_portal_frames"
+        }
+      ],
+      "id": "flames",
+      "recipes": [
+        "assortedworld:void_striker"
+      ],
+      "text": "manual.assortedworld.chapter.end_portals.flames",
+      "title": "manual.assortedworld.chapter.end_portals.flames.title"
+    }
+  ],
+  "sort_order": 40
+}

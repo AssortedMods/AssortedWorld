@@ -18,6 +18,7 @@ public class WorldBiomeModifiers {
 
     public static void init() {
         Services.WORLD_GEN.addFeatureToBiomes(matchesTag(BiomeTags.IS_OVERWORLD), GenerationStep.Decoration.UNDERGROUND_ORES, WorldGenData.RANDOMITE_KEY);
+        Services.WORLD_GEN.addFeatureToBiomes(matchesTag(WorldTags.Biomes.HAS_VOID_CRYSTAL_ORE), GenerationStep.Decoration.UNDERGROUND_ORES, WorldGenData.VOID_CRYSTAL_KEY);
         Services.WORLD_GEN.addFeatureToBiomes(matchesTag(BiomeTags.IS_OVERWORLD), GenerationStep.Decoration.VEGETAL_DECORATION, WorldGenData.GUNPOWDER_REED_KEY);
         Services.WORLD_GEN.addFeatureToBiomes(matchesTag(WorldTags.Biomes.SUPPORTS_RUIN_GENERATION), GenerationStep.Decoration.SURFACE_STRUCTURES, WorldGenData.RUIN_KEY);
         Services.WORLD_GEN.addFeatureToBiomes(matchesTag(LibCommonTags.Biomes.IS_MOUNTAIN), GenerationStep.Decoration.SURFACE_STRUCTURES, WorldGenData.SPIRE_KEY);

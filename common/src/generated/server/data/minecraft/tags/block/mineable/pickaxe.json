@@ -17,6 +17,8 @@
     "assortedworld:thorn_rune",
     "assortedworld:os_rune",
     "assortedworld:randomite_ore",
-    "assortedworld:deepslate_randomite_ore"
+    "assortedworld:deepslate_randomite_ore",
+    "assortedworld:void_crystal_ore",
+    "assortedworld:void_portal_frame"
   ]
 }

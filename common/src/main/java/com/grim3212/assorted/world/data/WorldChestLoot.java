@@ -2,6 +2,7 @@ package com.grim3212.assorted.world.data;
 
 import com.grim3212.assorted.world.api.WorldLootTables;
 import com.grim3212.assorted.world.common.block.WorldBlocks;
+import com.grim3212.assorted.world.common.item.WorldItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
@@ -45,6 +46,11 @@ public class WorldChestLoot implements LootTableSubProvider {
         output.accept(WorldLootTables.CHESTS_PYRAMID, LootTable.lootTable().withPool(treasurePool().add(LootItem.lootTableItem(Items.GOLDEN_APPLE).setWeight(20)).add(LootItem.lootTableItem(Items.ENCHANTED_GOLDEN_APPLE).setWeight(2))).withPool(junkPool()));
 
         output.accept(WorldLootTables.CHESTS_RUIN, LootTable.lootTable().withPool(treasurePool()).withPool(junkPool()));
+
+        // One end city chest in four, the ship's included, holds 1 to 3 void crystals.
+        output.accept(WorldLootTables.INJECT_END_CITY_TREASURE, LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
+                .add(LootItem.lootTableItem(WorldItems.VOID_CRYSTAL.get()).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F))))
+                .add(EmptyLootItem.emptyItem().setWeight(3))));
 
         waterDomeChests(output);
         desertWellChests(output);

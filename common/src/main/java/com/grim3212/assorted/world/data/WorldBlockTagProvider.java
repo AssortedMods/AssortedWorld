@@ -11,6 +11,7 @@ import net.minecraft.data.tags.TagAppender;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -27,7 +28,7 @@ public class WorldBlockTagProvider extends LibBlockTagProvider {
         // into something that takes blocks so the tag lists below stay readable.
         Function<TagKey<Block>, BlockTagger> tagger = (tag) -> new BlockTagger(appender.apply(tag));
 
-        tagger.apply(LibCommonTags.Blocks.ORES).addTag(WorldTags.Blocks.ORES_RANDOMITE);
+        tagger.apply(LibCommonTags.Blocks.ORES).addTag(WorldTags.Blocks.ORES_RANDOMITE).addTag(WorldTags.Blocks.ORES_VOID_CRYSTAL);
         tagger.apply(WorldTags.Blocks.ORES_RANDOMITE).add(WorldBlocks.RANDOMITE_ORE.get(), WorldBlocks.DEEPSLATE_RANDOMITE_ORE.get());
         tagger.apply(WorldTags.Blocks.RUNES).add(WorldBlocks.runeBlocks());
 
@@ -36,6 +37,15 @@ public class WorldBlockTagProvider extends LibBlockTagProvider {
         tagger.apply(BlockTags.NEEDS_STONE_TOOL).add(WorldBlocks.RANDOMITE_ORE.get(), WorldBlocks.DEEPSLATE_RANDOMITE_ORE.get());
 
         tagger.apply(BlockTags.MINEABLE_WITH_AXE).add(WorldBlocks.GUNPOWDER_REED.get());
+
+        tagger.apply(WorldTags.Blocks.ORES_VOID_CRYSTAL).add(WorldBlocks.VOID_CRYSTAL_ORE.get());
+        tagger.apply(BlockTags.MINEABLE_WITH_PICKAXE).add(WorldBlocks.VOID_CRYSTAL_ORE.get(), WorldBlocks.VOID_PORTAL_FRAME.get());
+        tagger.apply(BlockTags.NEEDS_IRON_TOOL).add(WorldBlocks.VOID_CRYSTAL_ORE.get());
+        tagger.apply(BlockTags.NEEDS_DIAMOND_TOOL).add(WorldBlocks.VOID_PORTAL_FRAME.get());
+        tagger.apply(BlockTags.DRAGON_IMMUNE).add(WorldBlocks.VOID_PORTAL_FRAME.get());
+        // #fire is what mob pathfinding steers around.
+        tagger.apply(BlockTags.FIRE).add(WorldBlocks.ENDER_FLAMES.get());
+        tagger.apply(WorldTags.Blocks.INFINIBURN_ENDER_FLAMES).add(Blocks.END_STONE);
     }
 
     private record BlockTagger(TagAppender<Block> appender) {

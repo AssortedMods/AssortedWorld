@@ -2,6 +2,7 @@ package com.grim3212.assorted.world.client.data;
 
 import com.grim3212.assorted.world.Constants;
 import com.grim3212.assorted.world.common.block.WorldBlocks;
+import com.grim3212.assorted.world.common.item.WorldItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
 
 /**
  * Item models for everything but block items, which {@link WorldBlockstateProvider} models. That is
- * the two plants, whose items are flat sprites rather than their block models.
+ * the two plants, whose items are flat sprites rather than their block models, and the plain items.
  */
 public class WorldItemModelProvider extends ModelProvider {
 
@@ -45,5 +46,7 @@ public class WorldItemModelProvider extends ModelProvider {
         // texture from the item id, which is what the old `item/<name>` layer0 resolved to anyway.
         itemModels.generateFlatItem(WorldBlocks.GUNPOWDER_REED.get().asItem(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(WorldBlocks.GLOWSTONE_SEEDS.get().asItem(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(WorldItems.VOID_CRYSTAL.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(WorldItems.VOID_STRIKER.get(), ModelTemplates.FLAT_ITEM);
     }
 }

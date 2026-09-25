@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "void_portal_frames"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "void_portal_frames"
+    }
+  ],
+  "ingredients": [
+    "minecraft:flint_and_steel",
+    "assortedworld:void_crystal",
+    "minecraft:dragon_breath"
+  ],
+  "result": {
+    "id": "assortedworld:void_striker"
+  }
+}

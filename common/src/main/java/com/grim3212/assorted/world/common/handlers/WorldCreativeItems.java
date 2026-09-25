@@ -7,6 +7,7 @@ import com.grim3212.assorted.lib.registry.RegistryProvider;
 import com.grim3212.assorted.world.Constants;
 import com.grim3212.assorted.world.WorldCommonMod;
 import com.grim3212.assorted.world.common.block.WorldBlocks;
+import com.grim3212.assorted.world.common.item.WorldItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -41,6 +42,13 @@ public class WorldCreativeItems {
 
         if (WorldCommonMod.COMMON_CONFIG.glowstoneSeedsEnabled.get()) {
             items.add(WorldBlocks.GLOWSTONE_SEEDS.get());
+        }
+
+        items.add(WorldBlocks.VOID_CRYSTAL_ORE.get());
+        items.add(WorldItems.VOID_CRYSTAL.get());
+        if (WorldCommonMod.COMMON_CONFIG.voidPortalFramesEnabled.get()) {
+            items.add(WorldBlocks.VOID_PORTAL_FRAME.get());
+            items.add(WorldItems.VOID_STRIKER.get());
         }
 
         for (Block rune : WorldBlocks.runeBlocks()) {

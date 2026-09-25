@@ -56,6 +56,9 @@ public class WorldBiomeTagProvider extends LibBiomeTagProvider {
                     .add(Biomes.CHERRY_GROVE, Biomes.PALE_GARDEN, Biomes.WINDSWEPT_FOREST, Biomes.MANGROVE_SWAMP, Biomes.SWAMP);
         }
 
+        // Not the dragon's own island: the ore is found past the gateways it leaves when it dies.
+        tagger.apply(WorldTags.Biomes.HAS_VOID_CRYSTAL_ORE).add(Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS, Biomes.END_BARRENS, Biomes.SMALL_END_ISLANDS);
+
         this.addFloatingIslands(tagger);
         this.addWoods(tagger);
     }

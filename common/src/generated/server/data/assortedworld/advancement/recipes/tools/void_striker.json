@@ -1,0 +1,44 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "void_portal_frames"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "assortedworld:void_striker"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_void_crystal": {
+      "conditions": {
+        "items": [
+          {
+            "items": "assortedworld:void_crystal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "void_portal_frames"
+    }
+  ],
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_void_crystal"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "assortedworld:void_striker"
+    ]
+  }
+}

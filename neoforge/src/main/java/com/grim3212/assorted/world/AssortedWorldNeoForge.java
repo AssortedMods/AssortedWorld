@@ -12,6 +12,7 @@ import com.grim3212.assorted.world.data.WorldBiomeTagProvider;
 import com.grim3212.assorted.world.data.WorldBlockLoot;
 import com.grim3212.assorted.world.data.WorldBlockTagProvider;
 import com.grim3212.assorted.world.data.WorldChestLoot;
+import com.grim3212.assorted.world.data.WorldCoreMachineRecipes;
 import com.grim3212.assorted.world.data.WorldGenData;
 import com.grim3212.assorted.world.data.WorldItemTagProvider;
 import com.grim3212.assorted.world.data.WorldRecipes;
@@ -55,6 +56,7 @@ public class AssortedWorldNeoForge {
         event.addProvider(new ForgeBiomeTagProvider(packOutput, lookupProvider, Constants.MOD_ID, new WorldBiomeTagProvider(packOutput, lookupProvider)));
         // Recipe providers are not data providers any more - the Runner owns the output.
         event.addProvider(new WorldRecipes.Runner(packOutput, lookupProvider));
+        event.addProvider(new WorldCoreMachineRecipes(packOutput));
         event.addProvider(new LootTableProvider(packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(WorldBlockLoot::new, LootContextParamSets.BLOCK), new LootTableProvider.SubProviderEntry(WorldChestLoot::new, LootContextParamSets.CHEST)), lookupProvider));
         event.addProvider(new ForgeDatapackRegistryProvider(Constants.MOD_ID, new WorldGenData()).datpackEntriesProvider(packOutput, lookupProvider));
     }

@@ -41,6 +41,7 @@ public class WorldLanguageProvider extends LibLanguageProvider {
 
         this.add("tag.item.assortedworld.runes", "Runes");
         this.add("tag.item.c.ores.randomite", "Randomite Ores");
+        this.add("tag.item.c.ores.void_crystal", "Void Crystal Ores");
 
         this.addManual();
     }
@@ -55,6 +56,7 @@ public class WorldLanguageProvider extends LibLanguageProvider {
         this.addRunesChapter();
         this.addStructuresChapter();
         this.addPlantsChapter();
+        this.addEndPortalsChapter();
         this.addWorldGenChapter();
     }
 
@@ -125,6 +127,28 @@ public class WorldLanguageProvider extends LibLanguageProvider {
         this.add("manual.assortedworld.chapter.plants.glowstone_seeds.title", "Glowstone Seeds");
         this.add("manual.assortedworld.chapter.plants.glowstone_seeds",
                 "A glowstone seed takes on the underside of a netherrack ceiling and ripens before bursting into a blob of glowstone.");
+    }
+
+    private void addEndPortalsChapter() {
+        this.add("manual.assortedworld.chapter.end_portals", "End Portals");
+
+        this.add("manual.assortedworld.chapter.end_portals.void_crystal.title", "Void Crystal");
+        this.add("manual.assortedworld.chapter.end_portals.void_crystal",
+                "Void crystal is found on the End islands. It is quite rare and needs an iron pickaxe level or higher to break.");
+
+        this.add("manual.assortedworld.chapter.end_portals.frame.title", "Void Portal Frame");
+        this.add("manual.assortedworld.chapter.end_portals.frame",
+                "A void portal frame is an end portal frame you can make yourself. They are very slow to break as you would expect.");
+
+        this.add("manual.assortedworld.chapter.end_portals.building.title", "Building a Portal");
+        this.add("manual.assortedworld.chapter.end_portals.building",
+                "You can place them in an opening of 3x3 to 9x9 on a floor, wall or ceiling. If they are all facing the same way you can construct a End Portal of your own using a Void Striker.");
+
+        this.add("manual.assortedworld.chapter.end_portals.flames.title", "Ender Flames");
+        this.add("manual.assortedworld.chapter.end_portals.flames",
+                "Strike any frame of a finished ring with a void striker and the end portal will open. Ender flames set inside a closed Void Portal Frame ring will also open the portal."
+                        + BREAK
+                        + "On end stone the flames will burn forever.");
     }
 
     private void addWorldGenChapter() {

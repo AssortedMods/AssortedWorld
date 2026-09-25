@@ -4,6 +4,7 @@ import com.grim3212.assorted.lib.data.LibManualProvider;
 import com.grim3212.assorted.world.Constants;
 import com.grim3212.assorted.world.common.block.WorldBlocks;
 import com.grim3212.assorted.world.common.crafting.WorldConditions;
+import com.grim3212.assorted.world.common.item.WorldItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
@@ -44,6 +45,12 @@ public class WorldManualProvider extends LibManualProvider {
         plants.recipes("gunpowder_reed", WorldBlocks.GUNPOWDER_REED.get()).opens(WorldBlocks.GUNPOWDER_REED.get());
         plants.recipesById("gunpowder", recipeId("gunpowder"));
         plants.recipes("glowstone_seeds", WorldBlocks.GLOWSTONE_SEEDS.get()).whenPartEnabled(WorldConditions.Parts.GLOWSTONE_SEEDS).opens(WorldBlocks.GLOWSTONE_SEEDS.get());
+
+        ChapterBuilder endPortals = this.chapter("end_portals");
+        endPortals.items("void_crystal", WorldBlocks.VOID_CRYSTAL_ORE.get(), WorldItems.VOID_CRYSTAL.get()).opens(WorldBlocks.VOID_CRYSTAL_ORE.get(), WorldItems.VOID_CRYSTAL.get());
+        endPortals.recipes("frame", WorldBlocks.VOID_PORTAL_FRAME.get()).whenPartEnabled(WorldConditions.Parts.VOID_PORTAL_FRAMES).opens(WorldBlocks.VOID_PORTAL_FRAME.get());
+        endPortals.image("building", picture("void_portals"), 128, 104).whenPartEnabled(WorldConditions.Parts.VOID_PORTAL_FRAMES);
+        endPortals.recipes("flames", WorldItems.VOID_STRIKER.get()).whenPartEnabled(WorldConditions.Parts.VOID_PORTAL_FRAMES).opens(WorldItems.VOID_STRIKER.get()).opensBlocks(WorldBlocks.ENDER_FLAMES.getId(), WorldBlocks.VOID_PORTAL.getId());
 
         ChapterBuilder worldGen = this.chapter("world_gen");
         worldGen.image("floating_islands", picture("floating_islands"), 119, 104);

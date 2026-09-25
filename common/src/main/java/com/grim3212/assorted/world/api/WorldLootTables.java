@@ -28,6 +28,9 @@ public class WorldLootTables {
     public static final ResourceKey<LootTable> CHESTS_DESERT_WELL_25 = create("chests/desert_well/level_25");
     public static final ResourceKey<LootTable> CHESTS_DESERT_WELL_30 = create("chests/desert_well/level_30");
 
+    // Pooled into vanilla's end city chests by LootTableHandlers rather than overriding them.
+    public static final ResourceKey<LootTable> INJECT_END_CITY_TREASURE = create("chests/inject/end_city_treasure");
+
     private static ResourceKey<LootTable> create(String name) {
         return ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(Constants.MOD_ID, name));
     }

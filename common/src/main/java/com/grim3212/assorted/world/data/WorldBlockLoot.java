@@ -2,6 +2,7 @@ package com.grim3212.assorted.world.data;
 
 import com.grim3212.assorted.lib.data.LibBlockLootProvider;
 import com.grim3212.assorted.world.common.block.WorldBlocks;
+import com.grim3212.assorted.world.common.item.WorldItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Items;
@@ -45,6 +46,8 @@ public class WorldBlockLoot extends LibBlockLootProvider {
         }
 
         this.dropSelf(WorldBlocks.GUNPOWDER_REED.get());
+        this.dropSelf(WorldBlocks.VOID_PORTAL_FRAME.get());
+        this.add(WorldBlocks.VOID_CRYSTAL_ORE.get(), block -> this.createOreDrop(block, WorldItems.VOID_CRYSTAL.get()));
 
         // A seed breaks back into the dust it was made from, 1 or 2 of it, like GrimPack's did.
         this.add(WorldBlocks.GLOWSTONE_SEEDS.get(), block -> LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))

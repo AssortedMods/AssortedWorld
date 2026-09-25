@@ -28,5 +28,6 @@ public final class WorldGameTests {
         WaterDomeTests.register(out);
         AssetTests.register(out);
         CrossLoaderDataTests.register(out);
+        EndPortalTests.register(out);
     }
 }

@@ -22,6 +22,7 @@ public class WorldItemTagProvider extends LibItemTagProvider {
     @Override
     public void addCommonTags(Function<TagKey<Item>, TagAppender<Item>> tagger, BiConsumer<TagKey<Block>, TagKey<Item>> copier) {
         copier.accept(WorldTags.Blocks.ORES_RANDOMITE, WorldTags.Items.ORES_RANDOMITE);
+        copier.accept(WorldTags.Blocks.ORES_VOID_CRYSTAL, WorldTags.Items.ORES_VOID_CRYSTAL);
         copier.accept(WorldTags.Blocks.RUNES, WorldTags.Items.RUNES);
     }
 }

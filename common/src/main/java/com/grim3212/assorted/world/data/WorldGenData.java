@@ -64,6 +64,7 @@ public class WorldGenData extends LibDatapackRegistryProvider {
     public static final Identifier RUIN_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "ruin");
     public static final Identifier SPIRE_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "spire");
     public static final Identifier RANDOMITE_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "ore_randomite");
+    public static final Identifier VOID_CRYSTAL_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "ore_void_crystal");
     public static final Identifier GUNPOWDER_REED_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "patch_gunpowder_reed");
 
     public static final Identifier FLOATING_ISLAND_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "floating_island");
@@ -116,6 +117,8 @@ public class WorldGenData extends LibDatapackRegistryProvider {
         map.put(RUIN_KEY, new ConfiguredFeature<>(WorldFeatures.RUIN_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
         map.put(SPIRE_KEY, new ConfiguredFeature<>(WorldFeatures.SPIRE_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
         map.put(RANDOMITE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(WorldTargets.ORE_RANDOMITE_TARGET_LIST, 8)));
+        // Rarer than diamond; a fifth of what would show on an island surface is left out.
+        map.put(VOID_CRYSTAL_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(WorldTargets.ORE_VOID_CRYSTAL_TARGET_LIST, 4, 0.2F)));
         // Feature.RANDOM_PATCH and RandomPatchConfiguration are gone: the "try N times around this
         // spot" behaviour is expressed with placement modifiers now (see the placed feature below),
         // so the configured feature is just the block column that used to be wrapped by the patch.
@@ -145,6 +148,8 @@ public class WorldGenData extends LibDatapackRegistryProvider {
         map.put(RUIN_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(RUIN_KEY)), heightmapPlacement(350)));
         map.put(SPIRE_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(SPIRE_KEY)), heightmapPlacement(350)));
         map.put(RANDOMITE_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(RANDOMITE_KEY)), commonOrePlacement(12, HeightRangePlacement.triangle(VerticalAnchor.BOTTOM, VerticalAnchor.TOP))));
+        // The outer islands' end stone sits between about y 0 and 80; most attempts land in the void.
+        map.put(VOID_CRYSTAL_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(VOID_CRYSTAL_KEY)), commonOrePlacement(4, HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(80)))));
         map.put(GUNPOWDER_REED_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(GUNPOWDER_REED_KEY)), reedPatchPlacement(8)));
 
         map.put(FLOATING_ISLAND_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(FLOATING_ISLAND_KEY)), surfacePlacement(WorldPlacements.Parts.FLOATING_ISLAND)));

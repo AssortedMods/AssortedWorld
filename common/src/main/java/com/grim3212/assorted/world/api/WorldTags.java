@@ -13,7 +13,9 @@ public class WorldTags {
 
     public static class Blocks {
         public static final TagKey<Block> ORES_RANDOMITE = commonTag("ores/randomite");
+        public static final TagKey<Block> ORES_VOID_CRYSTAL = commonTag("ores/void_crystal");
         public static final TagKey<Block> RUNES = worldTag("runes");
+        public static final TagKey<Block> INFINIBURN_ENDER_FLAMES = worldTag("infiniburn_ender_flames");
 
 
         private static TagKey<Block> worldTag(String name) {
@@ -27,6 +29,7 @@ public class WorldTags {
 
     public static class Items {
         public static final TagKey<Item> ORES_RANDOMITE = commonTag("ores/randomite");
+        public static final TagKey<Item> ORES_VOID_CRYSTAL = commonTag("ores/void_crystal");
         public static final TagKey<Item> RUNES = worldTag("runes");
 
         private static TagKey<Item> worldTag(String name) {
@@ -56,6 +59,7 @@ public class WorldTags {
         public static final TagKey<Biome> HAS_SAND_PILLAR = create("has_feature/sand_pillar");
         public static final TagKey<Biome> HAS_SAND_PIT = create("has_feature/sand_pit");
         public static final TagKey<Biome> HAS_MELONS = create("has_feature/melons");
+        public static final TagKey<Biome> HAS_VOID_CRYSTAL_ORE = create("has_feature/void_crystal_ore");
 
         /** Where one kind of floating island hangs; see {@code FloatingIslandTypes}. */
         public static TagKey<Biome> floatingIsland(String type) {

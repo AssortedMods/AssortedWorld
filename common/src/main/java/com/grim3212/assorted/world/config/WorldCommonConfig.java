@@ -20,6 +20,8 @@ public class WorldCommonConfig {
     public final Supplier<Boolean> glowstoneSeedsEnabled;
     public final Supplier<Integer> glowstoneSeedPlantHeight;
 
+    public final Supplier<Boolean> voidPortalFramesEnabled;
+
     public final Supplier<Integer> floatingIslandRarity;
     public final Supplier<Integer> floatingIslandMinSize;
     public final Supplier<Integer> floatingIslandMaxSize;
@@ -60,6 +62,7 @@ public class WorldCommonConfig {
 
         glowstoneSeedsEnabled = builder.defineBoolean("parts.glowstoneSeedsEnabled", true, "Set this to true if you would like glowstone seeds to be craftable and found in the creative tab.");
         glowstoneSeedPlantHeight = builder.defineInteger("glowstoneSeeds.plantHeight", 15, -64, 320, "Outside the Nether, glowstone seeds only take on a netherrack ceiling at or below this height. In the Nether they take at any height.");
+        voidPortalFramesEnabled = builder.defineBoolean("parts.voidPortalFramesEnabled", true, "Set this to true if you would like void portal frames, which build an end portal anywhere, to be craftable and found in the creative tab.");
 
         floatingIslandRarity = builder.defineInteger("floatingIslands.rarity", 750, 0, 10000, RARITY);
         floatingIslandMinSize = builder.defineInteger("floatingIslands.minSize", 6, 3, 15, "The smallest an island can be, as how many blocks it reaches from its middle. Sizes are rolled evenly between this and maxSize, so setting the two equal makes every island the same size.");
