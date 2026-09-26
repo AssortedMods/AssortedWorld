@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "assortedportals:block/void_portal_frame",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "assortedportals:block/void_portal_frame",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "assortedportals:block/void_portal_frame",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "assortedportals:block/void_portal_frame",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "assortedportals:block/void_portal_frame"
+    },
+    "facing=west": {
+      "model": "assortedportals:block/void_portal_frame",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

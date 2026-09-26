@@ -1,0 +1,25 @@
+{
+  "links": [
+    {
+      "blocks": [
+        "assortedstructures:ur_rune",
+        "assortedstructures:eoh_rune",
+        "assortedstructures:hagel_rune",
+        "assortedstructures:eolh_rune",
+        "assortedstructures:cen_rune",
+        "assortedstructures:ger_rune",
+        "assortedstructures:rad_rune",
+        "assortedstructures:is_rune",
+        "assortedstructures:daeg_rune",
+        "assortedstructures:tyr_rune",
+        "assortedstructures:beorc_rune",
+        "assortedstructures:lagu_rune",
+        "assortedstructures:odal_rune",
+        "assortedstructures:nyd_rune",
+        "assortedstructures:thorn_rune",
+        "assortedstructures:os_rune"
+      ],
+      "page": "assortedworld:runes/runes"
+    }
+  ]
+}

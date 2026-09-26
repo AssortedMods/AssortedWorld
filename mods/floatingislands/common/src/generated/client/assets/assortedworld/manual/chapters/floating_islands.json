@@ -1,0 +1,14 @@
+{
+  "pages": [
+    {
+      "type": "assortedlib:image",
+      "height": 104,
+      "id": "floating_islands",
+      "image": "assortedfloatingislands:textures/gui/manual/floating_islands.png",
+      "text": "manual.assortedworld.chapter.floating_islands.floating_islands",
+      "title": "manual.assortedworld.chapter.floating_islands.floating_islands.title",
+      "width": 119
+    }
+  ],
+  "sort_order": 5
+}

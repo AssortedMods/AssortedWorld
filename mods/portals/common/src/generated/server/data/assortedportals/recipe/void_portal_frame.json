@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": "assortedportals:void_crystal",
+    "E": "minecraft:ender_eye",
+    "O": "#c:obsidians"
+  },
+  "pattern": [
+    "OEO",
+    "OCO",
+    "OOO"
+  ],
+  "result": {
+    "id": "assortedportals:void_portal_frame"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "parent": "assortedportals:block/template_void_portal_frame",
+  "textures": {
+    "bottom": "minecraft:block/obsidian",
+    "eye": "minecraft:block/end_portal_frame_eye",
+    "particle": "assortedportals:block/void_portal_frame_side",
+    "side": "assortedportals:block/void_portal_frame_side",
+    "top": "assortedportals:block/void_portal_frame_top"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedportals:breaking_a_frame_closes_the_portal",
+  "structure": "assortedportals:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

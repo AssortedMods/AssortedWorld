@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedstructures:structure_chest_loot_tables_roll_items",
+  "structure": "assortedstructures:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

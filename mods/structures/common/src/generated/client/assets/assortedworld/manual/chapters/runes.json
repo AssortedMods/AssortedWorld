@@ -1,0 +1,29 @@
+{
+  "pages": [
+    {
+      "type": "assortedlib:item",
+      "id": "runes",
+      "items": [
+        "assortedstructures:ur_rune",
+        "assortedstructures:eoh_rune",
+        "assortedstructures:hagel_rune",
+        "assortedstructures:eolh_rune",
+        "assortedstructures:cen_rune",
+        "assortedstructures:ger_rune",
+        "assortedstructures:rad_rune",
+        "assortedstructures:is_rune",
+        "assortedstructures:daeg_rune",
+        "assortedstructures:tyr_rune",
+        "assortedstructures:beorc_rune",
+        "assortedstructures:lagu_rune",
+        "assortedstructures:odal_rune",
+        "assortedstructures:nyd_rune",
+        "assortedstructures:thorn_rune",
+        "assortedstructures:os_rune"
+      ],
+      "text": "manual.assortedworld.chapter.runes.runes",
+      "title": "manual.assortedworld.chapter.runes.runes.title"
+    }
+  ],
+  "sort_order": 1
+}

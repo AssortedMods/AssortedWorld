@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "assortedportals:void_striker"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_void_crystal": {
+      "conditions": {
+        "items": [
+          {
+            "items": "assortedportals:void_crystal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_void_crystal"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "assortedportals:void_striker"
+    ]
+  }
+}

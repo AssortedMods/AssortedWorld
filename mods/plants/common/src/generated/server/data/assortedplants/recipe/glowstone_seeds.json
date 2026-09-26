@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": "#c:dusts/glowstone",
+    "S": "minecraft:soul_sand"
+  },
+  "pattern": [
+    "GSG",
+    " G "
+  ],
+  "result": {
+    "id": "assortedplants:glowstone_seeds"
+  }
+}

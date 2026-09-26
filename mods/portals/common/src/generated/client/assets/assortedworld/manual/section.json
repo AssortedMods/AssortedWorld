@@ -1,0 +1,9 @@
+{
+  "icon": [
+    "assortedterrain:randomite_ore",
+    "assortedstructures:ur_rune",
+    "assortedportals:void_portal_frame",
+    "assortedplants:gunpowder_reed"
+  ],
+  "sort_order": 140
+}

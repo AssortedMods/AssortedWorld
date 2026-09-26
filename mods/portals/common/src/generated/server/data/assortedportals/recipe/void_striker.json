@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:flint_and_steel",
+    "assortedportals:void_crystal",
+    "minecraft:dragon_breath"
+  ],
+  "result": {
+    "id": "assortedportals:void_striker"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedterrain:every_wood_suits_some_biome",
+  "structure": "assortedterrain:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

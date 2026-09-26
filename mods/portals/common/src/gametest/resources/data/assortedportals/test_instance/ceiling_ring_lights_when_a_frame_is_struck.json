@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedportals:ceiling_ring_lights_when_a_frame_is_struck",
+  "structure": "assortedportals:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

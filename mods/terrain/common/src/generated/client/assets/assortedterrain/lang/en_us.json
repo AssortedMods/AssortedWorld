@@ -1,0 +1,18 @@
+{
+  "block.assortedterrain.deepslate_randomite_ore": "Deepslate Randomite Ore",
+  "block.assortedterrain.randomite_ore": "Randomite Ore",
+  "itemGroup.assortedworld": "Assorted World",
+  "manual.assortedworld.chapter.randomite": "Randomite",
+  "manual.assortedworld.chapter.randomite.finding": "It generates all over and looks enough like the other ores you could mistake it for another.",
+  "manual.assortedworld.chapter.randomite.finding.title": "Finding Randomite",
+  "manual.assortedworld.chapter.randomite.ore": "Randomite looks like one more ore in the wall and drops as any of them. What it gives is decided when it breaks, not when it generates, so two blocks side by side rarely drop the same.",
+  "manual.assortedworld.chapter.randomite.ore.title": "Randomite Ore",
+  "manual.assortedworld.chapter.world_gen": "Out in the World",
+  "manual.assortedworld.chapter.world_gen.desert_wells": "Desert wells are not just a well. The shaft under them runs ten to thirty blocks down through the sandstone to a chest, and the deeper the swim the better what is waiting at the bottom.",
+  "manual.assortedworld.chapter.world_gen.desert_wells.title": "Desert Wells",
+  "manual.assortedworld.chapter.world_gen.world_gen_expanded": "Wild fields of wheat, carrots, potatoes or beetroot grow on the plains, watered by holes dug in among the rows. Melons come up in loose patches around as well. Stray saplings and the stumps of felled trees are scattered through the woods.\n\nThe desert has more variety with fields of cactus and pits sunk into the sand in terraces.",
+  "manual.assortedworld.chapter.world_gen.world_gen_expanded.title": "A Fuller World",
+  "manual.assortedworld.description": "What this mod buries, builds and grows out in the world, and what is worth going to look for.",
+  "manual.assortedworld.title": "Assorted World",
+  "tag.item.c.ores.randomite": "Randomite Ores"
+}

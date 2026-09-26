@@ -1,0 +1,165 @@
+package com.grim3212.assorted.structures.common.gen.structure.snowball;
+
+import com.google.common.collect.Lists;
+import com.grim3212.assorted.structures.common.gen.structure.StructuresTypes;
+import com.grim3212.assorted.structures.common.util.RuinUtil;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.ScatteredFeaturePiece;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class SnowballPiece extends ScatteredFeaturePiece {
+
+    private final int radius;
+    private final int numCenterPoints;
+    private final int runeIndex;
+
+    private List<BlockPos> centrePoints;
+    private List<Integer> radii;
+
+    public SnowballPiece(RandomSource random, BlockPos pos, int radius, int numCenterPoints) {
+        // (radius * 2) + 1, not radius * 2: the spheres run from -radius to +radius inclusive about
+        // the box's centre, so a width of radius * 2 left the outermost ring one block outside the
+        // box. Now that writes are clipped to it that block would simply never be placed. The
+        // centre is unchanged, so the snowball itself does not move.
+        super(StructuresTypes.SNOWBALL_STRUCTURE_PIECE.get(), pos.getX(), pos.getY(), pos.getZ(), (radius * 2) + 1, radius * (numCenterPoints + 1), (radius * 2) + 1, getRandomHorizontalDirection(random));
+        this.radius = radius;
+        this.numCenterPoints = numCenterPoints;
+        this.runeIndex = RuinUtil.randomRuneIndex(random);
+    }
+
+    public SnowballPiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+        super(StructuresTypes.SNOWBALL_STRUCTURE_PIECE.get(), tagCompound);
+        this.radius = tagCompound.getIntOr("radius", 0);
+        this.numCenterPoints = tagCompound.getIntOr("numCenterPoints", 0);
+        this.runeIndex = tagCompound.getIntOr("runeIndex", 0);
+    }
+
+    @Override
+    protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+        super.addAdditionalSaveData(context, tagCompound);
+        tagCompound.putInt("radius", this.radius);
+        tagCompound.putInt("numCenterPoints", this.numCenterPoints);
+        tagCompound.putInt("runeIndex", this.runeIndex);
+    }
+
+    @Override
+    public void postProcess(WorldGenLevel reader, StructureManager structureManager, ChunkGenerator generator, RandomSource rand, BoundingBox bb, ChunkPos chunkPos, BlockPos pos) {
+        if (this.updateAverageGroundHeight(reader, bb, 0)) {
+            // From the box, and only after updateAverageGroundHeight above has moved it: the pos
+            // argument is read before postProcess runs, so it carries the pre-move height on the
+            // first pass and the post-move height on every later one.
+            BlockPos origin = RuinUtil.pieceOrigin(this.getBoundingBox());
+
+            this.centrePoints = Lists.newArrayList(BlockPos.ZERO);
+            this.radii = Lists.newArrayList(radius);
+
+            int rad = radius;
+            int newY = 0;
+
+            for (int i = 0; i < this.numCenterPoints; i++) {
+                int off = newY + rad;
+                rad -= 3;
+                newY = off;
+                if (rad < 3 || origin.getY() + newY + rad > reader.getMaxY()) {
+                    break;
+                }
+
+                centrePoints.add(new BlockPos(0, off, 0));
+                radii.add(rad);
+            }
+
+            Map<BlockPos, Block> blockCache = new HashMap<>();
+
+            for (int idx = 0; idx < centrePoints.size(); idx++) {
+                BlockPos point = centrePoints.get(idx);
+                int radi = radii.get(idx);
+
+                for (int x = -radi; x <= radi; x++) {
+                    for (int z = -radi; z <= radi; z++) {
+                        for (int y = -radi; y <= radi; y++) {
+                            BlockPos newPoint = new BlockPos(x, y + point.getY(), z);
+
+                            if (origin.getY() + (int) newPoint.getY() > reader.getMaxY()) {
+                                break;
+                            }
+                            Block block = blockToPlace(rand, origin, newPoint, point);
+                            if (block != null) {
+                                blockCache.put(new BlockPos(origin.getX() + x, origin.getY() + newPoint.getY(), origin.getZ() + z), block);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // The whole snowball is still worked out on every pass — blockToPlace is purely
+            // geometric, so every pass agrees — but only the part inside the chunk being generated
+            // is written. Writing the rest is what the "unsafe terrain read" error was about.
+            blockCache.forEach((p, b) -> {
+                if (bb.isInside(p)) {
+                    reader.setBlock(p, b.defaultBlockState(), 2);
+                }
+            });
+        }
+    }
+
+    private Block blockToPlace(RandomSource random, BlockPos pos, BlockPos point1, BlockPos point2) {
+        int points = 0;
+        int places = 0;
+        for (int point = 0; point < centrePoints.size(); point++) {
+            BlockPos centerPoint = centrePoints.get(point);
+            int radi = radii.get(point);
+
+            int distance = (int) Math.round(Math.sqrt(centerPoint.distSqr(point1)));
+            if (distance < radi) {
+                places++;
+                continue;
+            }
+            if (distance != radi) {
+                continue;
+            }
+            points++;
+        }
+
+        if (places > 0) {
+            // Exactly one rune per snowball, at the centre of the lowest sphere. Higher spheres
+            // start at y >= 3 so they can never reach this position again.
+            if (point1.getX() == 0 && point1.getY() == 0 && point1.getZ() == 0) {
+                return RuinUtil.runeAt(this.runeIndex);
+            }
+
+            if (point1.getX() == 0 && point1.getZ() == 0) {
+                return Blocks.ICE;
+            }
+            if (point2.getY() == 0) {
+                if ((Math.abs(point1.getX()) == 1 || Math.abs(point1.getZ()) == 1) && Math.abs(point1.getX()) != Math.abs(point1.getZ()) && Math.abs(point1.getX()) <= 1 && Math.abs(point1.getZ()) <= 1) {
+                    return Blocks.ICE;
+                }
+            } else if ((Math.abs(point1.getX()) == 0 || Math.abs(point1.getZ()) == 0) && point1.getY() - point2.getY() == 0) {
+                return Blocks.ICE;
+            }
+            if (point2.getY() == 0 && (double) pos.getY() + point1.getY() < (double) pos.getY()) {
+                return Blocks.ICE;
+            } else {
+                return Blocks.AIR;
+            }
+        }
+        if (points > 0) {
+            return Blocks.SNOW_BLOCK;
+        } else {
+            return null;
+        }
+    }
+}

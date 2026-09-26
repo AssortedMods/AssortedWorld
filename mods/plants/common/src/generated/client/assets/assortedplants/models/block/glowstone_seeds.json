@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "assortedplants:block/glowstone_seeds"
+  }
+}

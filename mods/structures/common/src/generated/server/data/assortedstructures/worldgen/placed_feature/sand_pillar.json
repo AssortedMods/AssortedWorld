@@ -1,0 +1,19 @@
+{
+  "feature": "assortedstructures:sand_pillar",
+  "placement": [
+    {
+      "type": "assortedstructures:config_rarity",
+      "part": "sandstone_pillar"
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "MOTION_BLOCKING"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}
