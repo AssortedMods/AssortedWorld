@@ -32,7 +32,7 @@ final class WorldgenTests {
     }
 
     /** Namespaces whose features this pack adds through AssortedLib's world gen helper. */
-    private static final List<String> OURS = List.of(Constants.MOD_ID, "assortedcore");
+    private static final List<String> OURS = List.of(Constants.MOD_ID, "assortedores");
 
     /**
      * A feature's index in its generation step decides the seed it is placed from, so the same seed

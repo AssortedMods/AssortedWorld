@@ -42,7 +42,7 @@ final class WorldgenTests {
     }
 
     /** Namespaces whose features this pack adds through AssortedLib's world gen helper. */
-    private static final List<String> OURS = List.of(Constants.MOD_ID, "assortedcore");
+    private static final List<String> OURS = List.of(Constants.MOD_ID, "assortedores");
 
     /** Every placed feature this mod adds, each under the same id as its configured feature. */
     private static final List<String> FEATURES = List.of("ore_randomite", "desert_well", "crop_field", "cactus_field", "sand_pit", "patch_saplings", "tree_stumps", "patch_melons");

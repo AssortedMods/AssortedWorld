@@ -16,12 +16,12 @@ import net.minecraft.resources.Identifier;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Assorted Core machine recipes for this mod's ores, written as json since this mod does not build
- * against Core. Each only loads when Core is installed.
+ * Assorted Machines recipes for this mod's ores, written as json since this mod does not build
+ * against Machines. Each only loads when Machines is installed.
  */
 public class PortalsCoreMachineRecipes implements DataProvider {
 
-    private static final String CORE = "assortedcore";
+    private static final String MACHINES = "assortedmachines";
 
     private final PackOutput.PathProvider recipes;
     private final PackOutput.PathProvider advancements;
@@ -53,7 +53,7 @@ public class PortalsCoreMachineRecipes implements DataProvider {
 
         JsonObject recipe = new JsonObject();
         recipe.add(CrossLoaderData.NEOFORGE_CONDITIONS, coreLoaded());
-        recipe.addProperty("type", CORE + ":grinding_mill");
+        recipe.addProperty("type", MACHINES + ":grinding_mill");
         recipe.addProperty("cookingtime", 600);
         recipe.addProperty("experience", experience);
         recipe.add("ingredient", ingredient);
@@ -107,7 +107,7 @@ public class PortalsCoreMachineRecipes implements DataProvider {
     private static JsonArray coreLoaded() {
         JsonObject condition = new JsonObject();
         condition.addProperty("type", "neoforge:mod_loaded");
-        condition.addProperty("modid", CORE);
+        condition.addProperty("modid", MACHINES);
         JsonArray conditions = new JsonArray();
         conditions.add(condition);
         return conditions;
@@ -115,6 +115,6 @@ public class PortalsCoreMachineRecipes implements DataProvider {
 
     @Override
     public String getName() {
-        return "Assorted Core machine recipes: " + Constants.MOD_ID;
+        return "Assorted Machines recipes: " + Constants.MOD_ID;
     }
 }
