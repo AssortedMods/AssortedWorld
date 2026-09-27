@@ -31,6 +31,7 @@ public class StructuresManualProvider extends LibManualProvider {
         structures.image("spires", picture("spires"), 79, 104);
         structures.image("fountains", picture("fountains"), 98, 104);
         structures.image("pyramids", picture("pyramids"), 113, 104);
+        structures.text("sandstone_pillars");
         structures.image("snowballs", picture("snowballs"), 58, 104);
         structures.image("water_domes", picture("water_domes"), 128, 95);
     }

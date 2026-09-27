@@ -37,6 +37,12 @@
       "width": 113
     },
     {
+      "type": "assortedlib:text",
+      "id": "sandstone_pillars",
+      "text": "manual.assortedworld.chapter.structures.sandstone_pillars",
+      "title": "manual.assortedworld.chapter.structures.sandstone_pillars.title"
+    },
+    {
       "type": "assortedlib:image",
       "height": 104,
       "id": "snowballs",

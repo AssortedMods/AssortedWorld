@@ -79,6 +79,10 @@ public class StructuresLanguageProvider extends LibLanguageProvider {
         this.add("manual.assortedworld.chapter.structures.pyramids",
                 "Pyramids are big decaying structures lost to time in the desert.");
 
+        this.add("manual.assortedworld.chapter.structures.sandstone_pillars.title", "Sandstone Pillars");
+        this.add("manual.assortedworld.chapter.structures.sandstone_pillars",
+                "Sandstone pillars stand out of the dunes in the desert. Some hide suspicious sand or a rune worth digging for.");
+
         this.add("manual.assortedworld.chapter.structures.snowballs.title", "Snowballs");
         this.add("manual.assortedworld.chapter.structures.snowballs",
                 "Snowballs are enormous stacked drifts of snow and ice that look a great deal like a snowman left to grow.");

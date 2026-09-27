@@ -2,17 +2,17 @@
   "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
-      "modid": "assortedcore"
+      "modid": "assortedmachines"
     }
   ],
-  "type": "assortedcore:grinding_mill",
+  "type": "assortedmachines:grinding_mill",
   "cookingtime": 600,
   "experience": 0.3,
   "fabric:load_conditions": [
     {
       "condition": "fabric:all_mods_loaded",
       "values": [
-        "assortedcore"
+        "assortedmachines"
       ]
     }
   ],
