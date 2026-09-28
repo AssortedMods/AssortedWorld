@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:function",
-  "environment": "minecraft:default",
-  "function": "assortedworld:desert_well_sherd_odds_climb_with_depth",
-  "structure": "assortedworld:test_box",
-  "max_ticks": 1,
-  "setup_ticks": 0,
-  "required": true
-}

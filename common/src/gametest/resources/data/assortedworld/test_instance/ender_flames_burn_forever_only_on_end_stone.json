@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:function",
-  "environment": "minecraft:default",
-  "function": "assortedworld:ender_flames_burn_forever_only_on_end_stone",
-  "structure": "assortedworld:test_box",
-  "max_ticks": 400,
-  "setup_ticks": 0,
-  "required": true
-}

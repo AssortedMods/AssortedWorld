@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:function",
-  "environment": "minecraft:default",
-  "function": "assortedworld:void_crystal_ore_needs_an_iron_tool",
-  "structure": "assortedworld:test_box",
-  "max_ticks": 1,
-  "setup_ticks": 0,
-  "required": true
-}
