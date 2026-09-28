@@ -22,5 +22,6 @@ public final class PlantsGameTests {
         WorldgenTests.register(out);
         GunpowderReedTests.register(out);
         GlowstoneSeedTests.register(out);
+        FamilyTests.register(out);
     }
 }

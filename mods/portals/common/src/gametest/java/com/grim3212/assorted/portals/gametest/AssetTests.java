@@ -8,7 +8,6 @@ import net.minecraft.server.MinecraftServer;
 import com.grim3212.assorted.lib.platform.Services;
 import java.io.BufferedReader;
 import com.grim3212.assorted.portals.Constants;
-import com.grim3212.assorted.portals.Family;
 import com.grim3212.assorted.portals.common.handlers.PortalsCreativeItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -50,7 +49,7 @@ final class AssetTests {
         if (!BuiltInRegistries.CREATIVE_MODE_TAB.containsKey(PortalsCreativeItems.TAB)) {
             problems.add("the creative tab " + PortalsCreativeItems.TAB.identifier() + " is not registered");
         }
-        String tabKey = "itemGroup." + Family.ID;
+        String tabKey = "itemGroup." + Constants.FAMILY_ID;
         if (!lang.has(tabKey)) {
             problems.add("the creative tab has no lang key " + tabKey);
         }

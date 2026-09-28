@@ -2,7 +2,6 @@ package com.grim3212.assorted.structures.gametest;
 
 import com.google.gson.JsonObject;
 import com.grim3212.assorted.structures.Constants;
-import com.grim3212.assorted.structures.Family;
 import com.grim3212.assorted.structures.common.handlers.StructuresCreativeItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -43,7 +42,7 @@ final class AssetTests {
         if (!BuiltInRegistries.CREATIVE_MODE_TAB.containsKey(StructuresCreativeItems.TAB)) {
             problems.add("the creative tab " + StructuresCreativeItems.TAB.identifier() + " is not registered");
         }
-        String tabKey = "itemGroup." + Family.ID;
+        String tabKey = "itemGroup." + Constants.FAMILY_ID;
         if (!lang.has(tabKey)) {
             problems.add("the creative tab has no lang key " + tabKey);
         }

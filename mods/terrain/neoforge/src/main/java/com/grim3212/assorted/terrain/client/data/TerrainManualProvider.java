@@ -2,7 +2,6 @@ package com.grim3212.assorted.terrain.client.data;
 
 import com.grim3212.assorted.lib.data.LibManualProvider;
 import com.grim3212.assorted.terrain.Constants;
-import com.grim3212.assorted.terrain.Family;
 import com.grim3212.assorted.terrain.common.block.TerrainBlocks;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -14,13 +13,11 @@ import net.minecraft.resources.Identifier;
 public class TerrainManualProvider extends LibManualProvider {
 
     public TerrainManualProvider(PackOutput output) {
-        super(output, Constants.MOD_ID, Family.ID);
+        super(output, Constants.MOD_ID, Constants.FAMILY_ID);
     }
 
     @Override
     protected void addChapters() {
-        this.section(Family.MANUAL_ORDER, Family.ICONS.toArray(Identifier[]::new));
-
         ChapterBuilder randomite = this.chapter("randomite", 0);
         randomite.items("ore", TerrainBlocks.RANDOMITE_ORE.get(), TerrainBlocks.DEEPSLATE_RANDOMITE_ORE.get())
                 .every(50)

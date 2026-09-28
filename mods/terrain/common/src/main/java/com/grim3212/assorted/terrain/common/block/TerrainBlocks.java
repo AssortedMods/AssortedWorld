@@ -3,7 +3,6 @@ package com.grim3212.assorted.terrain.common.block;
 import com.grim3212.assorted.lib.registry.IRegistryObject;
 import com.grim3212.assorted.lib.registry.RegistryProvider;
 import com.grim3212.assorted.terrain.Constants;
-import com.grim3212.assorted.terrain.Family;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -22,8 +21,8 @@ import java.util.function.Supplier;
 
 public class TerrainBlocks {
 
-    public static final RegistryProvider<Block> BLOCKS = RegistryProvider.create(Registries.BLOCK, Constants.MOD_ID).aliasFrom(Family.ID);
-    public static final RegistryProvider<Item> ITEMS = RegistryProvider.create(Registries.ITEM, Constants.MOD_ID).aliasFrom(Family.ID);
+    public static final RegistryProvider<Block> BLOCKS = RegistryProvider.create(Registries.BLOCK, Constants.MOD_ID).aliasFrom(Constants.FAMILY_ID);
+    public static final RegistryProvider<Item> ITEMS = RegistryProvider.create(Registries.ITEM, Constants.MOD_ID).aliasFrom(Constants.FAMILY_ID);
 
     public static final IRegistryObject<Block> RANDOMITE_ORE = register("randomite_ore", props -> new DropExperienceBlock(UniformInt.of(2, 5), props.mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).sound(SoundType.STONE).strength(1.6f, 1.0f).requiresCorrectToolForDrops()));
     public static final IRegistryObject<Block> DEEPSLATE_RANDOMITE_ORE = register("deepslate_randomite_ore", props -> new DropExperienceBlock(UniformInt.of(2, 5), props.mapColor(MapColor.DEEPSLATE).instrument(NoteBlockInstrument.BASEDRUM).sound(SoundType.STONE).strength(4.5F, 3.0f).requiresCorrectToolForDrops()));

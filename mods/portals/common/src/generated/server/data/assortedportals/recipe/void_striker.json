@@ -1,6 +1,18 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "assortedportals"
+    }
+  ],
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "assortedportals"
+    }
+  ],
   "ingredients": [
     "minecraft:flint_and_steel",
     "assortedportals:void_crystal",

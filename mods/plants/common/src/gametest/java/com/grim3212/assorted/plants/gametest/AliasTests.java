@@ -2,7 +2,7 @@ package com.grim3212.assorted.plants.gametest;
 
 import com.google.gson.JsonParser;
 import com.grim3212.assorted.lib.registry.IRegistryObject;
-import com.grim3212.assorted.plants.Family;
+import com.grim3212.assorted.plants.Constants;
 import com.grim3212.assorted.plants.common.block.PlantsBlocks;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -39,6 +39,6 @@ final class AliasTests {
     }
 
     private static Identifier old(Identifier id) {
-        return Identifier.fromNamespaceAndPath(Family.ID, id.getPath());
+        return Identifier.fromNamespaceAndPath(Constants.FAMILY_ID, id.getPath());
     }
 }

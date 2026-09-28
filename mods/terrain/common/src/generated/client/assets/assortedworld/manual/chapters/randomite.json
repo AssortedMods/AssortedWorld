@@ -1,4 +1,10 @@
 {
+  "conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "assortedterrain"
+    }
+  ],
   "pages": [
     {
       "type": "assortedlib:item",

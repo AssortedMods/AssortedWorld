@@ -2,7 +2,6 @@ package com.grim3212.assorted.structures.client.data;
 
 import com.grim3212.assorted.lib.data.LibManualProvider;
 import com.grim3212.assorted.structures.Constants;
-import com.grim3212.assorted.structures.Family;
 import com.grim3212.assorted.structures.common.block.StructuresBlocks;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -15,13 +14,11 @@ import net.minecraft.world.level.block.Block;
 public class StructuresManualProvider extends LibManualProvider {
 
     public StructuresManualProvider(PackOutput output) {
-        super(output, Constants.MOD_ID, Family.ID);
+        super(output, Constants.MOD_ID, Constants.FAMILY_ID);
     }
 
     @Override
     protected void addChapters() {
-        this.section(Family.MANUAL_ORDER, Family.ICONS.toArray(Identifier[]::new));
-
         Block[] runes = StructuresBlocks.runeBlocks();
         ChapterBuilder runeChapter = this.chapter("runes", 1);
         runeChapter.items("runes", runes).opens(runes);

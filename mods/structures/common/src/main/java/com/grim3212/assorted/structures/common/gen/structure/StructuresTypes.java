@@ -3,7 +3,6 @@ package com.grim3212.assorted.structures.common.gen.structure;
 import com.grim3212.assorted.lib.registry.IRegistryObject;
 import com.grim3212.assorted.lib.registry.RegistryProvider;
 import com.grim3212.assorted.structures.Constants;
-import com.grim3212.assorted.structures.Family;
 import com.grim3212.assorted.structures.common.gen.structure.fountain.FountainPiece;
 import com.grim3212.assorted.structures.common.gen.structure.fountain.FountainStructure;
 import com.grim3212.assorted.structures.common.gen.structure.pyramid.PyramidPiece;
@@ -24,7 +23,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 public class StructuresTypes {
 
     public static final RegistryProvider<StructureType<?>> STRUCTURE_TYPES = RegistryProvider.create(Registries.STRUCTURE_TYPE, Constants.MOD_ID);
-    public static final RegistryProvider<StructurePieceType> STRUCTURE_PIECES = RegistryProvider.create(Registries.STRUCTURE_PIECE, Constants.MOD_ID).aliasFrom(Family.ID);
+    public static final RegistryProvider<StructurePieceType> STRUCTURE_PIECES = RegistryProvider.create(Registries.STRUCTURE_PIECE, Constants.MOD_ID).aliasFrom(Constants.FAMILY_ID);
 
     public static final IRegistryObject<StructureType<SnowballStructure>> SNOWBALL_STRUCTURE_TYPE = STRUCTURE_TYPES.register("snowball", () -> () -> SnowballStructure.CODEC);
     public static final IRegistryObject<StructurePieceType> SNOWBALL_STRUCTURE_PIECE = STRUCTURE_PIECES.register("snowball_piece", () -> SnowballPiece::new);

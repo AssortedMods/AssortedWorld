@@ -52,10 +52,8 @@ final class OreTests {
      * table. Each declares its own {@code UniformInt}.
      */
     private static void randomiteOreDropsExperience(GameTestHelper helper) {
-        // Measured as deltas: whatever the first break dropped is still lying in the box when the
-        // second one happens, and item entities are counted by stack size so a merge cannot hide a
-        // drop either.
-        int experienceSoFar = 0;
+        // Items are measured as deltas, counted by stack size so a merge cannot hide a drop. Orbs are
+        // removed after each ore instead: an orb that merges into an equal one only bumps a private count.
         int itemsSoFar = 0;
 
         for (Block ore : List.of(TerrainBlocks.RANDOMITE_ORE.get(), TerrainBlocks.DEEPSLATE_RANDOMITE_ORE.get())) {
@@ -70,10 +68,10 @@ final class OreTests {
             helper.assertTrue(items > itemsSoFar, name + " dropped no loot");
             itemsSoFar = items;
 
-            int experience = helper.getEntities(EntityTypes.EXPERIENCE_ORB).stream().mapToInt(ExperienceOrb::getValue).sum();
-            int dropped = experience - experienceSoFar;
+            List<ExperienceOrb> orbs = helper.getEntities(EntityTypes.EXPERIENCE_ORB);
+            int dropped = orbs.stream().mapToInt(ExperienceOrb::getValue).sum();
             helper.assertTrue(dropped >= 2 && dropped <= 5, name + " dropped " + dropped + " experience, not the 2-5 it is registered with");
-            experienceSoFar = experience;
+            orbs.forEach(ExperienceOrb::discard);
         }
 
         helper.succeed();

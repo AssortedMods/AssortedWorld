@@ -20,5 +20,6 @@ public final class PortalsGameTests {
         CrossLoaderDataTests.register(out);
         WorldgenTests.register(out);
         EndPortalTests.register(out);
+        FamilyTests.register(out);
     }
 }

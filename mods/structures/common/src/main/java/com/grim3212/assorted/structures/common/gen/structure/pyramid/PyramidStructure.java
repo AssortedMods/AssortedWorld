@@ -1,5 +1,7 @@
 package com.grim3212.assorted.structures.common.gen.structure.pyramid;
 
+import com.grim3212.assorted.lib.conditions.LibParts;
+import com.grim3212.assorted.structures.Constants;
 import com.grim3212.assorted.structures.common.gen.structure.StructuresTypes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -102,7 +104,7 @@ public class PyramidStructure extends Structure {
 
     @Override
     public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
-        if (!StructuresTypes.validBiomeOnTop(context, Heightmap.Types.WORLD_SURFACE_WG)) {
+        if (!LibParts.isEnabled(Constants.MOD_ID) || !StructuresTypes.validBiomeOnTop(context, Heightmap.Types.WORLD_SURFACE_WG)) {
             return Optional.empty();
         }
 

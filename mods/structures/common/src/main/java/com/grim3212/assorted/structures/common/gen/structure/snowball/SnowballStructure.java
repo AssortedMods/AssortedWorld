@@ -2,6 +2,8 @@ package com.grim3212.assorted.structures.common.gen.structure.snowball;
 
 import java.util.Optional;
 
+import com.grim3212.assorted.lib.conditions.LibParts;
+import com.grim3212.assorted.structures.Constants;
 import com.grim3212.assorted.structures.common.gen.structure.StructuresTypes;
 import com.mojang.serialization.MapCodec;
 
@@ -30,7 +32,7 @@ public class SnowballStructure extends Structure {
 
 	@Override
 	public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
-		if (!SnowballStructure.extraSpawningChecks(context)) {
+		if (!LibParts.isEnabled(Constants.MOD_ID) || !SnowballStructure.extraSpawningChecks(context)) {
 			return Optional.empty();
 		}
 

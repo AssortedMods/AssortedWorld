@@ -1,7 +1,9 @@
 package com.grim3212.assorted.terrain.common.gen;
 
+import com.grim3212.assorted.lib.conditions.LibParts;
 import com.grim3212.assorted.lib.platform.Services;
 import com.grim3212.assorted.lib.platform.services.IWorldGenHelper;
+import com.grim3212.assorted.terrain.Constants;
 import com.grim3212.assorted.terrain.TerrainCommonMod;
 import com.grim3212.assorted.terrain.api.TerrainTags;
 import com.grim3212.assorted.terrain.data.TerrainGenData;
@@ -25,8 +27,8 @@ public class TerrainBiomeModifiers {
         // is built or grown on top of the sand they take away.
         Services.WORLD_GEN.addFeatureToBiomes(matchesTag(TerrainTags.Biomes.HAS_SAND_PIT), GenerationStep.Decoration.LOCAL_MODIFICATIONS, TerrainGenData.SAND_PIT_KEY);
 
-        // Ours replace vanilla's where both would generate. Read when a world loads its biomes.
-        Services.WORLD_GEN.removeFeatureFromBiomes((key, biome) -> TerrainCommonMod.COMMON_CONFIG.desertWellReplaceVanilla.get() && biome.is(TerrainTags.Biomes.HAS_DESERT_WELL),
+        // Ours replace vanilla's where both would generate, unless this part is off. Read when a world loads its biomes.
+        Services.WORLD_GEN.removeFeatureFromBiomes((key, biome) -> LibParts.isEnabled(Constants.MOD_ID) && TerrainCommonMod.COMMON_CONFIG.desertWellReplaceVanilla.get() && biome.is(TerrainTags.Biomes.HAS_DESERT_WELL),
                 GenerationStep.Decoration.SURFACE_STRUCTURES, VANILLA_DESERT_WELL);
 
         // The planted ones go in with the vegetation, after the trees they grow among are standing.

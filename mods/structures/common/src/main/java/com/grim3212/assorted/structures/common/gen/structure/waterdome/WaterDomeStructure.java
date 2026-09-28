@@ -1,5 +1,7 @@
 package com.grim3212.assorted.structures.common.gen.structure.waterdome;
 
+import com.grim3212.assorted.lib.conditions.LibParts;
+import com.grim3212.assorted.structures.Constants;
 import com.grim3212.assorted.structures.StructuresCommonMod;
 import com.grim3212.assorted.structures.common.gen.structure.StructuresTypes;
 import com.grim3212.assorted.structures.common.util.RuinUtil;
@@ -44,7 +46,7 @@ public class WaterDomeStructure extends Structure {
 
     @Override
     public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
-        if (!WaterDomeStructure.extraSpawningChecks(context)) {
+        if (!LibParts.isEnabled(Constants.MOD_ID) || !WaterDomeStructure.extraSpawningChecks(context)) {
             return Optional.empty();
         }
 

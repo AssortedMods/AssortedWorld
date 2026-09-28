@@ -23,5 +23,6 @@ public final class TerrainGameTests {
         WorldgenTests.register(out);
         DesertWellTests.register(out);
         BiomeWoodsTests.register(out);
+        FamilyTests.register(out);
     }
 }

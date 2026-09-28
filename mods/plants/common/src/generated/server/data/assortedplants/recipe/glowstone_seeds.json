@@ -1,5 +1,17 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "assortedplants"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "assortedplants"
+    }
+  ],
   "key": {
     "G": "#c:dusts/glowstone",
     "S": "minecraft:soul_sand"

@@ -18,5 +18,6 @@ public final class FloatingIslandsGameTests {
         WorldgenTests.register(out);
         FloatingIslandTests.register(out);
         CrossLoaderDataTests.register(out);
+        FamilyTests.register(out);
     }
 }

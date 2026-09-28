@@ -3,7 +3,6 @@ package com.grim3212.assorted.portals.common.block;
 import com.grim3212.assorted.lib.registry.IRegistryObject;
 import com.grim3212.assorted.lib.registry.RegistryProvider;
 import com.grim3212.assorted.portals.Constants;
-import com.grim3212.assorted.portals.Family;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -23,8 +22,8 @@ import java.util.function.Supplier;
 
 public class PortalsBlocks {
 
-    public static final RegistryProvider<Block> BLOCKS = RegistryProvider.create(Registries.BLOCK, Constants.MOD_ID).aliasFrom(Family.ID);
-    public static final RegistryProvider<Item> ITEMS = RegistryProvider.create(Registries.ITEM, Constants.MOD_ID).aliasFrom(Family.ID);
+    public static final RegistryProvider<Block> BLOCKS = RegistryProvider.create(Registries.BLOCK, Constants.MOD_ID).aliasFrom(Constants.FAMILY_ID);
+    public static final RegistryProvider<Item> ITEMS = RegistryProvider.create(Registries.ITEM, Constants.MOD_ID).aliasFrom(Constants.FAMILY_ID);
 
     // End stone's hardness, since that is what it is found in; the frame is as hard as obsidian.
     public static final IRegistryObject<Block> VOID_CRYSTAL_ORE = register("void_crystal_ore", props -> new DropExperienceBlock(UniformInt.of(3, 7), props.mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASEDRUM).strength(3.0F, 9.0F).requiresCorrectToolForDrops()));

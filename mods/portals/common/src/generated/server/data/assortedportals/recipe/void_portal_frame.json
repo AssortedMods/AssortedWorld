@@ -1,5 +1,17 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "assortedportals"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "assortedportals"
+    }
+  ],
   "key": {
     "C": "assortedportals:void_crystal",
     "E": "minecraft:ender_eye",

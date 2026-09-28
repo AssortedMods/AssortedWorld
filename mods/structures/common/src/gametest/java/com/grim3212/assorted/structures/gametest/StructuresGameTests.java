@@ -22,5 +22,6 @@ public final class StructuresGameTests {
         WorldgenTests.register(out);
         PyramidTests.register(out);
         WaterDomeTests.register(out);
+        FamilyTests.register(out);
     }
 }
