@@ -56,7 +56,7 @@ public class StructuresLanguageProvider extends LibLanguageProvider {
         this.add("manual.assortedworld.chapter.runes.runes.title", "Runes");
         this.add("manual.assortedworld.chapter.runes.runes",
                 "Runes are carved blocks that hold an effect and hand it to whoever stands or uses them. There are "
-                        + "sixteen, and they are not crafted: every one in the world was placed by a Ancient Structure.");
+                        + "sixteen, and they are not crafted: every one in the world was placed by an Ancient Structure.");
     }
 
     private void addStructuresChapter() {
