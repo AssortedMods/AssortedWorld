@@ -6,7 +6,6 @@
 - Assorted World still includes all of them
 - Each part can be turned off in config/assortedworld-parts.toml
 - Worlds from 9.x keep all your blocks, items, recipes and structures, and chests that were never opened keep their loot
-- Removed the config options for turning glowstone seeds and void portal frames off. Install only the mods you want instead
 - Each mod has its own config file now, so settings from assortedworld-common.toml need setting again
 - Requires Assorted Lib 4.3.0
 
