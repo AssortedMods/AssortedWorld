@@ -1,0 +1,34 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "assortedmachines"
+    },
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "assortedportals"
+    }
+  ],
+  "type": "assortedmachines:grinding_mill",
+  "cookingtime": 600,
+  "experience": 0.3,
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "assortedmachines"
+      ]
+    },
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "assortedportals"
+    }
+  ],
+  "ingredient": {
+    "ingredient": "#c:ores/void_crystal"
+  },
+  "result": {
+    "count": 2,
+    "id": "assortedportals:void_crystal"
+  }
+}

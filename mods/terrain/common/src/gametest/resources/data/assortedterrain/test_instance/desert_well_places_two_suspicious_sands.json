@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedterrain:desert_well_places_two_suspicious_sands",
+  "structure": "assortedterrain:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

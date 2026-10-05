@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedplants:worldgen_datapack_entries_resolve",
+  "structure": "assortedplants:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

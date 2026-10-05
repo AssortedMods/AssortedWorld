@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:function",
-  "environment": "minecraft:default",
-  "function": "assortedworld:added_features_keep_one_order_across_loaders",
-  "structure": "assortedworld:test_box",
-  "max_ticks": 1,
-  "setup_ticks": 0,
-  "required": true
-}

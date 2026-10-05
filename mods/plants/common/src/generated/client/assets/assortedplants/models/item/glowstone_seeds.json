@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "assortedplants:item/glowstone_seeds"
+  }
+}

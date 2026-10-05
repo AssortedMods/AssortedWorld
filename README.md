@@ -1,53 +1,53 @@
 # Assorted World
 
-Contains an assorted group of additions based around world generation to Minecraft.
+Contains an assorted group of additions based around world generation. Each group is also its own mod if you only
+want some of them.
 
-Minecraft 26.2, on both NeoForge and Fabric from a single source tree. Requires
-[Assorted Lib](https://github.com/AssortedMods/AssortedLib). Branches are per Minecraft version; `26.2`
-is the current one.
+- [Assorted World](mods/world) has all of them in one download
+- [Assorted Structures](mods/structures) adds ruins, spires, pyramids, fountains, snowballs, water domes and runes
+- [Assorted Portals](mods/portals) adds void crystal and void portal frames
+- [Assorted Plants](mods/plants) adds gunpowder reed and glowstone seeds
+- [Assorted Floating Islands](mods/floatingislands) adds floating islands
+- [Assorted Terrain](mods/terrain) adds randomite ore, desert wells and more to the landscape
+
+Worlds made with Assorted World 9.x work with any of these.
+
+Requires [Assorted Lib](https://github.com/AssortedMods/AssortedLib). Branches are per Minecraft version and `26.2` is the current one.
 
 ## Issue Reporting
 
 Please include the following
 
 * Minecraft version
-* Loader and its version — NeoForge, or Fabric Loader together with Fabric API
-* Assorted World version
+* NeoForge version, or Fabric Loader and Fabric API versions
+* Which of these mods you have and their versions
 * Assorted Lib version
-* The full `latest.log`, plus the crash report if the game crashed
+* The full `latest.log`, and the crash report if the game crashed
 
 ## Building
 
-JDK 25 and the bundled Gradle wrapper. `common/` holds the loader-agnostic code; both loader
-modules compile those sources inline rather than depending on a common jar, so there is nothing to
-install between them.
+You need JDK 25. Each mod is its own folder under `mods`. The build setup comes from
+[AssortedBuild](https://github.com/AssortedMods/AssortedBuild) and `assortedbuild_version` in `gradle.properties`
+picks the version.
 
-How the build works - the Minecraft and loader versions, the runs, the tests, publishing - lives in
-[AssortedBuild](https://github.com/AssortedMods/AssortedBuild), pinned by `assortedbuild_version` in
-`gradle.properties`. This repository only says what the mod is.
-
-Assorted Lib is consumed as a Maven artifact, so publish it first:
+To build against a local copy of Assorted Lib, publish it first.
 
 ```bash
 cd ../AssortedLib && ./gradlew publishToMavenLocal
 ```
 
-Then from this repository:
+Some useful commands
 
 ```bash
-./gradlew build                        # every module; jars land in <module>/build/libs
-./gradlew :neoforge:runClient
-./gradlew :fabric:runClient
-./gradlew :neoforge:runGameTestServer  # headless gametests, non-zero exit on failure
-./gradlew :fabric:runGameTest
-./gradlew :neoforge:runClientData      # datagen
-./gradlew :neoforge:runServerData
+./gradlew build                                  # build every mod
+./gradlew :structures:neoforge:runClient         # run one mod
+./gradlew :all:neoforge:runClient                # run every mod together
+./gradlew runGameTestServer runGameTest          # gametests on NeoForge and Fabric
+./gradlew runClientData runServerData            # datagen
 ```
 
-Generated resources are committed. The NeoForge datagen writes them for both loaders; they are
-regenerated, never hand-edited.
-`TESTING-CHECKLIST.md` lists the in-game checks the gametests cannot cover.
+Generated resources are committed. The NeoForge datagen writes them for both loaders.
 
 ## License
 
-[LGPL-3.0-only](LICENSE).
+[GPL-3.0-only](LICENSE).

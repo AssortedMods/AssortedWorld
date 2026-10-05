@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "assortedterrain:block/deepslate_randomite_ore"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "links": [
+    {
+      "blocks": [
+        "assortedportals:void_crystal_ore"
+      ],
+      "items": [
+        "assortedportals:void_crystal"
+      ],
+      "page": "assortedworld:end_portals/void_crystal"
+    },
+    {
+      "blocks": [
+        "assortedportals:void_portal_frame"
+      ],
+      "page": "assortedworld:end_portals/frame"
+    },
+    {
+      "blocks": [
+        "assortedportals:ender_flames",
+        "assortedportals:void_portal"
+      ],
+      "items": [
+        "assortedportals:void_striker"
+      ],
+      "page": "assortedworld:end_portals/flames"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "block.assortedplants.glowstone_seeds": "Glowstone Seeds",
+  "block.assortedplants.gunpowder_reed": "Gunpowder Reed",
+  "itemGroup.assortedworld": "Assorted World",
+  "manual.assortedworld.chapter.plants": "Plants",
+  "manual.assortedworld.chapter.plants.glowstone_seeds": "A glowstone seed takes on the underside of a netherrack ceiling and ripens before bursting into a blob of glowstone.",
+  "manual.assortedworld.chapter.plants.glowstone_seeds.title": "Glowstone Seeds",
+  "manual.assortedworld.chapter.plants.gunpowder": "A reed breaks back down into gunpowder one for one.",
+  "manual.assortedworld.chapter.plants.gunpowder.title": "Back to Gunpowder",
+  "manual.assortedworld.chapter.plants.gunpowder_reed": "Gunpowder reed grows like sugar cane and glows faintly. Plant it once and it keeps growing, which turns a one off pile of gunpowder into a supply.",
+  "manual.assortedworld.chapter.plants.gunpowder_reed.title": "Gunpowder Reed",
+  "manual.assortedworld.description": "What this mod buries, builds and grows out in the world, and what is worth going to look for.",
+  "manual.assortedworld.title": "Assorted World"
+}

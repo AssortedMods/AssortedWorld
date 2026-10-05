@@ -1,0 +1,19 @@
+{
+  "feature": "assortedfloatingislands:floating_island",
+  "placement": [
+    {
+      "type": "assortedfloatingislands:config_rarity",
+      "part": "floating_island"
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "MOTION_BLOCKING"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

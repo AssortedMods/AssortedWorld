@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedterrain:added_features_keep_one_order_across_loaders",
+  "structure": "assortedterrain:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

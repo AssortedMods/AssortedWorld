@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedterrain:wood_matches_the_biome_it_stands_in",
+  "structure": "assortedterrain:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

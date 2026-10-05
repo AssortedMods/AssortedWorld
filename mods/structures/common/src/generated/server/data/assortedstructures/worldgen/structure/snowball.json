@@ -1,0 +1,6 @@
+{
+  "type": "assortedstructures:snowball",
+  "biomes": "#assortedstructures:has_structure/snowball",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

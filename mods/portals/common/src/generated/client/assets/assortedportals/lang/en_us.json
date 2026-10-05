@@ -1,0 +1,21 @@
+{
+  "block.assortedportals.ender_flames": "Ender Flames",
+  "block.assortedportals.void_crystal_ore": "Void Crystal Ore",
+  "block.assortedportals.void_portal": "Void Portal",
+  "block.assortedportals.void_portal_frame": "Void Portal Frame",
+  "item.assortedportals.void_crystal": "Void Crystal",
+  "item.assortedportals.void_striker": "Void Striker",
+  "itemGroup.assortedworld": "Assorted World",
+  "manual.assortedworld.chapter.end_portals": "End Portals",
+  "manual.assortedworld.chapter.end_portals.building": "You can place them in an opening of 3x3 to 9x9 on a floor, wall or ceiling. If they are all facing the same way you can construct a End Portal of your own using a Void Striker.",
+  "manual.assortedworld.chapter.end_portals.building.title": "Building a Portal",
+  "manual.assortedworld.chapter.end_portals.flames": "Strike any frame of a finished ring with a void striker and the end portal will open. Ender flames set inside a closed Void Portal Frame ring will also open the portal.\n\nOn end stone the flames will burn forever.",
+  "manual.assortedworld.chapter.end_portals.flames.title": "Ender Flames",
+  "manual.assortedworld.chapter.end_portals.frame": "A void portal frame is an end portal frame you can make yourself. They are very slow to break as you would expect.",
+  "manual.assortedworld.chapter.end_portals.frame.title": "Void Portal Frame",
+  "manual.assortedworld.chapter.end_portals.void_crystal": "Void crystal is found on the End islands. It is quite rare and needs an iron pickaxe level or higher to break.",
+  "manual.assortedworld.chapter.end_portals.void_crystal.title": "Void Crystal",
+  "manual.assortedworld.description": "What this mod buries, builds and grows out in the world, and what is worth going to look for.",
+  "manual.assortedworld.title": "Assorted World",
+  "tag.item.c.ores.void_crystal": "Void Crystal Ores"
+}

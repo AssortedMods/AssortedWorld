@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedportals:ring_with_one_frame_turned_does_not_light",
+  "structure": "assortedportals:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

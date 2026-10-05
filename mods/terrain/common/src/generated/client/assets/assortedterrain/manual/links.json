@@ -1,0 +1,11 @@
+{
+  "links": [
+    {
+      "blocks": [
+        "assortedterrain:randomite_ore",
+        "assortedterrain:deepslate_randomite_ore"
+      ],
+      "page": "assortedworld:randomite/ore"
+    }
+  ]
+}
