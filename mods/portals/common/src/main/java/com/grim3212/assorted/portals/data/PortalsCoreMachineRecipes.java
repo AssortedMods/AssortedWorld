@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.grim3212.assorted.lib.data.CrossLoaderData;
+import com.grim3212.assorted.lib.data.HandWrittenData;
 import com.grim3212.assorted.portals.Constants;
 import com.grim3212.assorted.portals.api.PortalsTags;
 import com.grim3212.assorted.portals.common.item.PortalsItems;
@@ -40,7 +41,7 @@ public class PortalsCoreMachineRecipes implements DataProvider {
         // Two for one, as Core's grinding mill gives for diamond and its own gem ores.
         return CompletableFuture.allOf(
                 DataProvider.saveStable(bothLoaders, grindingMill(oreTag, PortalsItems.VOID_CRYSTAL.getId(), 2, 0.3F), this.recipes.json(id)),
-                DataProvider.saveStable(bothLoaders, unlockAdvancement(id, oreTag), this.advancements.json(id.withPrefix("recipes/"))));
+                DataProvider.saveStable(bothLoaders, HandWrittenData.advancement(unlockAdvancement(id, oreTag)), this.advancements.json(id.withPrefix("recipes/"))));
     }
 
     private static JsonObject grindingMill(String oreTag, Identifier result, int count, float experience) {
