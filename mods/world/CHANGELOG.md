@@ -1,5 +1,12 @@
 # Changelog
 
+## 11.0.0
+
+Updated to Minecraft 26.3, for NeoForge and Fabric.
+
+- Added Dappled Forest floating islands and Poplar stumps and saplings in the Dappled Forest
+- Requires Assorted Lib 5.0.0
+
 ## 10.0.0
 
 - Split into five mods that can also be installed on their own. Assorted Structures, Assorted Portals, Assorted Plants, Assorted Floating Islands and Assorted Terrain
