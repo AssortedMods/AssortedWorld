@@ -1,5 +1,7 @@
 package com.grim3212.assorted.structures.gametest;
 
+import com.grim3212.assorted.structures.Constants;
+import com.grim3212.assorted.lib.test.CommonTests;
 import net.minecraft.gametest.framework.GameTestHelper;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -23,5 +25,6 @@ public final class StructuresGameTests {
         PyramidTests.register(out);
         WaterDomeTests.register(out);
         FamilyTests.register(out);
+        CommonTests.register(out, Constants.MOD_ID);
     }
 }

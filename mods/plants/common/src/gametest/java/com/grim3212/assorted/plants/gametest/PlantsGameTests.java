@@ -1,5 +1,7 @@
 package com.grim3212.assorted.plants.gametest;
 
+import com.grim3212.assorted.plants.Constants;
+import com.grim3212.assorted.lib.test.CommonTests;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 import java.util.function.BiConsumer;
@@ -23,5 +25,6 @@ public final class PlantsGameTests {
         GunpowderReedTests.register(out);
         GlowstoneSeedTests.register(out);
         FamilyTests.register(out);
+        CommonTests.register(out, Constants.MOD_ID);
     }
 }

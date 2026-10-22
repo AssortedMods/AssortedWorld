@@ -1,5 +1,7 @@
 package com.grim3212.assorted.portals.gametest;
 
+import com.grim3212.assorted.portals.Constants;
+import com.grim3212.assorted.lib.test.CommonTests;
 import net.minecraft.gametest.framework.GameTestHelper;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -21,5 +23,6 @@ public final class PortalsGameTests {
         WorldgenTests.register(out);
         EndPortalTests.register(out);
         FamilyTests.register(out);
+        CommonTests.register(out, Constants.MOD_ID);
     }
 }

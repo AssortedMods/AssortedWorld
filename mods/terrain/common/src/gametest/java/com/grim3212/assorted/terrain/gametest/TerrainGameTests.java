@@ -1,5 +1,7 @@
 package com.grim3212.assorted.terrain.gametest;
 
+import com.grim3212.assorted.terrain.Constants;
+import com.grim3212.assorted.lib.test.CommonTests;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 import java.util.function.BiConsumer;
@@ -24,5 +26,6 @@ public final class TerrainGameTests {
         DesertWellTests.register(out);
         BiomeWoodsTests.register(out);
         FamilyTests.register(out);
+        CommonTests.register(out, Constants.MOD_ID);
     }
 }

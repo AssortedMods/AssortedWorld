@@ -8,7 +8,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SugarCaneBlock;
+import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -26,10 +28,28 @@ final class GunpowderReedTests {
 
     static void register(BiConsumer<String, Consumer<GameTestHelper>> out) {
         out.accept("gunpowder_reed_grows_only_on_valid_ground", GunpowderReedTests::gunpowderReedGrowsOnlyOnValidGround);
+        out.accept("gunpowder_reed_tops_out_at_three_and_survives_a_blast", GunpowderReedTests::gunpowderReedTopsOutAtThreeAndSurvivesABlast);
         out.accept("gunpowder_recipes_resolve", GunpowderReedTests::gunpowderRecipesResolve);
     }
 
     /** Gunpowder reed is sugar cane, so it grows on wet sand and dies on anything else. */
+    /** Three tall like sugar cane, and a blast beside a patch leaves it standing, as the site says. */
+    private static void gunpowderReedTopsOutAtThreeAndSurvivesABlast(GameTestHelper helper) {
+        BlockPos sand = CENTRE;
+        helper.setBlock(sand, Blocks.SAND);
+        helper.setBlock(sand.east(), Blocks.WATER);
+        helper.setBlock(sand.above(), PlantsBlocks.GUNPOWDER_REED.get());
+        helper.setBlock(sand.above(2), PlantsBlocks.GUNPOWDER_REED.get());
+        helper.setBlock(sand.above(3), PlantsBlocks.GUNPOWDER_REED.get().defaultBlockState().setValue(SugarCaneBlock.AGE, 15));
+        helper.randomTick(sand.above(3));
+        helper.assertBlockNotPresent(PlantsBlocks.GUNPOWDER_REED.get(), sand.above(4));
+
+        Vec3 blast = Vec3.atCenterOf(helper.absolutePos(sand.above().west(2)));
+        helper.getLevel().explode(null, blast.x, blast.y, blast.z, 3.0F, Level.ExplosionInteraction.TNT);
+        helper.assertBlockPresent(PlantsBlocks.GUNPOWDER_REED.get(), sand.above());
+        helper.succeed();
+    }
+
     private static void gunpowderReedGrowsOnlyOnValidGround(GameTestHelper helper) {
         BlockPos sand = CENTRE;
         BlockPos reed = sand.above();

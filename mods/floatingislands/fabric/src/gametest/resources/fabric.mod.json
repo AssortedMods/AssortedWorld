@@ -12,6 +12,9 @@
   "entrypoints": {
     "main": [
       "com.grim3212.assorted.floatingislands.gametest.FloatingIslandsFabricGameTests"
+    ],
+    "fabric-client-gametest": [
+      "com.grim3212.assorted.floatingislands.gametest.FloatingIslandsClientGameTests"
     ]
   },
   "depends": {

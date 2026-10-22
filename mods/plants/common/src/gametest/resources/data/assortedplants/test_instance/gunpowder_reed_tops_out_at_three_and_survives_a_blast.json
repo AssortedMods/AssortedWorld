@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedplants:gunpowder_reed_tops_out_at_three_and_survives_a_blast",
+  "structure": "assortedplants:test_box",
+  "max_ticks": 40,
+  "setup_ticks": 0,
+  "required": true
+}
