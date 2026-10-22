@@ -1,7 +1,7 @@
 package com.grim3212.assorted.terrain.common.gen.feature;
 
 import com.grim3212.assorted.terrain.api.TerrainLootTables;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -13,9 +13,8 @@ import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -28,7 +27,14 @@ import java.util.List;
  * <p>
  * Where these generate, vanilla's own desert well is taken out unless the config keeps it.
  */
-public class DesertWellFeature extends Feature<NoneFeatureConfiguration> {
+public class DesertWellFeature implements Feature {
+
+    public static final MapCodec<DesertWellFeature> CODEC = MapCodec.unit(DesertWellFeature::new);
+
+    @Override
+    public MapCodec<DesertWellFeature> codec() {
+        return CODEC;
+    }
 
     /** Depth tiers, in blocks. Each has its own loot table, in the same order. */
     private static final List<Integer> DEPTHS = List.of(10, 15, 20, 25, 30);
@@ -39,16 +45,8 @@ public class DesertWellFeature extends Feature<NoneFeatureConfiguration> {
     public static final List<BlockPos> SHAFT_WALL = List.of(new BlockPos(1, 0, 1), new BlockPos(1, 0, -1), new BlockPos(-1, 0, 1), new BlockPos(-1, 0, -1),
             new BlockPos(2, 0, 0), new BlockPos(-2, 0, 0), new BlockPos(0, 0, 2), new BlockPos(0, 0, -2));
 
-    public DesertWellFeature(Codec<NoneFeatureConfiguration> codec) {
-        super(codec);
-    }
-
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        WorldGenLevel level = context.level();
-        RandomSource random = context.random();
-        BlockPos origin = context.origin();
-
+    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
         int tier = random.nextInt(DEPTHS.size());
         int depth = DEPTHS.get(tier);
 

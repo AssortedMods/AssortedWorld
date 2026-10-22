@@ -1,38 +1,36 @@
 package com.grim3212.assorted.terrain.common.gen.feature;
 
 import com.grim3212.assorted.terrain.TerrainCommonMod;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 /**
  * A field of cacti on the sand, spaced two apart so they do not break each other, at the varying
  * heights a cactus grows to.
  */
-public class CactusFieldFeature extends Feature<NoneFeatureConfiguration> {
+public class CactusFieldFeature implements Feature {
+
+    public static final MapCodec<CactusFieldFeature> CODEC = MapCodec.unit(CactusFieldFeature::new);
+
+    @Override
+    public MapCodec<CactusFieldFeature> codec() {
+        return CODEC;
+    }
 
     /** Cacti one block apart damage each other, so every other column gets one. */
     private static final int SPACING = 2;
 
     private static final int MAX_HEIGHT = 3;
 
-    public CactusFieldFeature(Codec<NoneFeatureConfiguration> codec) {
-        super(codec);
-    }
-
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        WorldGenLevel level = context.level();
-        RandomSource random = context.random();
-        BlockPos origin = context.origin();
-
+    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
         int radius = TerrainCommonMod.COMMON_CONFIG.cactusFieldSize.get();
         int planted = 0;
 

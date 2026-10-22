@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "assortedportals:void_crystal_from_grinding_mill"
+        "recipes": "assortedportals:void_crystal_from_grinding_mill"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

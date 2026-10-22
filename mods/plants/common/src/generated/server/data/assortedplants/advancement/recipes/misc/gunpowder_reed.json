@@ -19,7 +19,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "assortedplants:gunpowder_reed"
+        "recipes": "assortedplants:gunpowder_reed"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

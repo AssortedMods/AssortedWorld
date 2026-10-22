@@ -41,7 +41,7 @@ public class StructuresTypes {
         int i = context.chunkPos().getMiddleBlockX();
         int j = context.chunkPos().getMiddleBlockZ();
         int k = context.chunkGenerator().getFirstOccupiedHeight(i, j, type, context.heightAccessor(), context.randomState());
-        Holder<Biome> holder = context.chunkGenerator().getBiomeSource().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j), context.randomState().sampler());
+        Holder<Biome> holder = context.biomeResolver().getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j));
         return context.validBiome().test(holder);
     }
 

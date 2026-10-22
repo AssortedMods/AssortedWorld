@@ -5,7 +5,7 @@ import com.grim3212.assorted.floatingislands.client.data.FloatingIslandsManualPr
 import com.grim3212.assorted.floatingislands.data.FloatingIslandsBiomeTagProvider;
 import com.grim3212.assorted.floatingislands.data.FloatingIslandsGenData;
 import com.grim3212.assorted.lib.data.ForgeBiomeTagProvider;
-import com.grim3212.assorted.lib.data.ForgeDatapackRegistryProvider;
+import com.grim3212.assorted.lib.data.ForgeRegistryEntries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.IEventBus;
@@ -35,10 +35,10 @@ public class AssortedFloatingIslandsNeoForge {
      */
     private void gatherServerData(final GatherDataEvent.Server event) {
         PackOutput packOutput = event.getGenerator().getPackOutput();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getWorldLookupProvider();
 
         event.addProvider(new ForgeBiomeTagProvider(packOutput, lookupProvider, Constants.MOD_ID, new FloatingIslandsBiomeTagProvider(packOutput, lookupProvider)));
-        event.addProvider(new ForgeDatapackRegistryProvider(Constants.MOD_ID, new FloatingIslandsGenData()).datpackEntriesProvider(packOutput, lookupProvider));
+        ForgeRegistryEntries.of(Constants.MOD_ID).world(new FloatingIslandsGenData()).addTo(event);
     }
 
     /** Client datagen: the language file and the manual, written into common for both loaders. */

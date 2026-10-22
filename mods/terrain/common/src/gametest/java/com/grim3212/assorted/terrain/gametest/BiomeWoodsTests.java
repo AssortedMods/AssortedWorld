@@ -33,6 +33,7 @@ final class BiomeWoodsTests {
             Biomes.DARK_FOREST, BiomeWoods.DARK_OAK,
             Biomes.CHERRY_GROVE, BiomeWoods.CHERRY,
             Biomes.PALE_GARDEN, BiomeWoods.PALE_OAK,
+            Biomes.DAPPLED_FOREST, BiomeWoods.POPLAR,
             Biomes.MANGROVE_SWAMP, BiomeWoods.MANGROVE,
             Biomes.BIRCH_FOREST, BiomeWoods.BIRCH);
 

@@ -1,7 +1,6 @@
 package com.grim3212.assorted.portals.common.block;
 
 import com.grim3212.assorted.portals.api.PortalsTags;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -21,15 +20,8 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class EnderFlamesBlock extends BaseFireBlock {
 
-    public static final MapCodec<EnderFlamesBlock> CODEC = simpleCodec(EnderFlamesBlock::new);
-
     public EnderFlamesBlock(BlockBehaviour.Properties properties) {
         super(properties, 1.0F);
-    }
-
-    @Override
-    public MapCodec<EnderFlamesBlock> codec() {
-        return CODEC;
     }
 
     @Override

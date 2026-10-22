@@ -2,7 +2,7 @@ package com.grim3212.assorted.structures.common.gen.feature;
 
 import com.grim3212.assorted.structures.StructuresCommonMod;
 import com.grim3212.assorted.structures.common.block.StructuresBlocks;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -12,10 +12,9 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 
 import java.util.ArrayList;
@@ -29,7 +28,14 @@ import java.util.List;
  * Some also have a block of suspicious sand worked into the plinth, or a single rune buried in the
  * middle of the shaft; both are off by default odds in the config rather than guaranteed.
  */
-public class SandPillarFeature extends Feature<NoneFeatureConfiguration> {
+public class SandPillarFeature implements Feature {
+
+    public static final MapCodec<SandPillarFeature> CODEC = MapCodec.unit(SandPillarFeature::new);
+
+    @Override
+    public MapCodec<SandPillarFeature> codec() {
+        return CODEC;
+    }
 
     private static final int MIN_SHAFT = 4;
     private static final int SHAFT_VARIANCE = 11;
@@ -39,10 +45,6 @@ public class SandPillarFeature extends Feature<NoneFeatureConfiguration> {
 
     /** How deep the plinth reaches down to find solid ground on a slope. */
     private static final int MAX_FOOTING = 4;
-
-    public SandPillarFeature(Codec<NoneFeatureConfiguration> codec) {
-        super(codec);
-    }
 
     /** One family of sandstone blocks: plain, smooth, cut and chiseled, and their slabs. */
     private record Stone(BlockState plain, BlockState smooth, BlockState cut, BlockState chiseled, BlockState plainSlab, BlockState smoothSlab, BlockState cutSlab) {
@@ -91,10 +93,8 @@ public class SandPillarFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        WorldGenLevel level = context.level();
-        RandomSource random = context.random();
-        BlockPos base = context.origin();
+    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
+        BlockPos base = origin;
 
         BlockState ground = level.getBlockState(base.below());
         Stone stone;

@@ -58,6 +58,7 @@ public class TerrainBiomeTagProvider extends LibBiomeTagProvider {
         wood(tagger, BiomeWoods.DARK_OAK).add(Biomes.DARK_FOREST);
         wood(tagger, BiomeWoods.CHERRY).add(Biomes.CHERRY_GROVE);
         wood(tagger, BiomeWoods.PALE_OAK).add(Biomes.PALE_GARDEN);
+        wood(tagger, BiomeWoods.POPLAR).add(Biomes.DAPPLED_FOREST);
         wood(tagger, BiomeWoods.MANGROVE).add(Biomes.MANGROVE_SWAMP);
     }
 

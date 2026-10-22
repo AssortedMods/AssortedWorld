@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.grim3212.assorted.lib.data.LibDatapackRegistryProvider;
 import com.grim3212.assorted.structures.Constants;
 import com.grim3212.assorted.structures.api.StructuresTags;
-import com.grim3212.assorted.structures.common.gen.feature.StructuresFeatures;
+import com.grim3212.assorted.structures.common.gen.feature.RuinFeature;
+import com.grim3212.assorted.structures.common.gen.feature.SandPillarFeature;
+import com.grim3212.assorted.structures.common.gen.feature.SpireFeature;
 import com.grim3212.assorted.structures.common.gen.placement.ConfigRarityFilter;
 import com.grim3212.assorted.structures.common.gen.placement.StructuresPlacements;
 import com.grim3212.assorted.structures.common.gen.structure.fountain.FountainStructure;
@@ -21,8 +23,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
@@ -54,8 +55,8 @@ public class StructuresGenData extends LibDatapackRegistryProvider {
         return ResourceKey.create(Registries.STRUCTURE, key);
     }
 
-    private static ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureResourceKey(Identifier key) {
-        return ResourceKey.create(Registries.CONFIGURED_FEATURE, key);
+    private static ResourceKey<Feature> configuredFeatureResourceKey(Identifier key) {
+        return ResourceKey.create(Registries.FEATURE, key);
     }
 
     private static Map<ResourceKey<Structure>, Structure> getStructures(BootstrapContext<Structure> context) {
@@ -84,12 +85,12 @@ public class StructuresGenData extends LibDatapackRegistryProvider {
         return map;
     }
 
-    private static Map<Identifier, ConfiguredFeature<?, ?>> getConfiguredFeatures() {
-        Map<Identifier, ConfiguredFeature<?, ?>> map = new HashMap<>();
+    private static Map<Identifier, Feature> getConfiguredFeatures() {
+        Map<Identifier, Feature> map = new HashMap<>();
 
-        map.put(RUIN_KEY, new ConfiguredFeature<>(StructuresFeatures.RUIN_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
-        map.put(SPIRE_KEY, new ConfiguredFeature<>(StructuresFeatures.SPIRE_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
-        map.put(SAND_PILLAR_KEY, new ConfiguredFeature<>(StructuresFeatures.SAND_PILLAR_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
+        map.put(RUIN_KEY, new RuinFeature());
+        map.put(SPIRE_KEY, new SpireFeature());
+        map.put(SAND_PILLAR_KEY, new SandPillarFeature());
 
         return map;
     }
@@ -97,7 +98,7 @@ public class StructuresGenData extends LibDatapackRegistryProvider {
     private static Map<Identifier, PlacedFeature> getPlacedFeatures(BootstrapContext<PlacedFeature> context) {
         Map<Identifier, PlacedFeature> map = new HashMap<>();
 
-        HolderGetter<ConfiguredFeature<?, ?>> holderGetter = context.lookup(Registries.CONFIGURED_FEATURE);
+        HolderGetter<Feature> holderGetter = context.lookup(Registries.FEATURE);
 
         map.put(RUIN_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(RUIN_KEY)), heightmapPlacement(350)));
         map.put(SPIRE_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(SPIRE_KEY)), heightmapPlacement(350)));
@@ -120,9 +121,9 @@ public class StructuresGenData extends LibDatapackRegistryProvider {
             });
         });
 
-        builder.add(Registries.CONFIGURED_FEATURE, context -> {
+        builder.add(Registries.FEATURE, context -> {
             StructuresGenData.getConfiguredFeatures().forEach((r, f) -> {
-                context.register(ResourceKey.create(Registries.CONFIGURED_FEATURE, r), f);
+                context.register(ResourceKey.create(Registries.FEATURE, r), f);
             });
         });
 
@@ -135,7 +136,7 @@ public class StructuresGenData extends LibDatapackRegistryProvider {
 
     @Override
     public List<ResourceKey<? extends Registry<?>>> registries() {
-        return Lists.newArrayList(Registries.STRUCTURE, Registries.STRUCTURE_SET, Registries.CONFIGURED_FEATURE, Registries.PLACED_FEATURE);
+        return Lists.newArrayList(Registries.STRUCTURE, Registries.STRUCTURE_SET, Registries.FEATURE, Registries.PLACED_FEATURE);
     }
 
     /**

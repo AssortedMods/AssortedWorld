@@ -27,11 +27,11 @@ public class PortalsBlocks {
 
     // End stone's hardness, since that is what it is found in; the frame is as hard as obsidian.
     public static final IRegistryObject<Block> VOID_CRYSTAL_ORE = register("void_crystal_ore", props -> new DropExperienceBlock(UniformInt.of(3, 7), props.mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASEDRUM).strength(3.0F, 9.0F).requiresCorrectToolForDrops()));
-    public static final IRegistryObject<VoidPortalFrameBlock> VOID_PORTAL_FRAME = register("void_portal_frame", props -> new VoidPortalFrameBlock(props.mapColor(MapColor.COLOR_GREEN).instrument(NoteBlockInstrument.BASEDRUM).sound(SoundType.STONE).lightLevel(state -> 1).strength(50.0F, 1200.0F).requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK)));
+    public static final IRegistryObject<VoidPortalFrameBlock> VOID_PORTAL_FRAME = register("void_portal_frame", props -> new VoidPortalFrameBlock(props.mapColor(MapColor.COLOR_GREEN).instrument(NoteBlockInstrument.BASEDRUM).sound(SoundType.STONE).lightLevel(state -> 1).strength(50.0F, 1200.0F).requiresCorrectToolForDrops().pushReaction(PushReaction.IMMOVEABLE)));
 
-    public static final IRegistryObject<EnderFlamesBlock> ENDER_FLAMES = registerNoItem("ender_flames", props -> new EnderFlamesBlock(props.mapColor(MapColor.COLOR_PURPLE).replaceable().noCollision().instabreak().lightLevel(state -> 10).sound(SoundType.WOOL).pushReaction(PushReaction.DESTROY).noLootTable()));
+    public static final IRegistryObject<EnderFlamesBlock> ENDER_FLAMES = registerNoItem("ender_flames", props -> new EnderFlamesBlock(props.mapColor(MapColor.COLOR_PURPLE).replaceable().noCollision().instabreak().lightLevel(state -> 10).sound(SoundType.WOOL).pushReaction(PushReaction.POPPED).noLootTable()));
 
-    public static final IRegistryObject<VoidPortalBlock> VOID_PORTAL = registerNoItem("void_portal", props -> new VoidPortalBlock(props.mapColor(MapColor.COLOR_BLACK).noCollision().lightLevel(state -> 15).strength(-1.0F, 3600000.0F).noLootTable().pushReaction(PushReaction.BLOCK)));
+    public static final IRegistryObject<VoidPortalBlock> VOID_PORTAL = registerNoItem("void_portal", props -> new VoidPortalBlock(props.mapColor(MapColor.COLOR_BLACK).noCollision().lightLevel(state -> 15).strength(-1.0F, 3600000.0F).noLootTable().pushReaction(PushReaction.IMMOVEABLE)));
 
     private static <T extends Block> IRegistryObject<T> register(String name, Function<BlockBehaviour.Properties, ? extends T> factory) {
         return register(name, factory, block -> item(name, block));

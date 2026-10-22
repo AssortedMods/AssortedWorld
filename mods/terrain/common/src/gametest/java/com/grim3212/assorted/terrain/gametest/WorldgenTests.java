@@ -19,7 +19,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -133,7 +133,7 @@ final class WorldgenTests {
         RegistryAccess registries = helper.getLevel().registryAccess();
         List<String> problems = new ArrayList<>();
 
-        Registry<ConfiguredFeature<?, ?>> configured = registries.lookupOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<Feature> configured = registries.lookupOrThrow(Registries.FEATURE);
         Registry<PlacedFeature> placed = registries.lookupOrThrow(Registries.PLACED_FEATURE);
         for (String name : FEATURES) {
             Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);

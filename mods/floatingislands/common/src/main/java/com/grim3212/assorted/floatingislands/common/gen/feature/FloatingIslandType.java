@@ -11,7 +11,7 @@ import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +36,7 @@ public final class FloatingIslandType {
     private final boolean snowCover;
     private final WeightedList<BlockState> plants;
     private final int plantRate;
-    private final WeightedList<ResourceKey<ConfiguredFeature<?, ?>>> trees;
+    private final WeightedList<ResourceKey<Feature>> trees;
     private final double treesPerColumn;
     private final int treeHeadroom;
     private final TagKey<Biome> biomes;
@@ -119,7 +119,7 @@ public final class FloatingIslandType {
     }
 
     /** A vanilla configured feature to grow: a tree, a huge mushroom, a bush or a fallen log. */
-    public ResourceKey<ConfiguredFeature<?, ?>> tree(RandomSource random) {
+    public ResourceKey<Feature> tree(RandomSource random) {
         return this.trees.getRandomOrThrow(random);
     }
 
@@ -141,7 +141,7 @@ public final class FloatingIslandType {
     }
 
     /** Every tree feature this kind can grow, for checking they all exist. */
-    public List<ResourceKey<ConfiguredFeature<?, ?>>> allTrees() {
+    public List<ResourceKey<Feature>> allTrees() {
         return this.trees.unwrap().stream().map(Weighted::value).toList();
     }
 
@@ -156,7 +156,7 @@ public final class FloatingIslandType {
         private boolean snowCover;
         private final WeightedList.Builder<BlockState> plants = WeightedList.builder();
         private int plantRate = 1;
-        private final WeightedList.Builder<ResourceKey<ConfiguredFeature<?, ?>>> trees = WeightedList.builder();
+        private final WeightedList.Builder<ResourceKey<Feature>> trees = WeightedList.builder();
         private double treesPerColumn;
         private int treeHeadroom;
 
@@ -229,7 +229,7 @@ public final class FloatingIslandType {
 
         /** A vanilla configured feature by its id, like {@code "jungle_tree"}. */
         public Builder tree(String id, int weight) {
-            this.trees.add(ResourceKey.create(Registries.CONFIGURED_FEATURE, Identifier.withDefaultNamespace(id)), weight);
+            this.trees.add(ResourceKey.create(Registries.FEATURE, Identifier.withDefaultNamespace(id)), weight);
             return this;
         }
 

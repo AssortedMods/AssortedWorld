@@ -3,6 +3,8 @@ package com.grim3212.assorted.plants.common.block;
 import com.grim3212.assorted.plants.PlantsCommonMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.features.NetherFeatures;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
@@ -13,14 +15,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.util.Optional;
 
 /**
  * A seed that hangs from a netherrack ceiling and ripens into a blob of glowstone. It grows through
@@ -92,7 +90,9 @@ public class GlowstoneSeedBlock extends Block {
         // The blob feature has to find the spot empty: it only starts from an air block under
         // netherrack, which is exactly where the ripe seed is standing.
         level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-        Feature.GLOWSTONE_BLOB.place(new FeaturePlaceContext<>(Optional.empty(), level, level.getChunkSource().getGenerator(), random, pos, NoneFeatureConfiguration.INSTANCE));
+        // The blob is data in 26.3: vanilla's own glowstone cluster from the nether's ceilings.
+        level.registryAccess().lookupOrThrow(Registries.FEATURE).get(NetherFeatures.GLOWSTONE_EXTRA)
+                .ifPresent(blob -> blob.value().place(level, level.getChunkSource().getGenerator(), random, pos));
     }
 
     @Override

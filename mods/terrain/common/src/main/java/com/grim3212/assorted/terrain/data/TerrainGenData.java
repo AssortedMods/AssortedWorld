@@ -3,8 +3,12 @@ package com.grim3212.assorted.terrain.data;
 import com.google.common.collect.Lists;
 import com.grim3212.assorted.lib.data.LibDatapackRegistryProvider;
 import com.grim3212.assorted.terrain.Constants;
-import com.grim3212.assorted.terrain.common.gen.feature.TerrainFeatures;
+import com.grim3212.assorted.terrain.common.gen.feature.CactusFieldFeature;
+import com.grim3212.assorted.terrain.common.gen.feature.CropFieldFeature;
+import com.grim3212.assorted.terrain.common.gen.feature.DesertWellFeature;
+import com.grim3212.assorted.terrain.common.gen.feature.SandPitFeature;
 import com.grim3212.assorted.terrain.common.gen.feature.TerrainTargets;
+import com.grim3212.assorted.terrain.common.gen.feature.WoodPatchFeature;
 import com.grim3212.assorted.terrain.common.gen.placement.ConfigRarityFilter;
 import com.grim3212.assorted.terrain.common.gen.placement.TerrainPlacements;
 import net.minecraft.core.BlockPos;
@@ -20,13 +24,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
+import net.minecraft.world.level.levelgen.feature.OreFeature;
+import net.minecraft.world.level.levelgen.feature.SimpleBlockFeature;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraft.world.level.levelgen.placement.OffsetPlacement;
 import net.minecraft.world.level.material.Fluids;
 
 import java.util.HashMap;
@@ -45,25 +48,25 @@ public class TerrainGenData extends LibDatapackRegistryProvider {
     public static final Identifier TREE_STUMP_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "tree_stumps");
     public static final Identifier MELON_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "patch_melons");
 
-    private static ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureResourceKey(Identifier key) {
-        return ResourceKey.create(Registries.CONFIGURED_FEATURE, key);
+    private static ResourceKey<Feature> configuredFeatureResourceKey(Identifier key) {
+        return ResourceKey.create(Registries.FEATURE, key);
     }
 
-    private static Map<Identifier, ConfiguredFeature<?, ?>> getConfiguredFeatures() {
-        Map<Identifier, ConfiguredFeature<?, ?>> map = new HashMap<>();
+    private static Map<Identifier, Feature> getConfiguredFeatures() {
+        Map<Identifier, Feature> map = new HashMap<>();
 
-        map.put(RANDOMITE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(TerrainTargets.ORE_RANDOMITE_TARGET_LIST, 8)));
+        map.put(RANDOMITE_KEY, new OreFeature(TerrainTargets.ORE_RANDOMITE_TARGET_LIST, 8));
 
-        map.put(DESERT_WELL_KEY, new ConfiguredFeature<>(TerrainFeatures.DESERT_WELL_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
-        map.put(CROP_FIELD_KEY, new ConfiguredFeature<>(TerrainFeatures.CROP_FIELD_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
-        map.put(CACTUS_FIELD_KEY, new ConfiguredFeature<>(TerrainFeatures.CACTUS_FIELD_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
-        map.put(SAND_PIT_KEY, new ConfiguredFeature<>(TerrainFeatures.SAND_PIT_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
+        map.put(DESERT_WELL_KEY, new DesertWellFeature());
+        map.put(CROP_FIELD_KEY, new CropFieldFeature());
+        map.put(CACTUS_FIELD_KEY, new CactusFieldFeature());
+        map.put(SAND_PIT_KEY, new SandPitFeature());
 
         // Saplings and stumps pick their wood from the biome they land in, which a state provider
         // cannot do, so each is its own feature; the placement below is what makes it a patch.
-        map.put(SAPLING_KEY, new ConfiguredFeature<>(TerrainFeatures.SAPLING_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
-        map.put(TREE_STUMP_KEY, new ConfiguredFeature<>(TerrainFeatures.TREE_STUMP_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
-        map.put(MELON_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.MELON))));
+        map.put(SAPLING_KEY, new WoodPatchFeature(false));
+        map.put(TREE_STUMP_KEY, new WoodPatchFeature(true));
+        map.put(MELON_KEY, new SimpleBlockFeature(BlockStateProvider.of(Blocks.MELON)));
 
         return map;
     }
@@ -71,7 +74,7 @@ public class TerrainGenData extends LibDatapackRegistryProvider {
     private static Map<Identifier, PlacedFeature> getPlacedFeatures(BootstrapContext<PlacedFeature> context) {
         Map<Identifier, PlacedFeature> map = new HashMap<>();
 
-        HolderGetter<ConfiguredFeature<?, ?>> holderGetter = context.lookup(Registries.CONFIGURED_FEATURE);
+        HolderGetter<Feature> holderGetter = context.lookup(Registries.FEATURE);
 
         map.put(RANDOMITE_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(RANDOMITE_KEY)), commonOrePlacement(12, HeightRangePlacement.triangle(VerticalAnchor.BOTTOM, VerticalAnchor.TOP))));
 
@@ -89,9 +92,9 @@ public class TerrainGenData extends LibDatapackRegistryProvider {
 
     @Override
     public void addEntries(RegistrySetBuilder builder) {
-        builder.add(Registries.CONFIGURED_FEATURE, context -> {
+        builder.add(Registries.FEATURE, context -> {
             TerrainGenData.getConfiguredFeatures().forEach((r, f) -> {
-                context.register(ResourceKey.create(Registries.CONFIGURED_FEATURE, r), f);
+                context.register(ResourceKey.create(Registries.FEATURE, r), f);
             });
         });
 
@@ -104,7 +107,7 @@ public class TerrainGenData extends LibDatapackRegistryProvider {
 
     @Override
     public List<ResourceKey<? extends Registry<?>>> registries() {
-        return Lists.newArrayList(Registries.CONFIGURED_FEATURE, Registries.PLACED_FEATURE);
+        return Lists.newArrayList(Registries.FEATURE, Registries.PLACED_FEATURE);
     }
 
     private static List<PlacementModifier> orePlacement(PlacementModifier placement, PlacementModifier modifier) {
@@ -128,7 +131,7 @@ public class TerrainGenData extends LibDatapackRegistryProvider {
      * every attempt gets its own ground height, which is what lets a patch follow a slope.
      */
     private static List<PlacementModifier> scatteredOnGrass(String part, int count) {
-        return List.of(ConfigRarityFilter.onAverageOnceEvery(part), InSquarePlacement.spread(), CountPlacement.of(count), RandomOffsetPlacement.ofTriangle(6, 0), PlacementUtils.HEIGHTMAP_NO_LEAVES,
+        return List.of(ConfigRarityFilter.onAverageOnceEvery(part), InSquarePlacement.spread(), CountPlacement.of(count), OffsetPlacement.ofTriangle(6, 0), PlacementUtils.HEIGHTMAP_NO_LEAVES,
                 BlockPredicateFilter.forPredicate(BlockPredicate.allOf(BlockPredicate.replaceable(), BlockPredicate.matchesFluids(Fluids.EMPTY),
                         BlockPredicate.matchesTag(new BlockPos(0, -1, 0), BlockTags.SUPPORTS_VEGETATION))), BiomeFilter.biome());
     }
@@ -139,7 +142,7 @@ public class TerrainGenData extends LibDatapackRegistryProvider {
      */
     private static List<PlacementModifier> pumpkinStylePatch(String part, int count) {
         return List.of(ConfigRarityFilter.onAverageOnceEvery(part), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome(), CountPlacement.of(count),
-                RandomOffsetPlacement.ofTriangle(7, 3),
-                BlockPredicateFilter.forPredicate(BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.matchesBlocks(new BlockPos(0, -1, 0), Blocks.GRASS_BLOCK))));
+                OffsetPlacement.ofTriangle(7, 3),
+                BlockPredicateFilter.forPredicate(BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.matchesBlocks(new BlockPos(0, -1, 0), List.of(Blocks.GRASS_BLOCK)))));
     }
 }

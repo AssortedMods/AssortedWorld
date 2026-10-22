@@ -1,7 +1,6 @@
 package com.grim3212.assorted.portals.common.block;
 
 import com.grim3212.assorted.portals.common.block.entity.VoidPortalBlockEntity;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -42,7 +41,6 @@ import java.util.Map;
  */
 public class VoidPortalBlock extends BaseEntityBlock implements Portal {
 
-    public static final MapCodec<VoidPortalBlock> CODEC = simpleCodec(VoidPortalBlock::new);
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
     private static final VoxelShape FLAT = Block.column(16.0, 6.0, 12.0);
     private static final Map<Direction.Axis, VoxelShape> UPRIGHT = Shapes.rotateHorizontalAxis(Block.boxZ(16.0, 5.0, 11.0));
@@ -50,11 +48,6 @@ public class VoidPortalBlock extends BaseEntityBlock implements Portal {
     public VoidPortalBlock(BlockBehaviour.Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(AXIS, Direction.Axis.Y));
-    }
-
-    @Override
-    protected MapCodec<VoidPortalBlock> codec() {
-        return CODEC;
     }
 
     @Override

@@ -13,8 +13,8 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.AbstractOreFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,11 +49,11 @@ final class FloatingIslandTests {
      * for them to stand on. Either going wrong is silent: the island just grows nothing.
      */
     private static void floatingIslandTreesExist(GameTestHelper helper) {
-        Registry<ConfiguredFeature<?, ?>> features = helper.getLevel().registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<Feature> features = helper.getLevel().registryAccess().lookupOrThrow(Registries.FEATURE);
         List<String> missing = new ArrayList<>();
 
         for (FloatingIslandType type : FloatingIslandTypes.ALL) {
-            for (ResourceKey<ConfiguredFeature<?, ?>> tree : type.allTrees()) {
+            for (ResourceKey<Feature> tree : type.allTrees()) {
                 if (features.get(tree).isEmpty()) {
                     missing.add(type.name() + " -> " + tree.identifier());
                 }
@@ -65,8 +65,8 @@ final class FloatingIslandTests {
         }
 
         // The ore veins are vanilla features by id too, and a renamed one would just never show.
-        for (ResourceKey<ConfiguredFeature<?, ?>> ore : FloatingIslandFeature.ores()) {
-            if (features.get(ore).filter(feature -> feature.value().config() instanceof OreConfiguration).isEmpty()) {
+        for (ResourceKey<Feature> ore : FloatingIslandFeature.ores()) {
+            if (features.get(ore).filter(feature -> feature.value() instanceof AbstractOreFeature).isEmpty()) {
                 missing.add("ore -> " + ore.identifier() + " (missing, or no longer an ore feature)");
             }
         }

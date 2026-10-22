@@ -5,7 +5,7 @@ import com.grim3212.assorted.portals.client.data.PortalsManualProvider;
 import com.grim3212.assorted.lib.data.ForgeBiomeTagProvider;
 import com.grim3212.assorted.lib.data.ForgeBlockTagProvider;
 import com.grim3212.assorted.lib.data.ForgeItemTagProvider;
-import com.grim3212.assorted.lib.data.ForgeDatapackRegistryProvider;
+import com.grim3212.assorted.lib.data.ForgeRegistryEntries;
 import com.grim3212.assorted.portals.client.data.PortalsBlockstateProvider;
 import com.grim3212.assorted.portals.client.data.PortalsItemModelProvider;
 import com.grim3212.assorted.portals.data.PortalsBiomeTagProvider;
@@ -18,15 +18,12 @@ import com.grim3212.assorted.portals.data.PortalsItemTagProvider;
 import com.grim3212.assorted.portals.data.PortalsRecipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(Constants.MOD_ID)
@@ -49,16 +46,13 @@ public class AssortedPortalsNeoForge {
      */
     private void gatherServerData(final GatherDataEvent.Server event) {
         PackOutput packOutput = event.getGenerator().getPackOutput();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getWorldLookupProvider();
 
         ForgeBlockTagProvider blockTagProvider = event.addProvider(new ForgeBlockTagProvider(packOutput, lookupProvider, Constants.MOD_ID, new PortalsBlockTagProvider(packOutput, lookupProvider)));
         event.addProvider(new ForgeItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter(), Constants.MOD_ID, new PortalsItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter())));
         event.addProvider(new ForgeBiomeTagProvider(packOutput, lookupProvider, Constants.MOD_ID, new PortalsBiomeTagProvider(packOutput, lookupProvider)));
-        // Recipe providers are not data providers any more - the Runner owns the output.
-        event.addProvider(new PortalsRecipes.Runner(packOutput, lookupProvider));
+        ForgeRegistryEntries.of(Constants.MOD_ID).world(new PortalsGenData()).recipes(PortalsRecipes::new).blockLoot(PortalsBlockLoot::new).loot(PortalsChestLoot::new, LootContextParamSets.CHEST).addTo(event);
         event.addProvider(new PortalsCoreMachineRecipes(packOutput));
-        event.addProvider(new LootTableProvider(packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(PortalsBlockLoot::new, LootContextParamSets.BLOCK), new LootTableProvider.SubProviderEntry(PortalsChestLoot::new, LootContextParamSets.CHEST)), lookupProvider));
-        event.addProvider(new ForgeDatapackRegistryProvider(Constants.MOD_ID, new PortalsGenData()).datpackEntriesProvider(packOutput, lookupProvider));
     }
 
     private void gatherClientData(final GatherDataEvent.Client event) {

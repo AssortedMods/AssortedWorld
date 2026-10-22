@@ -7,7 +7,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ final class WorldgenTests {
         List<String> problems = new ArrayList<>();
 
         Identifier id = PortalsGenData.VOID_CRYSTAL_KEY;
-        Registry<ConfiguredFeature<?, ?>> configured = registries.lookupOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<Feature> configured = registries.lookupOrThrow(Registries.FEATURE);
         Registry<PlacedFeature> placed = registries.lookupOrThrow(Registries.PLACED_FEATURE);
         if (configured.getValue(id) == null) {
             problems.add("configured feature " + id + " is not in the registry");

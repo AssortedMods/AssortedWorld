@@ -69,7 +69,7 @@ public class PortalsCoreMachineRecipes implements DataProvider {
         items.add(item);
         JsonObject hasIngredient = criterion("minecraft:inventory_changed", "items", items);
 
-        JsonObject hasRecipe = criterion("minecraft:recipe_unlocked", "recipe", new JsonPrimitive(recipe.toString()));
+        JsonObject hasRecipe = criterion("minecraft:recipe_unlocked", "recipes", new JsonPrimitive(recipe.toString()));
 
         JsonObject criteria = new JsonObject();
         criteria.add("has_ingredient", hasIngredient);

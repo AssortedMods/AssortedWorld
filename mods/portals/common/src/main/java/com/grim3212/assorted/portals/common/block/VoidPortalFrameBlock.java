@@ -1,6 +1,5 @@
 package com.grim3212.assorted.portals.common.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -27,7 +26,6 @@ import java.util.Map;
  */
 public class VoidPortalFrameBlock extends Block {
 
-    public static final MapCodec<VoidPortalFrameBlock> CODEC = simpleCodec(VoidPortalFrameBlock::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     // Vanilla's filled frame turned so its eye points north.
     private static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateAll(Shapes.or(Block.boxZ(16.0, 3.0, 16.0), Block.boxZ(8.0, 0.0, 3.0)));
@@ -35,11 +33,6 @@ public class VoidPortalFrameBlock extends Block {
     public VoidPortalFrameBlock(BlockBehaviour.Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.UP));
-    }
-
-    @Override
-    public MapCodec<VoidPortalFrameBlock> codec() {
-        return CODEC;
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.grim3212.assorted.structures.common.gen.feature;
 import com.grim3212.assorted.structures.StructuresCommonMod;
 import com.grim3212.assorted.structures.api.StructuresLootTables;
 import com.grim3212.assorted.structures.common.util.RuinUtil;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -16,12 +16,18 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class RuinFeature extends Feature<NoneFeatureConfiguration> {
+public class RuinFeature implements Feature {
+
+    public static final MapCodec<RuinFeature> CODEC = MapCodec.unit(RuinFeature::new);
+
+    @Override
+    public MapCodec<RuinFeature> codec() {
+        return CODEC;
+    }
 
     /**
      * Per-ruin state, created fresh in {@link #place}: a feature is a singleton shared across
@@ -45,15 +51,10 @@ public class RuinFeature extends Feature<NoneFeatureConfiguration> {
         }
     }
 
-    public RuinFeature(Codec<NoneFeatureConfiguration> codec) {
-        super(codec);
-    }
-
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        RandomSource rand = context.random();
-        BlockPos pos = context.origin();
-        WorldGenLevel level = context.level();
+    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
+        RandomSource rand = random;
+        BlockPos pos = origin;
 
         int radius = 3 + rand.nextInt(5);
         int skip = rand.nextInt(4);

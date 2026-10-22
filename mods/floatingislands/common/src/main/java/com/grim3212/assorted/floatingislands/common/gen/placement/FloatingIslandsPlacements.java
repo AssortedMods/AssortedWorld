@@ -4,8 +4,9 @@ import com.grim3212.assorted.lib.registry.IRegistryObject;
 import com.grim3212.assorted.lib.registry.RegistryProvider;
 import com.grim3212.assorted.floatingislands.Constants;
 import com.grim3212.assorted.floatingislands.FloatingIslandsCommonMod;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,9 +18,9 @@ import java.util.function.Supplier;
  */
 public class FloatingIslandsPlacements {
 
-    public static final RegistryProvider<PlacementModifierType<?>> PLACEMENT_MODIFIER_TYPES = RegistryProvider.create(Registries.PLACEMENT_MODIFIER_TYPE, Constants.MOD_ID);
+    public static final RegistryProvider<MapCodec<? extends PlacementModifier>> PLACEMENT_MODIFIER_TYPES = RegistryProvider.create(Registries.PLACEMENT_MODIFIER_TYPE, Constants.MOD_ID);
 
-    public static final IRegistryObject<PlacementModifierType<ConfigRarityFilter>> CONFIG_RARITY = PLACEMENT_MODIFIER_TYPES.register("config_rarity", () -> () -> ConfigRarityFilter.CODEC);
+    public static final IRegistryObject<MapCodec<? extends PlacementModifier>> CONFIG_RARITY = PLACEMENT_MODIFIER_TYPES.register("config_rarity", () -> ConfigRarityFilter.CODEC);
 
     public static class Parts {
         public static final String FLOATING_ISLAND = "floating_island";

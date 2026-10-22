@@ -110,8 +110,8 @@ public final class FloatingIslandShape {
                 }
 
                 // Broad lumps and a little finer detail on top of them.
-                double edge = (rim.getValue(x * lumpFrequency, z * lumpFrequency) * 0.75D)
-                        + (rim.getValue((x * lumpFrequency * 2.3D) + 31.7D, (z * lumpFrequency * 2.3D) - 17.3D) * 0.25D);
+                double edge = (rim.get(x * lumpFrequency, z * lumpFrequency) * 0.75D)
+                        + (rim.get((x * lumpFrequency * 2.3D) + 31.7D, (z * lumpFrequency * 2.3D) - 17.3D) * 0.25D);
                 strength += edge * RIM_NOISE;
                 if (strength <= 0.0D) {
                     continue;
@@ -119,7 +119,7 @@ public final class FloatingIslandShape {
                 double t = Math.min(1.0D, strength);
 
                 // A low dome with hills on it. Both fade out towards the rim so the edge stays low.
-                double hill = (hills.getValue(x * hillFrequency, z * hillFrequency) + 1.0D) / 2.0D;
+                double hill = (hills.get(x * hillFrequency, z * hillFrequency) + 1.0D) / 2.0D;
                 int rise = (int) Math.round(Math.pow(t, 0.7D) * hillHeight * (0.35D + (0.65D * hill)));
                 if (t < 0.12D) {
                     // The outermost ring crumbles a block below the rest of the rim.
@@ -127,10 +127,10 @@ public final class FloatingIslandShape {
                 }
 
                 // A bowl, deepest under the strongest part of each lobe and uneven across it.
-                double sag = (hang.getValue(x * hillFrequency, z * hillFrequency) + 1.0D) / 2.0D;
+                double sag = (hang.get(x * hillFrequency, z * hillFrequency) + 1.0D) / 2.0D;
                 int depth = (int) Math.round(Math.sqrt(t) * size * strongest.depthScale() * (0.7D + (0.5D * sag)));
 
-                double drip = drips.getValue(x * DRIP_FREQUENCY, z * DRIP_FREQUENCY);
+                double drip = drips.get(x * DRIP_FREQUENCY, z * DRIP_FREQUENCY);
                 if (t > 0.25D && drip > DRIP_THRESHOLD) {
                     depth += (int) Math.round(((drip - DRIP_THRESHOLD) / (1.0D - DRIP_THRESHOLD)) * size * 0.6D);
                 }

@@ -40,6 +40,7 @@ public class FloatingIslandsBiomeTagProvider extends LibBiomeTagProvider {
         island(tagger, FloatingIslandTypes.CHERRY).add(Biomes.CHERRY_GROVE, Biomes.MEADOW);
         island(tagger, FloatingIslandTypes.DARK_FOREST).add(Biomes.DARK_FOREST);
         island(tagger, FloatingIslandTypes.PALE_GARDEN).add(Biomes.PALE_GARDEN, Biomes.DARK_FOREST);
+        island(tagger, FloatingIslandTypes.DAPPLED_FOREST).add(Biomes.DAPPLED_FOREST);
 
         island(tagger, FloatingIslandTypes.SNOWY).addOptionalTag(LibCommonTags.Biomes.IS_SNOWY);
         island(tagger, FloatingIslandTypes.TAIGA).addOptionalTag(BiomeTags.IS_TAIGA).add(Biomes.WINDSWEPT_FOREST, Biomes.GROVE);

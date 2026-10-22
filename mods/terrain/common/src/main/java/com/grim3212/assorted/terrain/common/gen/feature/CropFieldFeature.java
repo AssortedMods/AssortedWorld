@@ -1,7 +1,7 @@
 package com.grim3212.assorted.terrain.common.gen.feature;
 
 import com.grim3212.assorted.terrain.TerrainCommonMod;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -10,10 +10,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.FarmlandBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,7 +28,14 @@ import java.util.Set;
  * One crop per field, so a field reads as a field of something rather than a seed drawer emptied
  * over a hillside.
  */
-public class CropFieldFeature extends Feature<NoneFeatureConfiguration> {
+public class CropFieldFeature implements Feature {
+
+    public static final MapCodec<CropFieldFeature> CODEC = MapCodec.unit(CropFieldFeature::new);
+
+    @Override
+    public MapCodec<CropFieldFeature> codec() {
+        return CODEC;
+    }
 
     /** The crops a wild field can be. Each carries its own age range, so beetroot tops out at 3. */
     private static final List<CropBlock> CROPS = List.of((CropBlock) Blocks.WHEAT, (CropBlock) Blocks.CARROTS, (CropBlock) Blocks.POTATOES, (CropBlock) Blocks.BEETROOTS);
@@ -40,16 +46,8 @@ public class CropFieldFeature extends Feature<NoneFeatureConfiguration> {
      */
     private static final int WATER_REACH = 4;
 
-    public CropFieldFeature(Codec<NoneFeatureConfiguration> codec) {
-        super(codec);
-    }
-
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        WorldGenLevel level = context.level();
-        RandomSource random = context.random();
-        BlockPos origin = context.origin();
-
+    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
         // Keyed by column so the watering pass can look a neighbour up without walking the field.
         Map<Long, BlockPos> field = tillable(level, origin, TerrainCommonMod.COMMON_CONFIG.cropFieldSize.get());
         if (field.isEmpty()) {

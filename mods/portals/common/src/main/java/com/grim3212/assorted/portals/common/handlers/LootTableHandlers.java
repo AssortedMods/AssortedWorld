@@ -16,7 +16,7 @@ public class LootTableHandlers {
         }
 
         if (event.getId().equals(BuiltInLootTables.END_CITY_TREASURE.identifier())) {
-            event.getContext().addPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(PortalsLootTables.INJECT_END_CITY_TREASURE)));
+            event.getContext().addPool(LootPool.lootPool().add(NestedLootTable.lootTableReference(event.getContext().lootTable(PortalsLootTables.INJECT_END_CITY_TREASURE))));
         }
     }
 }

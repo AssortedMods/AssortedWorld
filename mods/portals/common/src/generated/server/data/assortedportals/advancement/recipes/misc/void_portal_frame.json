@@ -9,7 +9,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "assortedportals:void_portal_frame"
+        "recipes": "assortedportals:void_portal_frame"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

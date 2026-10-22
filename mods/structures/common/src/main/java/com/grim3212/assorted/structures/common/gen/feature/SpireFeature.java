@@ -2,7 +2,7 @@ package com.grim3212.assorted.structures.common.gen.feature;
 
 import com.grim3212.assorted.structures.StructuresCommonMod;
 import com.grim3212.assorted.structures.common.util.RuinUtil;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
@@ -10,13 +10,19 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.material.FluidState;
 
-public class SpireFeature extends Feature<NoneFeatureConfiguration> {
+public class SpireFeature implements Feature {
+
+    public static final MapCodec<SpireFeature> CODEC = MapCodec.unit(SpireFeature::new);
+
+    @Override
+    public MapCodec<SpireFeature> codec() {
+        return CODEC;
+    }
 
     private int radius;
     private int height;
@@ -24,15 +30,10 @@ public class SpireFeature extends Feature<NoneFeatureConfiguration> {
     private boolean deathSpire;
     private boolean runePlaced;
 
-    public SpireFeature(Codec<NoneFeatureConfiguration> codec) {
-        super(codec);
-    }
-
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        RandomSource rand = context.random();
-        BlockPos pos = context.origin();
-        WorldGenLevel level = context.level();
+    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
+        RandomSource rand = random;
+        BlockPos pos = origin;
 
         radius = 2;
         if (StructuresCommonMod.COMMON_CONFIG.spireRadius.get() > 2) {

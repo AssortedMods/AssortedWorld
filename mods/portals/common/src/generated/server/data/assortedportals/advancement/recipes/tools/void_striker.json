@@ -9,7 +9,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "assortedportals:void_striker"
+        "recipes": "assortedportals:void_striker"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

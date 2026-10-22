@@ -1,34 +1,34 @@
 package com.grim3212.assorted.terrain.common.gen.feature;
 
 import com.grim3212.assorted.terrain.TerrainCommonMod;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 /**
  * A funnel dug into the desert in stepped terraces, deepest in the middle. The floor of each terrace
  * is sand, and anything left hanging over it is cleared away.
  */
-public class SandPitFeature extends Feature<NoneFeatureConfiguration> {
+public class SandPitFeature implements Feature {
+
+    public static final MapCodec<SandPitFeature> CODEC = MapCodec.unit(SandPitFeature::new);
+
+    @Override
+    public MapCodec<SandPitFeature> codec() {
+        return CODEC;
+    }
 
     /** How far each terrace drops below the one outside it. */
     private static final int STEP = 3;
 
-    public SandPitFeature(Codec<NoneFeatureConfiguration> codec) {
-        super(codec);
-    }
-
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        WorldGenLevel level = context.level();
-        BlockPos origin = context.origin();
-
+    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
         int radius = TerrainCommonMod.COMMON_CONFIG.sandPitSize.get();
 
         // The middle terrace, two blocks of radius per terrace.

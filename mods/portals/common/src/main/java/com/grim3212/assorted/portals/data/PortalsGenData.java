@@ -12,9 +12,8 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.OreFeature;
 import net.minecraft.world.level.levelgen.placement.*;
 
 import java.util.HashMap;
@@ -25,15 +24,15 @@ public class PortalsGenData extends LibDatapackRegistryProvider {
 
     public static final Identifier VOID_CRYSTAL_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "ore_void_crystal");
 
-    private static ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureResourceKey(Identifier key) {
-        return ResourceKey.create(Registries.CONFIGURED_FEATURE, key);
+    private static ResourceKey<Feature> configuredFeatureResourceKey(Identifier key) {
+        return ResourceKey.create(Registries.FEATURE, key);
     }
 
-    private static Map<Identifier, ConfiguredFeature<?, ?>> getConfiguredFeatures() {
-        Map<Identifier, ConfiguredFeature<?, ?>> map = new HashMap<>();
+    private static Map<Identifier, Feature> getConfiguredFeatures() {
+        Map<Identifier, Feature> map = new HashMap<>();
 
         // Rarer than diamond; a fifth of what would show on an island surface is left out.
-        map.put(VOID_CRYSTAL_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(PortalsTargets.ORE_VOID_CRYSTAL_TARGET_LIST, 4, 0.2F)));
+        map.put(VOID_CRYSTAL_KEY, new OreFeature(PortalsTargets.ORE_VOID_CRYSTAL_TARGET_LIST, 4, 0.2F));
 
         return map;
     }
@@ -41,7 +40,7 @@ public class PortalsGenData extends LibDatapackRegistryProvider {
     private static Map<Identifier, PlacedFeature> getPlacedFeatures(BootstrapContext<PlacedFeature> context) {
         Map<Identifier, PlacedFeature> map = new HashMap<>();
 
-        HolderGetter<ConfiguredFeature<?, ?>> holderGetter = context.lookup(Registries.CONFIGURED_FEATURE);
+        HolderGetter<Feature> holderGetter = context.lookup(Registries.FEATURE);
 
         // The outer islands' end stone sits between about y 0 and 80; most attempts land in the void.
         map.put(VOID_CRYSTAL_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(VOID_CRYSTAL_KEY)), commonOrePlacement(4, HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(80)))));
@@ -51,9 +50,9 @@ public class PortalsGenData extends LibDatapackRegistryProvider {
 
     @Override
     public void addEntries(RegistrySetBuilder builder) {
-        builder.add(Registries.CONFIGURED_FEATURE, context -> {
+        builder.add(Registries.FEATURE, context -> {
             PortalsGenData.getConfiguredFeatures().forEach((r, f) -> {
-                context.register(ResourceKey.create(Registries.CONFIGURED_FEATURE, r), f);
+                context.register(ResourceKey.create(Registries.FEATURE, r), f);
             });
         });
 
@@ -66,7 +65,7 @@ public class PortalsGenData extends LibDatapackRegistryProvider {
 
     @Override
     public List<ResourceKey<? extends Registry<?>>> registries() {
-        return Lists.newArrayList(Registries.CONFIGURED_FEATURE, Registries.PLACED_FEATURE);
+        return Lists.newArrayList(Registries.FEATURE, Registries.PLACED_FEATURE);
     }
 
     private static List<PlacementModifier> orePlacement(PlacementModifier placement, PlacementModifier modifier) {

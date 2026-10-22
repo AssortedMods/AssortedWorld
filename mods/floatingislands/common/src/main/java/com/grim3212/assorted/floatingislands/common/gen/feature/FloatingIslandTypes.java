@@ -54,6 +54,12 @@ public final class FloatingIslandTypes {
             .trees(0.04D, 14).tree("pale_oak", 1)
             .build();
 
+    public static final FloatingIslandType DAPPLED_FOREST = FloatingIslandType.builder("dappled_forest", 15)
+            .cover(Blocks.GRASS_BLOCK).filler(Blocks.DIRT).core(Blocks.STONE)
+            .plantRate(4).plant(Blocks.SHORT_GRASS, 6).plant(Blocks.LEAF_LITTER, 3).plant(Blocks.BUSH, 1).plant(Blocks.BROWN_MUSHROOM, 1)
+            .trees(0.04D, 14).tree("red_poplar_leaf_litter", 4).tree("orange_poplar_leaf_litter", 5).tree("yellow_poplar_leaf_litter", 2).tree("fallen_poplar_tree", 2)
+            .build();
+
     // Cold.
 
     public static final FloatingIslandType SNOWY = FloatingIslandType.builder("snowy", 30)
@@ -135,7 +141,7 @@ public final class FloatingIslandTypes {
             .trees(0.04D, 14).tree("huge_red_mushroom", 1).tree("huge_brown_mushroom", 1)
             .build();
 
-    public static final List<FloatingIslandType> ALL = List.of(MEADOW, FOREST, CHERRY, DARK_FOREST, PALE_GARDEN, SNOWY, TAIGA, GLACIER, ROCKY, DESERT, SAVANNA, BADLANDS,
+    public static final List<FloatingIslandType> ALL = List.of(MEADOW, FOREST, CHERRY, DARK_FOREST, PALE_GARDEN, DAPPLED_FOREST, SNOWY, TAIGA, GLACIER, ROCKY, DESERT, SAVANNA, BADLANDS,
             JUNGLE, SWAMP, MANGROVE, LUSH, MUSHROOM);
 
     /** The kinds that fit a biome, or the fallback kinds if none name it. */

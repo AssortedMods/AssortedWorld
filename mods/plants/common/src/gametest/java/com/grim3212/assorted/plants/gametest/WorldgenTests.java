@@ -6,7 +6,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.function.BiConsumer;
@@ -30,7 +30,7 @@ final class WorldgenTests {
     /** The reed patch is in the loaded datapack; a misrouted datagen run prunes its json silently. */
     private static void worldgenDatapackEntriesResolve(GameTestHelper helper) {
         RegistryAccess registries = helper.getLevel().registryAccess();
-        Registry<ConfiguredFeature<?, ?>> configured = registries.lookupOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<Feature> configured = registries.lookupOrThrow(Registries.FEATURE);
         Registry<PlacedFeature> placed = registries.lookupOrThrow(Registries.PLACED_FEATURE);
 
         helper.assertTrue(configured.getValue(PlantsGenData.GUNPOWDER_REED_KEY) != null, "configured feature " + PlantsGenData.GUNPOWDER_REED_KEY + " is not in the registry");

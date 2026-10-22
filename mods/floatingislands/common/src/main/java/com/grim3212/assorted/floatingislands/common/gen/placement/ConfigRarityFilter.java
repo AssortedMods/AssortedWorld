@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementFilter;
-import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 /**
  * Vanilla's {@link net.minecraft.world.level.levelgen.placement.RarityFilter} with the chance read
@@ -14,7 +13,7 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
  * turned off (rarity 0) without a datapack. The json only names the part; {@link FloatingIslandsPlacements}
  * maps that to the config value.
  */
-public class ConfigRarityFilter extends PlacementFilter {
+public class ConfigRarityFilter implements PlacementFilter {
 
     public static final MapCodec<ConfigRarityFilter> CODEC = Codec.STRING.fieldOf("part").xmap(ConfigRarityFilter::new, filter -> filter.part);
 
@@ -29,7 +28,7 @@ public class ConfigRarityFilter extends PlacementFilter {
     }
 
     @Override
-    protected boolean shouldPlace(PlacementContext context, RandomSource random, BlockPos origin) {
+    public boolean shouldPlace(PlacementContext context, RandomSource random, BlockPos origin) {
         int rarity = FloatingIslandsPlacements.rarity(this.part);
 
         // 0 is off, and so is a part name no config value was registered for - a datapack naming one
@@ -38,7 +37,7 @@ public class ConfigRarityFilter extends PlacementFilter {
     }
 
     @Override
-    public PlacementModifierType<?> type() {
-        return FloatingIslandsPlacements.CONFIG_RARITY.get();
+    public MapCodec<ConfigRarityFilter> codec() {
+        return CODEC;
     }
 }
