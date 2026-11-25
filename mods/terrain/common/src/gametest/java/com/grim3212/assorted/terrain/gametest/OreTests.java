@@ -3,6 +3,7 @@ package com.grim3212.assorted.terrain.gametest;
 import com.grim3212.assorted.terrain.common.block.TerrainBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.item.ItemStack;
@@ -10,6 +11,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -53,7 +56,8 @@ final class OreTests {
      */
     private static void randomiteOreDropsExperience(GameTestHelper helper) {
         // Items are measured as deltas, counted by stack size so a merge cannot hide a drop. Orbs are
-        // removed after each ore instead: an orb that merges into an equal one only bumps a private count.
+        // removed after each ore, and each is counted with its merged count, as an ore rolling 2 drops two orbs of 1
+        // that can merge into one.
         int itemsSoFar = 0;
 
         for (Block ore : List.of(TerrainBlocks.RANDOMITE_ORE.get(), TerrainBlocks.DEEPSLATE_RANDOMITE_ORE.get())) {
@@ -69,11 +73,18 @@ final class OreTests {
             itemsSoFar = items;
 
             List<ExperienceOrb> orbs = helper.getEntities(EntityTypes.EXPERIENCE_ORB);
-            int dropped = orbs.stream().mapToInt(ExperienceOrb::getValue).sum();
+            int dropped = orbs.stream().mapToInt(orb -> experienceIn(helper, orb)).sum();
             helper.assertTrue(dropped >= 2 && dropped <= 5, name + " dropped " + dropped + " experience, not the 2-5 it is registered with");
             orbs.forEach(ExperienceOrb::discard);
         }
 
         helper.succeed();
+    }
+
+    /** The experience an orb holds: vanilla merges a new orb of the same value into an old one by bumping a count it keeps private, which a save shows. */
+    private static int experienceIn(GameTestHelper helper, ExperienceOrb orb) {
+        TagValueOutput output = TagValueOutput.createWithContext(new ProblemReporter.Collector(), helper.getLevel().registryAccess());
+        orb.saveWithoutId(output);
+        return orb.getValue() * Math.max(output.buildResult().getIntOr("Count", 1), 1);
     }
 }
