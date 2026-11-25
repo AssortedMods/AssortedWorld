@@ -79,7 +79,7 @@ public class SpireFeature extends Feature<NoneFeatureConfiguration> {
                     }
                     if (distance > spire.radius && rand.nextInt(4) == 1) {
                         fillWater(spire, level, newPos);
-                        clearArea(spire, level, rand, newPos);
+                        raiseGround(spire, level, rand, newPos);
                     }
                 }
             }
@@ -217,7 +217,8 @@ public class SpireFeature extends Feature<NoneFeatureConfiguration> {
         }
     }
 
-    private void clearArea(Spire spire, WorldGenLevel level, RandomSource random, BlockPos pos) {
+    /** Raises the ground beside a spire up to its base with dirt and stone, or netherrack for a death spire. */
+    private void raiseGround(Spire spire, WorldGenLevel level, RandomSource random, BlockPos pos) {
         int startY = pos.getY();
 
         for (pos = level.getHeightmapPos(Types.WORLD_SURFACE_WG, pos); pos.getY() < startY; pos = pos.above()) {
@@ -242,15 +243,6 @@ public class SpireFeature extends Feature<NoneFeatureConfiguration> {
             }
             if (blockType == 0) {
                 level.setBlock(pos, Blocks.DIRT.defaultBlockState(), 2);
-            }
-        }
-        if (pos.getY() > startY + 7) {
-            pos = new BlockPos(pos.getX(), startY, pos.getZ());
-        }
-
-        for (int off = 0; off < spire.height; off++) {
-            if (!level.isEmptyBlock(pos.above(off))) {
-                level.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
             }
         }
     }
