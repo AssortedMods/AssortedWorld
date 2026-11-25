@@ -21,6 +21,7 @@ public final class StructuresGameTests {
         AliasTests.register(out);
         CrossLoaderDataTests.register(out);
         RuneTests.register(out);
+        SpireTests.register(out);
         WorldgenTests.register(out);
         PyramidTests.register(out);
         WaterDomeTests.register(out);

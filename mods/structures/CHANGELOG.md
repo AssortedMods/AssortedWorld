@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1
+
+- Every spire can have a rune, not only the first one generated after the server starts
+- Spires generated at the same time no longer mix up each other's size and shape
+- The rare lava in a death spire's tower is placed in the tower instead of at its base
+
 ## 2.0.0
 
 Updated to Minecraft 26.3, for NeoForge and Fabric.

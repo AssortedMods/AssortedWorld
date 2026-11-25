@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedportals:floor_portal_sends_a_mob_to_the_end",
+  "structure": "assortedportals:test_box",
+  "max_ticks": 2400,
+  "setup_ticks": 0,
+  "required": true
+}

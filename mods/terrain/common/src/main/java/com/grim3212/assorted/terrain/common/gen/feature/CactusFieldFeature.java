@@ -3,6 +3,7 @@ package com.grim3212.assorted.terrain.common.gen.feature;
 import com.grim3212.assorted.terrain.TerrainCommonMod;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
@@ -31,12 +32,21 @@ public class CactusFieldFeature implements Feature {
 
     @Override
     public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
-        int radius = TerrainCommonMod.COMMON_CONFIG.cactusFieldSize.get();
+        return placeField(level, random, origin, TerrainCommonMod.COMMON_CONFIG.cactusFieldSize.get());
+    }
+
+    /** A field of the given radius; public so a gametest can try the largest one the config allows. */
+    public static boolean placeField(WorldGenLevel level, RandomSource random, BlockPos origin, int radius) {
         int planted = 0;
 
         for (int x = -radius; x <= radius; x += SPACING) {
             for (int z = -radius; z <= radius; z += SPACING) {
                 if ((x * x) + (z * z) > radius * radius || random.nextInt(4) == 0) {
+                    continue;
+                }
+                // The config allows a radius of 20, further than the 16 blocks past its own chunk a
+                // feature may read and write; the generator throws on a read outside that.
+                if (!inReach(origin, x, z)) {
                     continue;
                 }
 
@@ -57,5 +67,11 @@ public class CactusFieldFeature implements Feature {
         }
 
         return planted > 0;
+    }
+
+    /** Whether a column is in the origin's chunk or one of its eight neighbours, all a feature may touch. */
+    private static boolean inReach(BlockPos origin, int x, int z) {
+        return Math.abs(SectionPos.blockToSectionCoord(origin.getX() + x) - SectionPos.blockToSectionCoord(origin.getX())) <= 1
+                && Math.abs(SectionPos.blockToSectionCoord(origin.getZ() + z) - SectionPos.blockToSectionCoord(origin.getZ())) <= 1;
     }
 }

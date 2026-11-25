@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+
+- A cactus field size above 16 no longer crashes world generation; a large field stops at the chunks next to its own
+
 ## 2.0.0
 
 Updated to Minecraft 26.3, for NeoForge and Fabric.
