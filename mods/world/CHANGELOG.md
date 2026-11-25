@@ -1,5 +1,11 @@
 # Changelog
 
+## 11.0.1
+
+- Includes Assorted Structures 2.0.1 and Assorted Terrain 2.0.1, so every spire can have a rune, spires
+  generated at the same time keep their own size and shape, death spires place their lava in the tower, and a
+  cactus field size above 16 no longer crashes world generation
+
 ## 11.0.0
 
 Updated to Minecraft 26.3, for NeoForge and Fabric.

@@ -4,6 +4,11 @@ import com.grim3212.assorted.structures.Constants;
 import com.grim3212.assorted.structures.api.StructuresLootTables;
 import com.grim3212.assorted.structures.common.gen.placement.ConfigRarityFilter;
 import com.grim3212.assorted.structures.common.gen.placement.StructuresPlacements;
+import com.grim3212.assorted.structures.common.gen.structure.fountain.FountainPiece;
+import com.grim3212.assorted.structures.common.gen.structure.pyramid.PyramidPiece;
+import com.grim3212.assorted.structures.common.gen.structure.snowball.SnowballPiece;
+import com.grim3212.assorted.structures.common.gen.structure.waterdome.WaterDomePiece;
+import com.grim3212.assorted.structures.common.gen.structure.waterdome.WaterDomeType;
 import com.grim3212.assorted.structures.common.util.RuinUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -12,16 +17,20 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.ReloadableServerRegistries;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -91,6 +100,48 @@ final class WorldgenTests {
         out.accept("mod_features_are_attached_to_biomes", WorldgenTests::modFeaturesAreAttachedToBiomes);
         out.accept("config_rarity_gates_the_new_features", WorldgenTests::configRarityGatesTheNewFeatures);
         out.accept("added_features_keep_one_order_across_loaders", WorldgenTests::addedFeaturesKeepOneOrderAcrossLoaders);
+        out.accept("every_structure_piece_survives_a_reload", WorldgenTests::everyStructurePieceSurvivesAReload);
+    }
+
+    /**
+     * A structure that is only partly generated when the world is saved is written as its pieces,
+     * and each piece has to come back with everything it decided when it was laid out: the rune it
+     * rolled, its size, and the water dome's chest and gravel columns. Saving the reloaded piece
+     * again has to give the same tag.
+     */
+    private static void everyStructurePieceSurvivesAReload(GameTestHelper helper) {
+        StructurePieceSerializationContext context = StructurePieceSerializationContext.fromLevel(helper.getLevel());
+        RandomSource random = RandomSource.create(5L);
+        BlockPos at = new BlockPos(32, 70, -48);
+        List<String> problems = new ArrayList<>();
+
+        List<StructurePiece> pieces = List.of(
+                new SnowballPiece(random, at, 9, 4),
+                new PyramidPiece(random, at, 66, 12, 1),
+                new FountainPiece(random, at, 16, 1),
+                new WaterDomePiece(random, at, 6, true, 3, WaterDomeType.IRON, 2, 3));
+
+        for (StructurePiece piece : pieces) {
+            CompoundTag saved = piece.createTag(context);
+            StructurePiece reloaded = piece.getType().load(context, saved);
+            CompoundTag resaved = reloaded.createTag(context);
+            if (!saved.equals(resaved)) {
+                problems.add(piece.getClass().getSimpleName() + " saved " + saved + " but reloaded as " + resaved);
+            }
+        }
+
+        // The offsets are written through a codec; an empty or missing list would reload as a dome
+        // with no chests and no gravel and still compare equal above.
+        CompoundTag dome = pieces.get(3).createTag(context);
+        if (dome.getListOrEmpty("chestOffsets").size() != 2) {
+            problems.add("the water dome saved " + dome.get("chestOffsets") + " for its two chests");
+        }
+        if (dome.getListOrEmpty("gravelOffsets").size() != 3) {
+            problems.add("the water dome saved " + dome.get("gravelOffsets") + " for its three gravel");
+        }
+
+        helper.assertTrue(problems.isEmpty(), String.join("; ", problems));
+        helper.succeed();
     }
 
     /**
