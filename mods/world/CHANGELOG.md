@@ -1,5 +1,9 @@
 # Changelog
 
+## 11.0.2
+
+- Includes Assorted Structures 2.0.2, so spires no longer leave a stray air block inside a hill next to them
+
 ## 11.0.1
 
 - Includes Assorted Structures 2.0.1 and Assorted Terrain 2.0.1, so every spire can have a rune, spires

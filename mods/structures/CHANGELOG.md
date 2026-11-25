@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.2
+
+- Spires no longer leave a stray air block inside a hill next to them
+
 ## 2.0.1
 
 - Every spire can have a rune, not only the first one generated after the server starts
