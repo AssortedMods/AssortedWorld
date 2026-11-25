@@ -14,11 +14,13 @@ import com.grim3212.assorted.structures.data.StructuresChestLoot;
 import com.grim3212.assorted.structures.data.StructuresGenData;
 import com.grim3212.assorted.structures.data.StructuresItemTagProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.concurrent.CompletableFuture;
@@ -26,36 +28,26 @@ import java.util.concurrent.CompletableFuture;
 @Mod(Constants.MOD_ID)
 public class AssortedStructuresNeoForge {
 
-    /**
-     * {@code FMLJavaModLoadingContext} is gone; the mod event bus and the mod container are injected
-     * into the {@code @Mod} constructor instead.
-     */
     public AssortedStructuresNeoForge(IEventBus modBus, ModContainer modContainer) {
-        modBus.addListener(this::gatherServerData);
-        modBus.addListener(this::gatherClientData);
+        modBus.addListener(this::gatherData);
 
         StructuresCommonMod.init();
     }
 
-    /**
-     * Server datagen. The server and client halves are separate events; if the wrong one runs, the
-     * build still succeeds, with "All providers took: 0 ms".
-     */
-    private void gatherServerData(final GatherDataEvent.Server event) {
-        PackOutput packOutput = event.getGenerator().getPackOutput();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getWorldLookupProvider();
+    /** One event for both halves; the data run's --server and --client flags pick which providers run. */
+    private void gatherData(final GatherDataEvent event) {
+        DataGenerator generator = event.getGenerator();
+        PackOutput packOutput = generator.getPackOutput();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        ExistingFileHelper fileHelper = event.getExistingFileHelper();
 
-        ForgeBlockTagProvider blockTagProvider = event.addProvider(new ForgeBlockTagProvider(packOutput, lookupProvider, Constants.MOD_ID, new StructuresBlockTagProvider(packOutput, lookupProvider)));
-        event.addProvider(new ForgeItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter(), Constants.MOD_ID, new StructuresItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter())));
-        event.addProvider(new ForgeBiomeTagProvider(packOutput, lookupProvider, Constants.MOD_ID, new StructuresBiomeTagProvider(packOutput, lookupProvider)));
+        ForgeBlockTagProvider blockTagProvider = generator.addProvider(event.includeServer(), new ForgeBlockTagProvider(packOutput, lookupProvider, Constants.MOD_ID, fileHelper, new StructuresBlockTagProvider(packOutput, lookupProvider)));
+        generator.addProvider(event.includeServer(), new ForgeItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter(), Constants.MOD_ID, fileHelper, new StructuresItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter())));
+        generator.addProvider(event.includeServer(), new ForgeBiomeTagProvider(packOutput, lookupProvider, Constants.MOD_ID, fileHelper, new StructuresBiomeTagProvider(packOutput, lookupProvider)));
         ForgeRegistryEntries.of(Constants.MOD_ID).world(new StructuresGenData()).blockLoot(StructuresBlockLoot::new).loot(StructuresChestLoot::new, LootContextParamSets.CHEST).addTo(event);
-    }
 
-    private void gatherClientData(final GatherDataEvent.Client event) {
-        PackOutput packOutput = event.getGenerator().getPackOutput();
-
-        event.addProvider(new StructuresBlockstateProvider(packOutput));
-        event.addProvider(new StructuresLanguageProvider(packOutput));
-        event.addProvider(new StructuresManualProvider(packOutput));
+        generator.addProvider(event.includeClient(), new StructuresBlockstateProvider(packOutput, fileHelper));
+        generator.addProvider(event.includeClient(), new StructuresLanguageProvider(packOutput));
+        generator.addProvider(event.includeClient(), new StructuresManualProvider(packOutput));
     }
 }

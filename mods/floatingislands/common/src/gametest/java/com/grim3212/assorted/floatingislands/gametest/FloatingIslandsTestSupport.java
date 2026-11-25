@@ -2,7 +2,7 @@ package com.grim3212.assorted.floatingislands.gametest;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
@@ -12,10 +12,10 @@ final class FloatingIslandsTestSupport {
     private FloatingIslandsTestSupport() {
     }
 
-    static boolean hasFeature(Biome biome, Identifier id) {
+    static boolean hasFeature(Biome biome, ResourceLocation id) {
         for (HolderSet<PlacedFeature> step : biome.getGenerationSettings().features()) {
             for (Holder<PlacedFeature> feature : step) {
-                if (feature.unwrapKey().filter(key -> key.identifier().equals(id)).isPresent()) {
+                if (feature.unwrapKey().filter(key -> key.location().equals(id)).isPresent()) {
                     return true;
                 }
             }

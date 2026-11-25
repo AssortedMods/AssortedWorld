@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -39,7 +39,7 @@ final class StructuresTestSupport {
         player.experienceLevel = experienceLevel;
         helper.useBlock(CENTRE, player);
 
-        MobEffectInstance effect = player.getEffect(MobEffects.SPEED);
+        MobEffectInstance effect = player.getEffect(MobEffects.MOVEMENT_SPEED);
         helper.assertTrue(effect != null, "using a rad rune gave no speed effect at experience level " + experienceLevel);
         return effect;
     }
@@ -73,10 +73,10 @@ final class StructuresTestSupport {
         }
     }
 
-    static boolean hasFeature(Biome biome, Identifier id) {
+    static boolean hasFeature(Biome biome, ResourceLocation id) {
         for (HolderSet<PlacedFeature> step : biome.getGenerationSettings().features()) {
             for (Holder<PlacedFeature> feature : step) {
-                if (feature.unwrapKey().filter(key -> key.identifier().equals(id)).isPresent()) {
+                if (feature.unwrapKey().filter(key -> key.location().equals(id)).isPresent()) {
                     return true;
                 }
             }

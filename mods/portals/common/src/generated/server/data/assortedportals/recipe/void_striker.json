@@ -14,11 +14,18 @@
     }
   ],
   "ingredients": [
-    "minecraft:flint_and_steel",
-    "assortedportals:void_crystal",
-    "minecraft:dragon_breath"
+    {
+      "item": "minecraft:flint_and_steel"
+    },
+    {
+      "item": "assortedportals:void_crystal"
+    },
+    {
+      "item": "minecraft:dragon_breath"
+    }
   ],
   "result": {
+    "count": 1,
     "id": "assortedportals:void_striker"
   }
 }

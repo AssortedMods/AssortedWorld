@@ -1,18 +1,17 @@
 package com.grim3212.assorted.floatingislands.common.gen.feature;
 
 import com.grim3212.assorted.floatingislands.FloatingIslandsCommonMod;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.Weighted;
-import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -21,9 +20,12 @@ import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.AbstractOreFeature;
-import net.minecraft.world.level.levelgen.feature.BlockReplacement;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.OreFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 
 import java.util.List;
 
@@ -37,13 +39,10 @@ import java.util.List;
  * is decorating and its neighbours, and scooping the ground meant rewriting terrain well outside
  * that.
  */
-public class FloatingIslandFeature implements Feature {
+public class FloatingIslandFeature extends Feature<NoneFeatureConfiguration> {
 
-    public static final MapCodec<FloatingIslandFeature> CODEC = MapCodec.unit(FloatingIslandFeature::new);
-
-    @Override
-    public MapCodec<FloatingIslandFeature> codec() {
-        return CODEC;
+    public FloatingIslandFeature() {
+        super(NoneFeatureConfiguration.CODEC);
     }
 
     /** The air an island keeps under it when the build limit will not fit the configured minimum. */
@@ -56,7 +55,11 @@ public class FloatingIslandFeature implements Feature {
     private static final int TREE_REACH = 7;
 
     @Override
-    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+        WorldGenLevel level = context.level();
+        ChunkGenerator chunkGenerator = context.chunkGenerator();
+        RandomSource random = context.random();
+        BlockPos origin = context.origin();
         FloatingIslandShape shape = FloatingIslandShape.roll(random, rollSize(random));
         Holder<Biome> biome = level.getBiome(origin);
         FloatingIslandType type = FloatingIslandTypes.pick(random, biome);
@@ -142,18 +145,18 @@ public class FloatingIslandFeature implements Feature {
             return;
         }
 
-        Registry<Feature> features = level.registryAccess().lookupOrThrow(Registries.FEATURE);
+        Registry<ConfiguredFeature<?, ?>> features = level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
         int count = type.treeCount(random, shape.columns().size());
 
         for (int i = 0; i < count; i++) {
             BlockPos ground = surface(base, spots.get(random.nextInt(spots.size())));
             // Vanilla trees leave checking the ground to their placement rules, which this skips.
-            // Not #dirt: since 26.2 that is only dirt, coarse dirt and rooted dirt.
-            if (!level.getBlockState(ground).is(BlockTags.SUBSTRATE_OVERWORLD) || !level.isEmptyBlock(ground.above())) {
+            // On 1.21.1 #dirt holds every soil a tree grows on: grass, podzol, mycelium, moss and mud.
+            if (!level.getBlockState(ground).is(BlockTags.DIRT) || !level.isEmptyBlock(ground.above())) {
                 continue;
             }
 
-            features.get(type.tree(random)).ifPresent(tree -> tree.value().place(level, generator, random, ground.above()));
+            features.getHolder(type.tree(random)).ifPresent(tree -> tree.value().place(level, generator, random, ground.above()));
         }
     }
 
@@ -171,7 +174,7 @@ public class FloatingIslandFeature implements Feature {
             return;
         }
 
-        Registry<Feature> features = level.registryAccess().lookupOrThrow(Registries.FEATURE);
+        Registry<ConfiguredFeature<?, ?>> features = level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
         int veins = Math.max(1, shape.columns().size() / COLUMNS_PER_VEIN);
 
         for (int i = 0; i < veins; i++) {
@@ -179,9 +182,9 @@ public class FloatingIslandFeature implements Feature {
             // Somewhere below the filler, which is at most three blocks under the surface.
             int down = 4 + random.nextInt(spot.height() - 4);
             BlockPos at = surface(base, spot).below(down);
-            features.get(ORES.getRandomOrThrow(random))
-                    .filter(ore -> ore.value() instanceof AbstractOreFeature)
-                    .ifPresent(ore -> growVein(level, random, (AbstractOreFeature) ore.value(), at));
+            features.getHolder(ORES.getRandomValue(random).orElseThrow())
+                    .filter(ore -> ore.value().config() instanceof OreConfiguration)
+                    .ifPresent(ore -> growVein(level, random, (OreConfiguration) ore.value().config(), at));
         }
     }
 
@@ -190,13 +193,13 @@ public class FloatingIslandFeature implements Feature {
      * Not {@link Feature#ORE} itself: it gives up on any vein above the ground's heightmap, which
      * is every vein in an island.
      */
-    private static void growVein(WorldGenLevel level, RandomSource random, AbstractOreFeature ore, BlockPos start) {
+    private static void growVein(WorldGenLevel level, RandomSource random, OreConfiguration ore, BlockPos start) {
         BlockPos.MutableBlockPos at = start.mutable();
-        for (int step = 0; step < ore.size(); step++) {
+        for (int step = 0; step < ore.size; step++) {
             BlockState current = level.getBlockState(at);
-            for (BlockReplacement target : ore.targetStates()) {
-                if (ore.canPlaceOre(current, level::getBlockState, random, target, at)) {
-                    level.setBlock(at, target.state(), Block.UPDATE_CLIENTS);
+            for (OreConfiguration.TargetBlockState target : ore.targetStates) {
+                if (OreFeature.canPlaceOre(current, level::getBlockState, random, ore, target, at)) {
+                    level.setBlock(at, target.state, Block.UPDATE_CLIENTS);
                     break;
                 }
             }
@@ -219,7 +222,7 @@ public class FloatingIslandFeature implements Feature {
     private static final int COLUMNS_PER_VEIN = 12;
 
     /** Weighted about as the ground has them near the surface: coal and iron common, diamond rare. */
-    private static final WeightedList<ResourceKey<Feature>> ORES = WeightedList.<ResourceKey<Feature>>builder()
+    private static final SimpleWeightedRandomList<ResourceKey<ConfiguredFeature<?, ?>>> ORES = SimpleWeightedRandomList.<ResourceKey<ConfiguredFeature<?, ?>>>builder()
             .add(ore("ore_coal"), 10)
             .add(ore("ore_iron_small"), 8)
             .add(ore("ore_copper_small"), 6)
@@ -235,13 +238,13 @@ public class FloatingIslandFeature implements Feature {
             .add(ore("ore_dirt"), 2)
             .build();
 
-    private static ResourceKey<Feature> ore(String id) {
-        return ResourceKey.create(Registries.FEATURE, Identifier.withDefaultNamespace(id));
+    private static ResourceKey<ConfiguredFeature<?, ?>> ore(String id) {
+        return ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.withDefaultNamespace(id));
     }
 
     /** Every ore feature islands can seed, for checking they all exist. */
-    public static List<ResourceKey<Feature>> ores() {
-        return ORES.unwrap().stream().map(Weighted::value).toList();
+    public static List<ResourceKey<ConfiguredFeature<?, ?>>> ores() {
+        return ORES.unwrap().stream().map(WeightedEntry.Wrapper::data).toList();
     }
 
     /** A plant or snow layer in an empty spot it can survive in. Tall plants need the block above as well. */
@@ -262,7 +265,7 @@ public class FloatingIslandFeature implements Feature {
 
     /** The first free height above the tallest column under any part of the island. */
     private static int highestGround(WorldGenLevel level, BlockPos origin, FloatingIslandShape shape) {
-        int highest = level.getMinY();
+        int highest = level.getMinBuildHeight();
         for (FloatingIslandShape.Column column : shape.columns()) {
             highest = Math.max(highest, level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, origin.getX() + column.x(), origin.getZ() + column.z()));
         }
@@ -276,7 +279,8 @@ public class FloatingIslandFeature implements Feature {
     private static int spare(WorldGenLevel level, int ground, int gap, FloatingIslandShape shape, int treeHeadroom) {
         int base = ground + gap + shape.deepest() - 1;
         int top = base + shape.highest() + 1 + treeHeadroom;
-        return level.getMaxY() - top;
+        // The highest block a level can hold; 1.21.1's max build height is the first one past it.
+        return level.getMaxBuildHeight() - 1 - top;
     }
 
     /**

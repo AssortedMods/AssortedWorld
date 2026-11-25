@@ -4,9 +4,10 @@ import com.grim3212.assorted.lib.platform.Services;
 import com.grim3212.assorted.structures.common.block.StructuresBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.random.Weight;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedRandom;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
@@ -68,7 +69,7 @@ public class RuinUtil {
     /** A random mob from the list, weighted by rarity. */
     public static EntityType<?> getRandomRuneMob(RandomSource rand) {
         if (rand.nextInt(3) > 0) {
-            RuneMob mob = WeightedRandom.getRandomItem(rand, runeMobs, RuneMob::weight).orElseThrow();
+            RuneMob mob = WeightedRandom.getRandomItem(rand, runeMobs).orElseThrow();
             return mob.type;
         } else {
 
@@ -127,11 +128,8 @@ public class RuinUtil {
         return runes[Math.floorMod(index, runes.length)];
     }
 
-    /**
-     * WeightedEntry and its IntrusiveBase are gone; a weight is a plain field on the entry and the
-     * weight is read back through a ToIntFunction handed to {@link WeightedRandom}.
-     */
-    public static class RuneMob {
+    /** A spawner mob and its weight, which {@link WeightedRandom} reads through {@link WeightedEntry}. */
+    public static class RuneMob implements WeightedEntry {
         public final EntityType<?> type;
         private final int weight;
 
@@ -142,6 +140,11 @@ public class RuinUtil {
 
         public int weight() {
             return this.weight;
+        }
+
+        @Override
+        public Weight getWeight() {
+            return Weight.of(this.weight);
         }
 
         @Override
@@ -156,12 +159,12 @@ public class RuinUtil {
     }
 
     static {
-        addRuneMob(EntityTypes.SKELETON, 100);
-        addRuneMob(EntityTypes.ZOMBIE, 200);
-        addRuneMob(EntityTypes.SPIDER, 100);
-        addRuneMob(EntityTypes.CAVE_SPIDER, 100);
-        addRuneMob(EntityTypes.CREEPER, 50);
-        addRuneMob(EntityTypes.WITCH, 25);
-        addRuneMob(EntityTypes.SILVERFISH, 50);
+        addRuneMob(EntityType.SKELETON, 100);
+        addRuneMob(EntityType.ZOMBIE, 200);
+        addRuneMob(EntityType.SPIDER, 100);
+        addRuneMob(EntityType.CAVE_SPIDER, 100);
+        addRuneMob(EntityType.CREEPER, 50);
+        addRuneMob(EntityType.WITCH, 25);
+        addRuneMob(EntityType.SILVERFISH, 50);
     }
 }

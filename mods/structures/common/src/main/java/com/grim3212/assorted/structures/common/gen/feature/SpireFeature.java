@@ -2,7 +2,6 @@ package com.grim3212.assorted.structures.common.gen.feature;
 
 import com.grim3212.assorted.structures.StructuresCommonMod;
 import com.grim3212.assorted.structures.common.util.RuinUtil;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
@@ -13,48 +12,58 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.material.FluidState;
 
-public class SpireFeature implements Feature {
+public class SpireFeature extends Feature<NoneFeatureConfiguration> {
 
-    public static final MapCodec<SpireFeature> CODEC = MapCodec.unit(SpireFeature::new);
-
-    @Override
-    public MapCodec<SpireFeature> codec() {
-        return CODEC;
+    public SpireFeature() {
+        super(NoneFeatureConfiguration.CODEC);
     }
 
-    private int radius;
-    private int height;
-    private int type;
-    private boolean deathSpire;
-    private boolean runePlaced;
-
     @Override
-    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+        return this.place(context.level(), context.chunkGenerator(), context.random(), context.origin());
+    }
+
+    /**
+     * Per-spire state, created fresh in {@link #place}: a feature is a singleton shared across
+     * worldgen threads, so it cannot hold this itself.
+     */
+    private static final class Spire {
+        private int radius;
+        private int height;
+        private int type;
+        private boolean deathSpire;
+        private boolean runePlaced;
+    }
+
+    private boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
         RandomSource rand = random;
         BlockPos pos = origin;
+        Spire spire = new Spire();
 
-        radius = 2;
+        spire.radius = 2;
         if (StructuresCommonMod.COMMON_CONFIG.spireRadius.get() > 2) {
-            radius = rand.nextInt(StructuresCommonMod.COMMON_CONFIG.spireRadius.get() - 2);
+            spire.radius = rand.nextInt(StructuresCommonMod.COMMON_CONFIG.spireRadius.get() - 2);
         }
-        height = (1 + rand.nextInt(StructuresCommonMod.COMMON_CONFIG.spireHeight.get() * 2)) * 5;
-        type = rand.nextInt(9);
-        deathSpire = rand.nextFloat() < StructuresCommonMod.COMMON_CONFIG.deathSpireChance.get();
+        spire.height = (1 + rand.nextInt(StructuresCommonMod.COMMON_CONFIG.spireHeight.get() * 2)) * 5;
+        spire.type = rand.nextInt(9);
+        spire.deathSpire = rand.nextFloat() < StructuresCommonMod.COMMON_CONFIG.deathSpireChance.get();
 
         if (pos.getY() == 0) {
             return false;
         }
-        if (isAreaClear(level, pos)) {
-            int xOff = pos.getX() - radius;
-            int zOff = pos.getZ() - radius;
-            int size = radius * 2 + 1;
+        if (isAreaClear(spire, level, pos)) {
+            int xOff = pos.getX() - spire.radius;
+            int zOff = pos.getZ() - spire.radius;
+            int size = spire.radius * 2 + 1;
             for (int x = 0; x < size; x++) {
                 for (int z = 0; z < size; z++) {
                     int radMod = 0;
-                    int radCheck = (int) ((double) radius * 0.66666666666666663D);
-                    if (type == 1 || type == 5) {
+                    int radCheck = (int) ((double) spire.radius * 0.66666666666666663D);
+                    if (spire.type == 1 || spire.type == 5) {
                         if (radCheck == 0) {
                             radCheck = 1;
                         }
@@ -63,14 +72,14 @@ public class SpireFeature implements Feature {
                     BlockPos newPos = new BlockPos(xOff + x, pos.getY(), zOff + z);
 
                     int distance = RuinUtil.distanceBetween(pos.getX(), pos.getZ(), newPos.getX(), newPos.getZ());
-                    if (distance <= radius + radMod) {
-                        fillWater(level, newPos);
-                        generateColumn(level, rand, newPos, distance);
+                    if (distance <= spire.radius + radMod) {
+                        fillWater(spire, level, newPos);
+                        generateColumn(spire, level, rand, newPos, distance);
                         continue;
                     }
-                    if (distance > radius && rand.nextInt(4) == 1) {
-                        fillWater(level, newPos);
-                        clearArea(level, rand, newPos);
+                    if (distance > spire.radius && rand.nextInt(4) == 1) {
+                        fillWater(spire, level, newPos);
+                        clearArea(spire, level, rand, newPos);
                     }
                 }
             }
@@ -81,13 +90,13 @@ public class SpireFeature implements Feature {
         }
     }
 
-    private boolean isAreaClear(WorldGenLevel level, BlockPos pos) {
-        int xOff = pos.getX() - radius;
-        int zOff = pos.getZ() - radius;
-        int size = radius * 2 + 1;
+    private boolean isAreaClear(Spire spire, WorldGenLevel level, BlockPos pos) {
+        int xOff = pos.getX() - spire.radius;
+        int zOff = pos.getZ() - spire.radius;
+        int size = spire.radius * 2 + 1;
         for (int x = 0; x < size; x++) {
             for (int z = 0; z < size; z++) {
-                if (RuinUtil.distanceBetween(pos.getX(), pos.getZ(), xOff + x, zOff + z) > radius) {
+                if (RuinUtil.distanceBetween(pos.getX(), pos.getZ(), xOff + x, zOff + z) > spire.radius) {
                     continue;
                 }
                 BlockPos newPos = level.getHeightmapPos(Types.WORLD_SURFACE_WG, new BlockPos(xOff + x, pos.getY(), zOff + z));
@@ -107,7 +116,7 @@ public class SpireFeature implements Feature {
         return true;
     }
 
-    private void fillWater(WorldGenLevel level, BlockPos pos) {
+    private void fillWater(Spire spire, WorldGenLevel level, BlockPos pos) {
         pos = level.getHeightmapPos(Types.WORLD_SURFACE_WG, pos);
         if (pos.getY() == 0) {
             return;
@@ -118,7 +127,7 @@ public class SpireFeature implements Feature {
             BlockState state = level.getBlockState(newPos);
 
             if (state.getBlock() == Blocks.WATER || level.getBlockState(newPos.below()).getBlock() == Blocks.ICE) {
-                if (deathSpire) {
+                if (spire.deathSpire) {
                     level.setBlock(newPos, Blocks.NETHERRACK.defaultBlockState(), 2);
                 } else {
                     level.setBlock(newPos, Blocks.STONE.defaultBlockState(), 2);
@@ -132,17 +141,17 @@ public class SpireFeature implements Feature {
         }
     }
 
-    private void generateColumn(WorldGenLevel level, RandomSource random, BlockPos pos, int heightMod) {
+    private void generateColumn(Spire spire, WorldGenLevel level, RandomSource random, BlockPos pos, int heightMod) {
         int startY = pos.getY();
 
         for (pos = level.getHeightmapPos(Types.WORLD_SURFACE_WG, pos); pos.getY() < startY; pos = pos.above()) {
-            if (!runePlaced && (double) random.nextFloat() <= StructuresCommonMod.COMMON_CONFIG.runeChance.get()) {
-                runePlaced = true;
+            if (!spire.runePlaced && (double) random.nextFloat() <= StructuresCommonMod.COMMON_CONFIG.runeChance.get()) {
+                spire.runePlaced = true;
                 level.setBlock(pos, RuinUtil.randomRune(random).defaultBlockState(), 2);
                 continue;
             }
 
-            if (deathSpire) {
+            if (spire.deathSpire) {
                 float blockType = random.nextFloat();
                 if (blockType < 0.01F) {
                     level.setBlock(pos, Blocks.LAVA.defaultBlockState(), 2);
@@ -170,7 +179,7 @@ public class SpireFeature implements Feature {
             pos = new BlockPos(pos.getX(), startY, pos.getZ());
         }
 
-        int startHeight = height;
+        int startHeight = spire.height;
         int mod = (int) ((float) heightMod * (1.0F + random.nextFloat() * 2.0F));
         if (mod == 0) {
             mod = 1;
@@ -181,17 +190,19 @@ public class SpireFeature implements Feature {
             if (!level.isEmptyBlock(pos.above(heightOff)) && !(level.getBlockState(pos.above(heightOff)).getBlock() instanceof LeavesBlock) && !(level.getBlockState(pos.above(heightOff)).is(BlockTags.LOGS))) {
                 continue;
             }
-            if (deathSpire) {
+            if (spire.deathSpire) {
                 int check = random.nextInt(2 + heightOff);
                 if (check > startHeight / (heightOff + 1)) {
                     break;
                 }
                 float blockType = random.nextFloat();
                 if (blockType < 0.01F) {
-                    level.setBlock(pos, Blocks.LAVA.defaultBlockState(), 2);
-                    FluidState fluidstate = level.getFluidState(pos);
+                    // At this height in the spire, like the netherrack beside it, rather than back at its foot.
+                    BlockPos lava = pos.above(heightOff);
+                    level.setBlock(lava, Blocks.LAVA.defaultBlockState(), 2);
+                    FluidState fluidstate = level.getFluidState(lava);
                     if (!fluidstate.isEmpty()) {
-                        level.scheduleTick(pos, fluidstate.getType(), 0);
+                        level.scheduleTick(lava, fluidstate.getType(), 0);
                     }
                 } else {
                     level.setBlock(pos.above(heightOff), Blocks.NETHERRACK.defaultBlockState(), 2);
@@ -206,11 +217,11 @@ public class SpireFeature implements Feature {
         }
     }
 
-    private void clearArea(WorldGenLevel level, RandomSource random, BlockPos pos) {
+    private void clearArea(Spire spire, WorldGenLevel level, RandomSource random, BlockPos pos) {
         int startY = pos.getY();
 
         for (pos = level.getHeightmapPos(Types.WORLD_SURFACE_WG, pos); pos.getY() < startY; pos = pos.above()) {
-            if (deathSpire) {
+            if (spire.deathSpire) {
                 float blockType = random.nextFloat();
                 if (blockType < 0.01F) {
                     level.setBlock(pos, Blocks.LAVA.defaultBlockState(), 2);
@@ -237,7 +248,7 @@ public class SpireFeature implements Feature {
             pos = new BlockPos(pos.getX(), startY, pos.getZ());
         }
 
-        for (int off = 0; off < height; off++) {
+        for (int off = 0; off < spire.height; off++) {
             if (!level.isEmptyBlock(pos.above(off))) {
                 level.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
             }

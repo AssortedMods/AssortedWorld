@@ -5,9 +5,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +34,13 @@ final class WorldgenTests {
         RegistryAccess registries = helper.getLevel().registryAccess();
         List<String> problems = new ArrayList<>();
 
-        Identifier id = PortalsGenData.VOID_CRYSTAL_KEY;
-        Registry<Feature> configured = registries.lookupOrThrow(Registries.FEATURE);
-        Registry<PlacedFeature> placed = registries.lookupOrThrow(Registries.PLACED_FEATURE);
-        if (configured.getValue(id) == null) {
+        ResourceLocation id = PortalsGenData.VOID_CRYSTAL_KEY;
+        Registry<ConfiguredFeature<?, ?>> configured = registries.registryOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<PlacedFeature> placed = registries.registryOrThrow(Registries.PLACED_FEATURE);
+        if (configured.get(id) == null) {
             problems.add("configured feature " + id + " is not in the registry");
         }
-        if (placed.getValue(id) == null) {
+        if (placed.get(id) == null) {
             problems.add("placed feature " + id + " is not in the registry");
         }
 
@@ -53,7 +53,7 @@ final class WorldgenTests {
      * loader API on each side, so this is where the two could disagree.
      */
     private static void modFeaturesAreAttachedToBiomes(GameTestHelper helper) {
-        Registry<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
+        Registry<Biome> biomes = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
 
         int biomeCount = 0;
         for (Biome biome : biomes) {

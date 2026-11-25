@@ -2,26 +2,18 @@ package com.grim3212.assorted.plants.client.data;
 
 import com.grim3212.assorted.plants.Constants;
 import com.grim3212.assorted.plants.common.block.PlantsBlocks;
-import net.minecraft.client.data.models.BlockModelGenerators;
-import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.ModelProvider;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-
-import java.util.stream.Stream;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 /**
  * Item models for the two plants, whose items are flat sprites rather than their block models. {@link
  * PlantsBlockstateProvider} models the blocks.
  */
-public class PlantsItemModelProvider extends ModelProvider {
+public class PlantsItemModelProvider extends ItemModelProvider {
 
-    public PlantsItemModelProvider(PackOutput output) {
-        super(output, Constants.MOD_ID);
+    public PlantsItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, Constants.MOD_ID, existingFileHelper);
     }
 
     @Override
@@ -30,20 +22,9 @@ public class PlantsItemModelProvider extends ModelProvider {
     }
 
     @Override
-    protected Stream<? extends Holder<Block>> getKnownBlocks() {
-        return Stream.empty();
-    }
-
-    @Override
-    protected Stream<? extends Holder<Item>> getKnownItems() {
-        return super.getKnownItems().filter(holder -> !(holder.value() instanceof BlockItem));
-    }
-
-    @Override
-    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        // The reed's item is a flat sprite, not its block model. generateFlatItem derives the
-        // texture from the item id, which is what the old `item/<name>` layer0 resolved to anyway.
-        itemModels.generateFlatItem(PlantsBlocks.GUNPOWDER_REED.get().asItem(), ModelTemplates.FLAT_ITEM);
-        itemModels.generateFlatItem(PlantsBlocks.GLOWSTONE_SEEDS.get().asItem(), ModelTemplates.FLAT_ITEM);
+    protected void registerModels() {
+        // The items are flat sprites of their own item/<name> textures, not the block models.
+        this.basicItem(PlantsBlocks.GUNPOWDER_REED.get().asItem());
+        this.basicItem(PlantsBlocks.GLOWSTONE_SEEDS.get().asItem());
     }
 }

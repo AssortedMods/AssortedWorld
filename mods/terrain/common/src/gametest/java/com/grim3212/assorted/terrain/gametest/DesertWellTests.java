@@ -10,6 +10,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BrushableBlockEntity;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -97,9 +98,11 @@ final class DesertWellTests {
 
             helper.assertBlockPresent(Blocks.SUSPICIOUS_SAND, at);
 
-            BrushableBlockEntity sand = helper.getBlockEntity(at, BrushableBlockEntity.class);
+            BlockEntity entity = helper.getBlockEntity(at);
+            helper.assertTrue(entity instanceof BrushableBlockEntity, "the suspicious sand has no brushable block entity: " + entity);
+            BrushableBlockEntity sand = (BrushableBlockEntity) entity;
             String saved = sand.saveWithoutMetadata(helper.getLevel().registryAccess()).toString();
-            helper.assertTrue(saved.contains(BuiltInLootTables.DESERT_WELL_ARCHAEOLOGY.identifier().toString()),
+            helper.assertTrue(saved.contains(BuiltInLootTables.DESERT_WELL_ARCHAEOLOGY.location().toString()),
                     "the suspicious sand did not take the desert well archaeology table: " + saved);
         }
 

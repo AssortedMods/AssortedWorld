@@ -1,7 +1,6 @@
 package com.grim3212.assorted.terrain.common.gen.feature;
 
 import com.grim3212.assorted.terrain.api.TerrainLootTables;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -10,11 +9,12 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.entity.BlockEntityTypes;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -27,13 +27,10 @@ import java.util.List;
  * <p>
  * Where these generate, vanilla's own desert well is taken out unless the config keeps it.
  */
-public class DesertWellFeature implements Feature {
+public class DesertWellFeature extends Feature<NoneFeatureConfiguration> {
 
-    public static final MapCodec<DesertWellFeature> CODEC = MapCodec.unit(DesertWellFeature::new);
-
-    @Override
-    public MapCodec<DesertWellFeature> codec() {
-        return CODEC;
+    public DesertWellFeature() {
+        super(NoneFeatureConfiguration.CODEC);
     }
 
     /** Depth tiers, in blocks. Each has its own loot table, in the same order. */
@@ -46,13 +43,16 @@ public class DesertWellFeature implements Feature {
             new BlockPos(2, 0, 0), new BlockPos(-2, 0, 0), new BlockPos(0, 0, 2), new BlockPos(0, 0, -2));
 
     @Override
-    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+        WorldGenLevel level = context.level();
+        RandomSource random = context.random();
+        BlockPos origin = context.origin();
         int tier = random.nextInt(DEPTHS.size());
         int depth = DEPTHS.get(tier);
 
         // Sand all the way around the rim, so a well never ends up half over a cliff, and room for
         // the shaft plus the chest chamber under it.
-        if (origin.getY() - depth - 2 <= level.getMinY() || !onSand(level, origin) || !isOpen(level, origin)) {
+        if (origin.getY() - depth - 2 <= level.getMinBuildHeight() || !onSand(level, origin) || !isOpen(level, origin)) {
             return false;
         }
 
@@ -143,7 +143,7 @@ public class DesertWellFeature implements Feature {
     /** Public so the gametests can check the block entity actually took the loot table. */
     public static void placeSuspiciousSand(WorldGenLevel level, BlockPos pos) {
         level.setBlock(pos, Blocks.SUSPICIOUS_SAND.defaultBlockState(), Block.UPDATE_ALL);
-        level.getBlockEntity(pos, BlockEntityTypes.BRUSHABLE_BLOCK).ifPresent(sand -> sand.setLootTable(BuiltInLootTables.DESERT_WELL_ARCHAEOLOGY, pos.asLong()));
+        level.getBlockEntity(pos, BlockEntityType.BRUSHABLE_BLOCK).ifPresent(sand -> sand.setLootTable(BuiltInLootTables.DESERT_WELL_ARCHAEOLOGY, pos.asLong()));
     }
 
     /** A chest at the bottom of the shaft, walled in so the water above does not pour past it. */

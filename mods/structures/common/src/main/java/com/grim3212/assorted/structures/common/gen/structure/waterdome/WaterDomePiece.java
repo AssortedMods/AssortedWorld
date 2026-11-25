@@ -7,6 +7,8 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -16,7 +18,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.entity.BlockEntityTypes;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -75,13 +77,23 @@ public class WaterDomePiece extends ScatteredFeaturePiece {
 
     public WaterDomePiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
         super(StructuresTypes.WATER_DOME_STRUCTURE_PIECE.get(), tagCompound);
-        this.radius = tagCompound.getIntOr("radius", 0);
-        this.placesRune = tagCompound.getBooleanOr("placesRune", false);
-        this.runeIndex = tagCompound.getIntOr("runeIndex", 0);
-        this.domeType = WaterDomeType.byOrdinal(tagCompound.getIntOr("domeType", 0));
-        this.chestOffsets = tagCompound.read("chestOffsets", BLOCK_POS_LIST_CODEC).orElse(List.of());
-        this.gravelOffsets = tagCompound.read("gravelOffsets", BLOCK_POS_LIST_CODEC).orElse(List.of());
-        this.floorY = tagCompound.getIntOr("floorY", UNRESOLVED_FLOOR);
+        this.radius = tagCompound.getInt("radius");
+        this.placesRune = tagCompound.getBoolean("placesRune");
+        this.runeIndex = tagCompound.getInt("runeIndex");
+        this.domeType = WaterDomeType.byOrdinal(tagCompound.getInt("domeType"));
+        this.chestOffsets = readOffsets(tagCompound, "chestOffsets");
+        this.gravelOffsets = readOffsets(tagCompound, "gravelOffsets");
+        this.floorY = tagCompound.contains("floorY") ? tagCompound.getInt("floorY") : UNRESOLVED_FLOOR;
+    }
+
+    /** A saved offset list, or none for a piece saved before the list existed. */
+    private static List<BlockPos> readOffsets(CompoundTag tag, String key) {
+        Tag saved = tag.get(key);
+        return saved == null ? List.of() : BLOCK_POS_LIST_CODEC.parse(NbtOps.INSTANCE, saved).result().orElse(List.of());
+    }
+
+    private static void writeOffsets(CompoundTag tag, String key, List<BlockPos> offsets) {
+        BLOCK_POS_LIST_CODEC.encodeStart(NbtOps.INSTANCE, offsets).result().ifPresent(encoded -> tag.put(key, encoded));
     }
 
     @Override
@@ -91,8 +103,8 @@ public class WaterDomePiece extends ScatteredFeaturePiece {
         tagCompound.putBoolean("placesRune", this.placesRune);
         tagCompound.putInt("runeIndex", this.runeIndex);
         tagCompound.putInt("domeType", this.domeType.ordinal());
-        tagCompound.store("chestOffsets", BLOCK_POS_LIST_CODEC, this.chestOffsets);
-        tagCompound.store("gravelOffsets", BLOCK_POS_LIST_CODEC, this.gravelOffsets);
+        writeOffsets(tagCompound, "chestOffsets", this.chestOffsets);
+        writeOffsets(tagCompound, "gravelOffsets", this.gravelOffsets);
         tagCompound.putInt("floorY", this.floorY);
     }
 
@@ -228,7 +240,7 @@ public class WaterDomePiece extends ScatteredFeaturePiece {
         } else if (state.getBlock() == Blocks.SUSPICIOUS_GRAVEL) {
             // Vanilla's own warm and cold split, so a dome in a reef gives up what a reef's ruins do.
             boolean warm = reader.getBiome(pos).is(BiomeTags.HAS_OCEAN_RUIN_WARM);
-            reader.getBlockEntity(pos, BlockEntityTypes.BRUSHABLE_BLOCK)
+            reader.getBlockEntity(pos, BlockEntityType.BRUSHABLE_BLOCK)
                     .ifPresent(gravel -> gravel.setLootTable(warm ? BuiltInLootTables.OCEAN_RUIN_WARM_ARCHAEOLOGY : BuiltInLootTables.OCEAN_RUIN_COLD_ARCHAEOLOGY, pos.asLong()));
         }
     }

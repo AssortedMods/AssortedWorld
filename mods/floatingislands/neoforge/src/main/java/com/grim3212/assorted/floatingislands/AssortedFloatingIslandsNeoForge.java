@@ -7,10 +7,12 @@ import com.grim3212.assorted.floatingislands.data.FloatingIslandsGenData;
 import com.grim3212.assorted.lib.data.ForgeBiomeTagProvider;
 import com.grim3212.assorted.lib.data.ForgeRegistryEntries;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.concurrent.CompletableFuture;
@@ -23,29 +25,23 @@ public class AssortedFloatingIslandsNeoForge {
      * into the {@code @Mod} constructor instead.
      */
     public AssortedFloatingIslandsNeoForge(IEventBus modBus, ModContainer modContainer) {
-        modBus.addListener(this::gatherServerData);
-        modBus.addListener(this::gatherClientData);
+        modBus.addListener(this::gatherData);
 
         FloatingIslandsCommonMod.init();
     }
 
-    /**
-     * Server datagen. The server and client halves are separate events; if the wrong one runs, the
-     * build still succeeds, with "All providers took: 0 ms".
-     */
-    private void gatherServerData(final GatherDataEvent.Server event) {
-        PackOutput packOutput = event.getGenerator().getPackOutput();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getWorldLookupProvider();
+    /** One event for both halves; the data run's --server and --client flags pick which providers run. */
+    private void gatherData(final GatherDataEvent event) {
+        DataGenerator generator = event.getGenerator();
+        PackOutput packOutput = generator.getPackOutput();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        ExistingFileHelper fileHelper = event.getExistingFileHelper();
 
-        event.addProvider(new ForgeBiomeTagProvider(packOutput, lookupProvider, Constants.MOD_ID, new FloatingIslandsBiomeTagProvider(packOutput, lookupProvider)));
+        generator.addProvider(event.includeServer(), new ForgeBiomeTagProvider(packOutput, lookupProvider, Constants.MOD_ID, fileHelper, new FloatingIslandsBiomeTagProvider(packOutput, lookupProvider)));
         ForgeRegistryEntries.of(Constants.MOD_ID).world(new FloatingIslandsGenData()).addTo(event);
-    }
 
-    /** Client datagen: the language file and the manual, written into common for both loaders. */
-    private void gatherClientData(final GatherDataEvent.Client event) {
-        PackOutput packOutput = event.getGenerator().getPackOutput();
-
-        event.addProvider(new FloatingIslandsLanguageProvider(packOutput));
-        event.addProvider(new FloatingIslandsManualProvider(packOutput));
+        // The language file and the manual, written into common for both loaders.
+        generator.addProvider(event.includeClient(), new FloatingIslandsLanguageProvider(packOutput));
+        generator.addProvider(event.includeClient(), new FloatingIslandsManualProvider(packOutput));
     }
 }

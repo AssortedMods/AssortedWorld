@@ -127,7 +127,7 @@ public class PyramidStructure extends Structure {
         }
 
         int base = placement.get().base();
-        if (base - 1 <= context.heightAccessor().getMinY() || base + maxHeight >= context.heightAccessor().getMaxY()) {
+        if (base - 1 <= context.heightAccessor().getMinBuildHeight() || base + maxHeight > context.heightAccessor().getMaxBuildHeight() - 2) {
             return Optional.empty();
         }
 

@@ -6,6 +6,7 @@
     }
   ],
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "fabric:load_conditions": [
     {
       "condition": "assortedlib:part_enabled",
@@ -13,9 +14,15 @@
     }
   ],
   "key": {
-    "C": "assortedportals:void_crystal",
-    "E": "minecraft:ender_eye",
-    "O": "#c:obsidians"
+    "C": {
+      "item": "assortedportals:void_crystal"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "O": {
+      "tag": "c:obsidians"
+    }
   },
   "pattern": [
     "OEO",
@@ -23,6 +30,7 @@
     "OOO"
   ],
   "result": {
+    "count": 1,
     "id": "assortedportals:void_portal_frame"
   }
 }

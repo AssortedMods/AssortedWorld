@@ -6,6 +6,7 @@
     }
   ],
   "type": "minecraft:crafting_shapeless",
+  "category": "misc",
   "fabric:load_conditions": [
     {
       "condition": "assortedlib:part_enabled",
@@ -13,9 +14,12 @@
     }
   ],
   "ingredients": [
-    "assortedplants:gunpowder_reed"
+    {
+      "item": "assortedplants:gunpowder_reed"
+    }
   ],
   "result": {
+    "count": 1,
     "id": "minecraft:gunpowder"
   }
 }

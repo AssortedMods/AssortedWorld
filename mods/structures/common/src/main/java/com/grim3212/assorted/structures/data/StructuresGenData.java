@@ -4,9 +4,7 @@ import com.google.common.collect.Lists;
 import com.grim3212.assorted.lib.data.LibDatapackRegistryProvider;
 import com.grim3212.assorted.structures.Constants;
 import com.grim3212.assorted.structures.api.StructuresTags;
-import com.grim3212.assorted.structures.common.gen.feature.RuinFeature;
-import com.grim3212.assorted.structures.common.gen.feature.SandPillarFeature;
-import com.grim3212.assorted.structures.common.gen.feature.SpireFeature;
+import com.grim3212.assorted.structures.common.gen.feature.StructuresFeatures;
 import com.grim3212.assorted.structures.common.gen.placement.ConfigRarityFilter;
 import com.grim3212.assorted.structures.common.gen.placement.StructuresPlacements;
 import com.grim3212.assorted.structures.common.gen.structure.fountain.FountainStructure;
@@ -20,10 +18,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
@@ -31,36 +30,36 @@ import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class StructuresGenData extends LibDatapackRegistryProvider {
 
-    private static final Identifier SNOWBALL_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "snowball");
-    private static final Identifier PYRAMID_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "pyramid");
-    private static final Identifier FOUNTAIN_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "fountain");
-    private static final Identifier WATER_DOME_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "water_dome");
+    private static final ResourceLocation SNOWBALL_KEY = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "snowball");
+    private static final ResourceLocation PYRAMID_KEY = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "pyramid");
+    private static final ResourceLocation FOUNTAIN_KEY = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "fountain");
+    private static final ResourceLocation WATER_DOME_KEY = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "water_dome");
 
     private static final ResourceKey<Structure> SNOWBALL_RESOURCE_KEY = structureResourceKey(SNOWBALL_KEY);
     private static final ResourceKey<Structure> PYRAMID_RESOURCE_KEY = structureResourceKey(PYRAMID_KEY);
     private static final ResourceKey<Structure> FOUNTAIN_RESOURCE_KEY = structureResourceKey(FOUNTAIN_KEY);
     private static final ResourceKey<Structure> WATER_DOME_RESOURCE_KEY = structureResourceKey(WATER_DOME_KEY);
 
-    public static final Identifier RUIN_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "ruin");
-    public static final Identifier SPIRE_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "spire");
-    public static final Identifier SAND_PILLAR_KEY = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "sand_pillar");
+    public static final ResourceLocation RUIN_KEY = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "ruin");
+    public static final ResourceLocation SPIRE_KEY = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "spire");
+    public static final ResourceLocation SAND_PILLAR_KEY = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "sand_pillar");
 
-    private static ResourceKey<Structure> structureResourceKey(Identifier key) {
+    private static ResourceKey<Structure> structureResourceKey(ResourceLocation key) {
         return ResourceKey.create(Registries.STRUCTURE, key);
     }
 
-    private static ResourceKey<Feature> configuredFeatureResourceKey(Identifier key) {
-        return ResourceKey.create(Registries.FEATURE, key);
+    private static ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureResourceKey(ResourceLocation key) {
+        return ResourceKey.create(Registries.CONFIGURED_FEATURE, key);
     }
 
     private static Map<ResourceKey<Structure>, Structure> getStructures(BootstrapContext<Structure> context) {
-        Map<ResourceKey<Structure>, Structure> map = new HashMap<>();
+        Map<ResourceKey<Structure>, Structure> map = new LinkedHashMap<>();
 
         HolderGetter<Biome> holderGetter = context.lookup(Registries.BIOME);
 
@@ -72,8 +71,8 @@ public class StructuresGenData extends LibDatapackRegistryProvider {
         return map;
     }
 
-    private static Map<Identifier, StructureSet> getStructureSets(BootstrapContext<StructureSet> context) {
-        Map<Identifier, StructureSet> map = new HashMap<>();
+    private static Map<ResourceLocation, StructureSet> getStructureSets(BootstrapContext<StructureSet> context) {
+        Map<ResourceLocation, StructureSet> map = new LinkedHashMap<>();
 
         HolderGetter<Structure> holderGetter = context.lookup(Registries.STRUCTURE);
 
@@ -85,20 +84,20 @@ public class StructuresGenData extends LibDatapackRegistryProvider {
         return map;
     }
 
-    private static Map<Identifier, Feature> getConfiguredFeatures() {
-        Map<Identifier, Feature> map = new HashMap<>();
+    private static Map<ResourceLocation, ConfiguredFeature<?, ?>> getConfiguredFeatures() {
+        Map<ResourceLocation, ConfiguredFeature<?, ?>> map = new LinkedHashMap<>();
 
-        map.put(RUIN_KEY, new RuinFeature());
-        map.put(SPIRE_KEY, new SpireFeature());
-        map.put(SAND_PILLAR_KEY, new SandPillarFeature());
+        map.put(RUIN_KEY, new ConfiguredFeature<>(StructuresFeatures.RUIN_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
+        map.put(SPIRE_KEY, new ConfiguredFeature<>(StructuresFeatures.SPIRE_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
+        map.put(SAND_PILLAR_KEY, new ConfiguredFeature<>(StructuresFeatures.SAND_PILLAR_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
 
         return map;
     }
 
-    private static Map<Identifier, PlacedFeature> getPlacedFeatures(BootstrapContext<PlacedFeature> context) {
-        Map<Identifier, PlacedFeature> map = new HashMap<>();
+    private static Map<ResourceLocation, PlacedFeature> getPlacedFeatures(BootstrapContext<PlacedFeature> context) {
+        Map<ResourceLocation, PlacedFeature> map = new LinkedHashMap<>();
 
-        HolderGetter<Feature> holderGetter = context.lookup(Registries.FEATURE);
+        HolderGetter<ConfiguredFeature<?, ?>> holderGetter = context.lookup(Registries.CONFIGURED_FEATURE);
 
         map.put(RUIN_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(RUIN_KEY)), heightmapPlacement(350)));
         map.put(SPIRE_KEY, new PlacedFeature(holderGetter.getOrThrow(configuredFeatureResourceKey(SPIRE_KEY)), heightmapPlacement(350)));
@@ -121,9 +120,9 @@ public class StructuresGenData extends LibDatapackRegistryProvider {
             });
         });
 
-        builder.add(Registries.FEATURE, context -> {
+        builder.add(Registries.CONFIGURED_FEATURE, context -> {
             StructuresGenData.getConfiguredFeatures().forEach((r, f) -> {
-                context.register(ResourceKey.create(Registries.FEATURE, r), f);
+                context.register(ResourceKey.create(Registries.CONFIGURED_FEATURE, r), f);
             });
         });
 
@@ -136,7 +135,7 @@ public class StructuresGenData extends LibDatapackRegistryProvider {
 
     @Override
     public List<ResourceKey<? extends Registry<?>>> registries() {
-        return Lists.newArrayList(Registries.STRUCTURE, Registries.STRUCTURE_SET, Registries.FEATURE, Registries.PLACED_FEATURE);
+        return Lists.newArrayList(Registries.STRUCTURE, Registries.STRUCTURE_SET, Registries.CONFIGURED_FEATURE, Registries.PLACED_FEATURE);
     }
 
     /**

@@ -10,14 +10,14 @@ import com.grim3212.assorted.portals.common.gen.PortalsBiomeModifiers;
 import com.grim3212.assorted.portals.common.handlers.LootTableHandlers;
 import com.grim3212.assorted.portals.common.handlers.PortalsCreativeItems;
 import com.grim3212.assorted.portals.common.item.PortalsItems;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class PortalsCommonMod {
 
     public static void init() {
         Constants.LOG.info(Constants.MOD_NAME + " starting up...");
         Families.join(Constants.MOD_ID, Constants.FAMILY_ID)
-                .icon(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "void_portal_frame"), 30)
+                .icon(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "void_portal_frame"), 30)
                 .manualOrder(140);
 
         PortalsBlocks.init();

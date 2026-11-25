@@ -2,29 +2,19 @@ package com.grim3212.assorted.plants.client.data;
 
 import com.grim3212.assorted.plants.Constants;
 import com.grim3212.assorted.plants.common.block.PlantsBlocks;
-import net.minecraft.client.data.models.BlockModelGenerators;
-import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.ModelProvider;
-import net.minecraft.client.data.models.MultiVariant;
-import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-
-import java.util.stream.Stream;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 /**
- * Block states and block models. This owns every block and block item; {@link
- * PlantsItemModelProvider} owns the rest, so the two never write the same file.
+ * Block states and block models. {@link PlantsItemModelProvider} owns the item models, which are
+ * flat sprites, so the two never write the same file.
  */
-public class PlantsBlockstateProvider extends ModelProvider {
+public class PlantsBlockstateProvider extends BlockStateProvider {
 
-    public PlantsBlockstateProvider(PackOutput output) {
-        super(output, Constants.MOD_ID);
+    public PlantsBlockstateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, Constants.MOD_ID, existingFileHelper);
     }
 
     @Override
@@ -32,28 +22,22 @@ public class PlantsBlockstateProvider extends ModelProvider {
         return "Assorted Plants block states";
     }
 
-    /**
-     * Only the block items belong here; everything else is {@link PlantsItemModelProvider}'s, so the
-     * two providers never write the same file.
-     */
     @Override
-    protected Stream<? extends Holder<Item>> getKnownItems() {
-        return super.getKnownItems().filter(holder -> holder.value() instanceof BlockItem);
-    }
-
-    @Override
-    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        cross(blockModels, PlantsBlocks.GUNPOWDER_REED.get());
+    protected void registerStatesAndModels() {
+        this.cross(PlantsBlocks.GUNPOWDER_REED.get());
         // Every growth step looks the same, as it did in GrimPack
-        cross(blockModels, PlantsBlocks.GLOWSTONE_SEEDS.get());
+        this.cross(PlantsBlocks.GLOWSTONE_SEEDS.get());
     }
 
     /**
      * A plant drawn as two crossed quads: the {@code cross} template baked against the block
-     * texture. The texture's alpha makes it cutout.
+     * texture, on the cutout layer its transparent pixels need.
      */
-    private void cross(BlockModelGenerators blockModels, Block block) {
-        MultiVariant model = BlockModelGenerators.plainVariant(ModelTemplates.CROSS.create(block, TextureMapping.cross(block), blockModels.modelOutput));
-        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block, model));
+    private void cross(Block block) {
+        this.simpleBlock(block, this.models().cross(this.name(block), this.blockTexture(block)).renderType("cutout"));
+    }
+
+    private String name(Block block) {
+        return this.blockTexture(block).getPath().substring("block/".length());
     }
 }

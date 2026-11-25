@@ -4,7 +4,7 @@ import com.grim3212.assorted.lib.data.LibManualProvider;
 import com.grim3212.assorted.structures.Constants;
 import com.grim3212.assorted.structures.common.block.StructuresBlocks;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -34,7 +34,7 @@ public class StructuresManualProvider extends LibManualProvider {
     }
 
     /** The screenshots under {@code textures/gui/manual}, sized to leave room for the text below. */
-    private static Identifier picture(String name) {
-        return Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/manual/" + name + ".png");
+    private static ResourceLocation picture(String name) {
+        return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/manual/" + name + ".png");
     }
 }

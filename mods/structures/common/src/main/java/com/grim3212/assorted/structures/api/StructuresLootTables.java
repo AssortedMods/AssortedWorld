@@ -2,7 +2,7 @@ package com.grim3212.assorted.structures.api;
 
 import com.grim3212.assorted.structures.Constants;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -22,6 +22,6 @@ public class StructuresLootTables {
     public static final ResourceKey<LootTable> CHESTS_WATER_DOME_OBSIDIAN = create("chests/water_dome/obsidian");
 
     private static ResourceKey<LootTable> create(String name) {
-        return ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(Constants.MOD_ID, name));
+        return ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name));
     }
 }

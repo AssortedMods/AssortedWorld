@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -53,11 +52,11 @@ public class FountainPiece extends ScatteredFeaturePiece {
 
     public FountainPiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
         super(StructuresTypes.FOUNTAIN_STRUCTURE_PIECE.get(), tagCompound);
-        this.height = tagCompound.getIntOr("height", 0);
-        this.type = tagCompound.getIntOr("type", 0);
-        this.runeIndex = tagCompound.getIntOr("runeIndex", 0);
-        this.runeX = tagCompound.getIntOr("runeX", 1);
-        this.runeZ = tagCompound.getIntOr("runeZ", 1);
+        this.height = tagCompound.getInt("height");
+        this.type = tagCompound.getInt("type");
+        this.runeIndex = tagCompound.getInt("runeIndex");
+        this.runeX = tagCompound.contains("runeX") ? tagCompound.getInt("runeX") : 1;
+        this.runeZ = tagCompound.contains("runeZ") ? tagCompound.getInt("runeZ") : 1;
     }
 
     @Override
@@ -129,7 +128,7 @@ public class FountainPiece extends ScatteredFeaturePiece {
             if (te instanceof SpawnerBlockEntity) {
                 EntityType<?> type = RuinUtil.getRandomRuneMob(rand);
                 if (type == null) {
-                    type = EntityTypes.ZOMBIE;
+                    type = EntityType.ZOMBIE;
                 }
                 ((SpawnerBlockEntity) te).setEntityId(type, rand);
             }

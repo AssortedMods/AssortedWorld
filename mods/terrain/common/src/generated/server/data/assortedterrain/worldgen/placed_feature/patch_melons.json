@@ -20,24 +20,104 @@
       "count": 24
     },
     {
-      "type": "minecraft:offset",
-      "x": {
-        "type": "minecraft:trapezoid",
-        "max": 7,
-        "min": -7,
-        "plateau": 0
+      "type": "minecraft:random_offset",
+      "xz_spread": {
+        "type": "minecraft:weighted_list",
+        "distribution": [
+          {
+            "data": -7,
+            "weight": 1
+          },
+          {
+            "data": -6,
+            "weight": 2
+          },
+          {
+            "data": -5,
+            "weight": 3
+          },
+          {
+            "data": -4,
+            "weight": 4
+          },
+          {
+            "data": -3,
+            "weight": 5
+          },
+          {
+            "data": -2,
+            "weight": 6
+          },
+          {
+            "data": -1,
+            "weight": 7
+          },
+          {
+            "data": 0,
+            "weight": 8
+          },
+          {
+            "data": 1,
+            "weight": 7
+          },
+          {
+            "data": 2,
+            "weight": 6
+          },
+          {
+            "data": 3,
+            "weight": 5
+          },
+          {
+            "data": 4,
+            "weight": 4
+          },
+          {
+            "data": 5,
+            "weight": 3
+          },
+          {
+            "data": 6,
+            "weight": 2
+          },
+          {
+            "data": 7,
+            "weight": 1
+          }
+        ]
       },
-      "y": {
-        "type": "minecraft:trapezoid",
-        "max": 3,
-        "min": -3,
-        "plateau": 0
-      },
-      "z": {
-        "type": "minecraft:trapezoid",
-        "max": 7,
-        "min": -7,
-        "plateau": 0
+      "y_spread": {
+        "type": "minecraft:weighted_list",
+        "distribution": [
+          {
+            "data": -3,
+            "weight": 1
+          },
+          {
+            "data": -2,
+            "weight": 2
+          },
+          {
+            "data": -1,
+            "weight": 3
+          },
+          {
+            "data": 0,
+            "weight": 4
+          },
+          {
+            "data": 1,
+            "weight": 3
+          },
+          {
+            "data": 2,
+            "weight": 2
+          },
+          {
+            "data": 3,
+            "weight": 1
+          }
+        ]
       }
     },
     {
@@ -46,8 +126,8 @@
         "type": "minecraft:all_of",
         "predicates": [
           {
-            "type": "minecraft:matching_block_tag",
-            "tag": "minecraft:air"
+            "type": "minecraft:matching_blocks",
+            "blocks": "minecraft:air"
           },
           {
             "type": "minecraft:matching_blocks",

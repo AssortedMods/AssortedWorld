@@ -8,7 +8,7 @@ import com.grim3212.assorted.structures.common.gen.structure.StructuresTypes;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -29,7 +29,7 @@ final class AliasTests {
 
     private static void assortedworldIdsStillLoad(GameTestHelper helper) {
         for (IRegistryObject<Block> block : StructuresBlocks.BLOCKS.getEntries()) {
-            helper.assertValueEqual(BuiltInRegistries.BLOCK.getValue(old(block.getId())), block.get(), "the block saved as " + old(block.getId()));
+            helper.assertValueEqual(BuiltInRegistries.BLOCK.get(old(block.getId())), block.get(), "the block saved as " + old(block.getId()));
         }
 
         for (IRegistryObject<Item> item : StructuresBlocks.ITEMS.getEntries()) {
@@ -40,12 +40,12 @@ final class AliasTests {
 
         // A structure saved half generated names its pieces by id.
         for (IRegistryObject<StructurePieceType> piece : StructuresTypes.STRUCTURE_PIECES.getEntries()) {
-            helper.assertValueEqual(BuiltInRegistries.STRUCTURE_PIECE.getValue(old(piece.getId())), piece.get(), "the structure piece saved as " + old(piece.getId()));
+            helper.assertValueEqual(BuiltInRegistries.STRUCTURE_PIECE.get(old(piece.getId())), piece.get(), "the structure piece saved as " + old(piece.getId()));
         }
         helper.succeed();
     }
 
-    private static Identifier old(Identifier id) {
-        return Identifier.fromNamespaceAndPath(Constants.FAMILY_ID, id.getPath());
+    private static ResourceLocation old(ResourceLocation id) {
+        return ResourceLocation.fromNamespaceAndPath(Constants.FAMILY_ID, id.getPath());
     }
 }

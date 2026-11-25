@@ -14,12 +14,12 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -60,14 +60,14 @@ final class WorldgenTests {
         int checked = 0;
 
         for (String biomeId : new String[]{"minecraft:plains", "minecraft:desert", "minecraft:jagged_peaks"}) {
-            var biome = biomes.getOrThrow(ResourceKey.create(Registries.BIOME, Identifier.parse(biomeId)));
+            var biome = biomes.getOrThrow(ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biomeId)));
             List<HolderSet<PlacedFeature>> steps = biome.value().getGenerationSettings().features();
 
             for (int step = 0; step < steps.size(); step++) {
                 String previous = null;
 
                 for (Holder<PlacedFeature> feature : steps.get(step)) {
-                    String id = feature.unwrapKey().map(key -> key.identifier().toString()).orElse(null);
+                    String id = feature.unwrapKey().map(key -> key.location().toString()).orElse(null);
                     if (id == null || OURS.stream().noneMatch(namespace -> id.startsWith(namespace + ":"))) {
                         continue;
                     }
@@ -115,11 +115,11 @@ final class WorldgenTests {
 
         for (ResourceKey<LootTable> key : tables) {
             LootTable table = registries.getLootTable(key);
-            helper.assertFalse(table == LootTable.EMPTY, "loot table " + key.identifier() + " does not exist");
+            helper.assertFalse(table == LootTable.EMPTY, "loot table " + key.location() + " does not exist");
 
             // Every one of these has a pool of guaranteed rolls with no empty entry in it, so a
             // fixed seed makes "rolled nothing" a real failure rather than bad luck.
-            helper.assertFalse(table.getRandomItems(params, 42L).isEmpty(), "loot table " + key.identifier() + " rolled nothing");
+            helper.assertFalse(table.getRandomItems(params, 42L).isEmpty(), "loot table " + key.location() + " rolled nothing");
         }
 
         helper.succeed();
@@ -133,14 +133,14 @@ final class WorldgenTests {
         RegistryAccess registries = helper.getLevel().registryAccess();
         List<String> problems = new ArrayList<>();
 
-        Registry<Feature> configured = registries.lookupOrThrow(Registries.FEATURE);
-        Registry<PlacedFeature> placed = registries.lookupOrThrow(Registries.PLACED_FEATURE);
+        Registry<ConfiguredFeature<?, ?>> configured = registries.registryOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<PlacedFeature> placed = registries.registryOrThrow(Registries.PLACED_FEATURE);
         for (String name : FEATURES) {
-            Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
-            if (configured.getValue(id) == null) {
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name);
+            if (configured.get(id) == null) {
                 problems.add("configured feature " + id + " is not in the registry");
             }
-            if (placed.getValue(id) == null) {
+            if (placed.get(id) == null) {
                 problems.add("placed feature " + id + " is not in the registry");
             }
         }
@@ -158,7 +158,7 @@ final class WorldgenTests {
     private static void configRarityGatesTheNewFeatures(GameTestHelper helper) {
         List<String> problems = new ArrayList<>();
 
-        Identifier rarityType = BuiltInRegistries.PLACEMENT_MODIFIER_TYPE.getKey(TerrainPlacements.CONFIG_RARITY.get());
+        ResourceLocation rarityType = BuiltInRegistries.PLACEMENT_MODIFIER_TYPE.getKey(TerrainPlacements.CONFIG_RARITY.get());
         if (rarityType == null) {
             problems.add("the config_rarity placement modifier type is not registered, so its placed features cannot load");
         }
@@ -170,10 +170,10 @@ final class WorldgenTests {
             }
         }
 
-        Registry<PlacedFeature> placed = helper.getLevel().registryAccess().lookupOrThrow(Registries.PLACED_FEATURE);
+        Registry<PlacedFeature> placed = helper.getLevel().registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
         for (String name : List.of("desert_well", "crop_field", "cactus_field", "sand_pit", "patch_saplings", "tree_stumps", "patch_melons")) {
-            Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
-            PlacedFeature feature = placed.getValue(id);
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name);
+            PlacedFeature feature = placed.get(id);
             if (feature == null) {
                 problems.add("placed feature " + id + " is not in the registry");
             } else if (feature.placement().stream().noneMatch(modifier -> modifier instanceof ConfigRarityFilter)) {
@@ -192,7 +192,7 @@ final class WorldgenTests {
     private static void vanillaDesertWellIsReplaced(GameTestHelper helper) {
         helper.assertTrue(TerrainCommonMod.COMMON_CONFIG.desertWellReplaceVanilla.get(), "desertWells.replaceVanilla is off in the test config");
 
-        Biome desert = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME).getValueOrThrow(Biomes.DESERT);
+        Biome desert = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME).getOrThrow(Biomes.DESERT).value();
         helper.assertFalse(hasFeature(desert, TerrainBiomeModifiers.VANILLA_DESERT_WELL), "the desert still has vanilla's desert well");
         helper.assertTrue(hasFeature(desert, TerrainGenData.DESERT_WELL_KEY), "the desert lost this mod's desert well as well");
         helper.succeed();
@@ -203,11 +203,11 @@ final class WorldgenTests {
      * different loader API on each side, so this is where the two could disagree.
      */
     private static void modFeaturesAreAttachedToBiomes(GameTestHelper helper) {
-        Registry<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
+        Registry<Biome> biomes = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
         List<String> problems = new ArrayList<>();
 
         for (String name : FEATURES) {
-            Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name);
             int biomeCount = 0;
             for (Biome biome : biomes) {
                 if (hasFeature(biome, id)) {

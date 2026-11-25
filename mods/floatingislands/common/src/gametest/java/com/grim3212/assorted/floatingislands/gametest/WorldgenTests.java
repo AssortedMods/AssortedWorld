@@ -11,10 +11,10 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,14 +47,14 @@ final class WorldgenTests {
         int checked = 0;
 
         for (String biomeId : new String[]{"minecraft:plains", "minecraft:desert", "minecraft:jagged_peaks"}) {
-            var biome = biomes.getOrThrow(ResourceKey.create(Registries.BIOME, Identifier.parse(biomeId)));
+            var biome = biomes.getOrThrow(ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biomeId)));
             List<HolderSet<PlacedFeature>> steps = biome.value().getGenerationSettings().features();
 
             for (int step = 0; step < steps.size(); step++) {
                 String previous = null;
 
                 for (Holder<PlacedFeature> feature : steps.get(step)) {
-                    String id = feature.unwrapKey().map(key -> key.identifier().toString()).orElse(null);
+                    String id = feature.unwrapKey().map(key -> key.location().toString()).orElse(null);
                     if (id == null || OURS.stream().noneMatch(namespace -> id.startsWith(namespace + ":"))) {
                         continue;
                     }
@@ -88,13 +88,13 @@ final class WorldgenTests {
         RegistryAccess registries = helper.getLevel().registryAccess();
         List<String> problems = new ArrayList<>();
 
-        Registry<Feature> configured = registries.lookupOrThrow(Registries.FEATURE);
-        Registry<PlacedFeature> placed = registries.lookupOrThrow(Registries.PLACED_FEATURE);
-        Identifier id = FloatingIslandsGenData.FLOATING_ISLAND_KEY;
-        if (configured.getValue(id) == null) {
+        Registry<ConfiguredFeature<?, ?>> configured = registries.registryOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<PlacedFeature> placed = registries.registryOrThrow(Registries.PLACED_FEATURE);
+        ResourceLocation id = FloatingIslandsGenData.FLOATING_ISLAND_KEY;
+        if (configured.get(id) == null) {
             problems.add("configured feature " + id + " is not in the registry");
         }
-        if (placed.getValue(id) == null) {
+        if (placed.get(id) == null) {
             problems.add("placed feature " + id + " is not in the registry");
         }
 
@@ -109,7 +109,7 @@ final class WorldgenTests {
     private static void configRarityGatesTheNewFeatures(GameTestHelper helper) {
         List<String> problems = new ArrayList<>();
 
-        Identifier rarityType = BuiltInRegistries.PLACEMENT_MODIFIER_TYPE.getKey(FloatingIslandsPlacements.CONFIG_RARITY.get());
+        ResourceLocation rarityType = BuiltInRegistries.PLACEMENT_MODIFIER_TYPE.getKey(FloatingIslandsPlacements.CONFIG_RARITY.get());
         if (rarityType == null) {
             problems.add("the config_rarity placement modifier type is not registered, so its placed features cannot load");
         }
@@ -118,9 +118,9 @@ final class WorldgenTests {
             problems.add("part " + FloatingIslandsPlacements.Parts.FLOATING_ISLAND + " reads back no rarity, so it can never generate");
         }
 
-        Registry<PlacedFeature> placed = helper.getLevel().registryAccess().lookupOrThrow(Registries.PLACED_FEATURE);
-        Identifier id = FloatingIslandsGenData.FLOATING_ISLAND_KEY;
-        PlacedFeature feature = placed.getValue(id);
+        Registry<PlacedFeature> placed = helper.getLevel().registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
+        ResourceLocation id = FloatingIslandsGenData.FLOATING_ISLAND_KEY;
+        PlacedFeature feature = placed.get(id);
         if (feature == null) {
             problems.add("placed feature " + id + " is not in the registry");
         } else if (feature.placement().stream().noneMatch(modifier -> modifier instanceof ConfigRarityFilter)) {
@@ -136,8 +136,8 @@ final class WorldgenTests {
      * a different loader API on each side, so this is where the two could disagree.
      */
     private static void modFeaturesAreAttachedToBiomes(GameTestHelper helper) {
-        Registry<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
-        Identifier id = FloatingIslandsGenData.FLOATING_ISLAND_KEY;
+        Registry<Biome> biomes = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceLocation id = FloatingIslandsGenData.FLOATING_ISLAND_KEY;
 
         int biomeCount = 0;
         for (Biome biome : biomes) {

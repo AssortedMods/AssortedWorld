@@ -8,7 +8,7 @@ import com.grim3212.assorted.terrain.common.gen.feature.TerrainFeatures;
 import com.grim3212.assorted.terrain.common.gen.placement.TerrainPlacements;
 import com.grim3212.assorted.terrain.common.handlers.TerrainCreativeItems;
 import com.grim3212.assorted.terrain.config.TerrainCommonConfig;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class TerrainCommonMod {
 
@@ -17,7 +17,7 @@ public class TerrainCommonMod {
     public static void init() {
         Constants.LOG.info(Constants.MOD_NAME + " starting up...");
         Families.join(Constants.MOD_ID, Constants.FAMILY_ID)
-                .icon(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "randomite_ore"), 50)
+                .icon(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "randomite_ore"), 50)
                 .manualOrder(140);
 
         TerrainBlocks.init();

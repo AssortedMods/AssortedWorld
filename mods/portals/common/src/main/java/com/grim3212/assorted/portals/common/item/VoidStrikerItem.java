@@ -3,13 +3,14 @@ package com.grim3212.assorted.portals.common.item;
 import com.grim3212.assorted.portals.common.block.VoidPortalRect;
 import com.grim3212.assorted.portals.common.block.VoidPortalShape;
 import com.grim3212.assorted.portals.common.block.PortalsBlocks;
-import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,10 +40,10 @@ public class VoidStrikerItem extends Item {
                 VoidPortalShape.light(serverLevel, ring);
                 level.playSound(null, context.getClickedPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
                 if (player != null) {
-                    context.getItemInHand().hurtAndBreak(1, player, context.getHand().asEquipmentSlot());
+                    context.getItemInHand().hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
                 }
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         BlockPos firePos = context.getClickedPos().relative(context.getClickedFace());
@@ -58,9 +59,9 @@ public class VoidStrikerItem extends Item {
         ItemStack stack = context.getItemInHand();
         if (player instanceof ServerPlayer serverPlayer) {
             CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, firePos, stack);
-            stack.hurtAndBreak(1, player, context.getHand().asEquipmentSlot());
+            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
         }
 
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 }

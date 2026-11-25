@@ -4,6 +4,11 @@ import com.grim3212.assorted.structures.Constants;
 import com.grim3212.assorted.structures.api.StructuresLootTables;
 import com.grim3212.assorted.structures.common.gen.placement.ConfigRarityFilter;
 import com.grim3212.assorted.structures.common.gen.placement.StructuresPlacements;
+import com.grim3212.assorted.structures.common.gen.structure.fountain.FountainPiece;
+import com.grim3212.assorted.structures.common.gen.structure.pyramid.PyramidPiece;
+import com.grim3212.assorted.structures.common.gen.structure.snowball.SnowballPiece;
+import com.grim3212.assorted.structures.common.gen.structure.waterdome.WaterDomePiece;
+import com.grim3212.assorted.structures.common.gen.structure.waterdome.WaterDomeType;
 import com.grim3212.assorted.structures.common.util.RuinUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -12,16 +17,21 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.ReloadableServerRegistries;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -58,14 +68,14 @@ final class WorldgenTests {
         int checked = 0;
 
         for (String biomeId : new String[]{"minecraft:plains", "minecraft:desert", "minecraft:jagged_peaks"}) {
-            var biome = biomes.getOrThrow(ResourceKey.create(Registries.BIOME, Identifier.parse(biomeId)));
+            var biome = biomes.getOrThrow(ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biomeId)));
             List<HolderSet<PlacedFeature>> steps = biome.value().getGenerationSettings().features();
 
             for (int step = 0; step < steps.size(); step++) {
                 String previous = null;
 
                 for (Holder<PlacedFeature> feature : steps.get(step)) {
-                    String id = feature.unwrapKey().map(key -> key.identifier().toString()).orElse(null);
+                    String id = feature.unwrapKey().map(key -> key.location().toString()).orElse(null);
                     if (id == null || OURS.stream().noneMatch(namespace -> id.startsWith(namespace + ":"))) {
                         continue;
                     }
@@ -91,6 +101,48 @@ final class WorldgenTests {
         out.accept("mod_features_are_attached_to_biomes", WorldgenTests::modFeaturesAreAttachedToBiomes);
         out.accept("config_rarity_gates_the_new_features", WorldgenTests::configRarityGatesTheNewFeatures);
         out.accept("added_features_keep_one_order_across_loaders", WorldgenTests::addedFeaturesKeepOneOrderAcrossLoaders);
+        out.accept("every_structure_piece_survives_a_reload", WorldgenTests::everyStructurePieceSurvivesAReload);
+    }
+
+    /**
+     * A structure that is only partly generated when the world is saved is written as its pieces,
+     * and each piece has to come back with everything it decided when it was laid out: the rune it
+     * rolled, its size, and the water dome's chest and gravel columns. Saving the reloaded piece
+     * again has to give the same tag.
+     */
+    private static void everyStructurePieceSurvivesAReload(GameTestHelper helper) {
+        StructurePieceSerializationContext context = StructurePieceSerializationContext.fromLevel(helper.getLevel());
+        RandomSource random = RandomSource.create(5L);
+        BlockPos at = new BlockPos(32, 70, -48);
+        List<String> problems = new ArrayList<>();
+
+        List<StructurePiece> pieces = List.of(
+                new SnowballPiece(random, at, 9, 4),
+                new PyramidPiece(random, at, 66, 12, 1),
+                new FountainPiece(random, at, 16, 1),
+                new WaterDomePiece(random, at, 6, true, 3, WaterDomeType.IRON, 2, 3));
+
+        for (StructurePiece piece : pieces) {
+            CompoundTag saved = piece.createTag(context);
+            StructurePiece reloaded = piece.getType().load(context, saved);
+            CompoundTag resaved = reloaded.createTag(context);
+            if (!saved.equals(resaved)) {
+                problems.add(piece.getClass().getSimpleName() + " saved " + saved + " but reloaded as " + resaved);
+            }
+        }
+
+        // The offsets are written through a codec; an empty or missing list would reload as a dome
+        // with no chests and no gravel and still compare equal above.
+        CompoundTag dome = pieces.get(3).createTag(context);
+        if (dome.getList("chestOffsets", Tag.TAG_INT_ARRAY).size() != 2) {
+            problems.add("the water dome saved " + dome.get("chestOffsets") + " for its two chests");
+        }
+        if (dome.getList("gravelOffsets", Tag.TAG_INT_ARRAY).size() != 3) {
+            problems.add("the water dome saved " + dome.get("gravelOffsets") + " for its three gravel");
+        }
+
+        helper.assertTrue(problems.isEmpty(), String.join("; ", problems));
+        helper.succeed();
     }
 
     /**
@@ -115,11 +167,11 @@ final class WorldgenTests {
 
         for (ResourceKey<LootTable> key : tables) {
             LootTable table = registries.getLootTable(key);
-            helper.assertFalse(table == LootTable.EMPTY, "loot table " + key.identifier() + " does not exist");
+            helper.assertFalse(table == LootTable.EMPTY, "loot table " + key.location() + " does not exist");
 
             // Every one of these has a pool of guaranteed rolls with no empty entry in it, so a
             // fixed seed makes "rolled nothing" a real failure rather than bad luck.
-            helper.assertFalse(table.getRandomItems(params, 42L).isEmpty(), "loot table " + key.identifier() + " rolled nothing");
+            helper.assertFalse(table.getRandomItems(params, 42L).isEmpty(), "loot table " + key.location() + " rolled nothing");
         }
 
         helper.succeed();
@@ -157,29 +209,29 @@ final class WorldgenTests {
         RegistryAccess registries = helper.getLevel().registryAccess();
         List<String> problems = new ArrayList<>();
 
-        Registry<Structure> structures = registries.lookupOrThrow(Registries.STRUCTURE);
-        Registry<StructureSet> structureSets = registries.lookupOrThrow(Registries.STRUCTURE_SET);
+        Registry<Structure> structures = registries.registryOrThrow(Registries.STRUCTURE);
+        Registry<StructureSet> structureSets = registries.registryOrThrow(Registries.STRUCTURE_SET);
         for (String name : List.of("fountain", "pyramid", "snowball", "water_dome")) {
-            Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
-            Structure structure = structures.getValue(id);
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name);
+            Structure structure = structures.get(id);
             if (structure == null) {
                 problems.add("structure " + id + " is not in the registry");
             } else if (structure.biomes().size() == 0) {
                 problems.add("structure " + id + " has an empty biome tag, so it can never generate");
             }
-            if (structureSets.getValue(id) == null) {
+            if (structureSets.get(id) == null) {
                 problems.add("structure set " + id + " is not in the registry, so nothing places " + name);
             }
         }
 
-        Registry<Feature> configured = registries.lookupOrThrow(Registries.FEATURE);
-        Registry<PlacedFeature> placed = registries.lookupOrThrow(Registries.PLACED_FEATURE);
+        Registry<ConfiguredFeature<?, ?>> configured = registries.registryOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<PlacedFeature> placed = registries.registryOrThrow(Registries.PLACED_FEATURE);
         for (String name : List.of("ruin", "spire", "sand_pillar")) {
-            Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
-            if (configured.getValue(id) == null) {
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name);
+            if (configured.get(id) == null) {
                 problems.add("configured feature " + id + " is not in the registry");
             }
-            if (placed.getValue(id) == null) {
+            if (placed.get(id) == null) {
                 problems.add("placed feature " + id + " is not in the registry");
             }
         }
@@ -197,7 +249,7 @@ final class WorldgenTests {
     private static void configRarityGatesTheNewFeatures(GameTestHelper helper) {
         List<String> problems = new ArrayList<>();
 
-        Identifier rarityType = BuiltInRegistries.PLACEMENT_MODIFIER_TYPE.getKey(StructuresPlacements.CONFIG_RARITY.get());
+        ResourceLocation rarityType = BuiltInRegistries.PLACEMENT_MODIFIER_TYPE.getKey(StructuresPlacements.CONFIG_RARITY.get());
         if (rarityType == null) {
             problems.add("the config_rarity placement modifier type is not registered, so its placed features cannot load");
         }
@@ -208,10 +260,10 @@ final class WorldgenTests {
             }
         }
 
-        Registry<PlacedFeature> placed = helper.getLevel().registryAccess().lookupOrThrow(Registries.PLACED_FEATURE);
+        Registry<PlacedFeature> placed = helper.getLevel().registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
         for (String name : List.of("sand_pillar")) {
-            Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
-            PlacedFeature feature = placed.getValue(id);
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name);
+            PlacedFeature feature = placed.get(id);
             if (feature == null) {
                 problems.add("placed feature " + id + " is not in the registry");
             } else if (feature.placement().stream().noneMatch(modifier -> modifier instanceof ConfigRarityFilter)) {
@@ -228,11 +280,11 @@ final class WorldgenTests {
      * different loader API on each side, so this is where the two could disagree.
      */
     private static void modFeaturesAreAttachedToBiomes(GameTestHelper helper) {
-        Registry<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
+        Registry<Biome> biomes = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
         List<String> problems = new ArrayList<>();
 
         for (String name : List.of("ruin", "spire", "sand_pillar")) {
-            Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name);
             int biomeCount = 0;
             for (Biome biome : biomes) {
                 if (hasFeature(biome, id)) {

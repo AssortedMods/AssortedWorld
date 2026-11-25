@@ -2,16 +2,16 @@ package com.grim3212.assorted.floatingislands.common.gen.feature;
 
 import com.grim3212.assorted.floatingislands.api.FloatingIslandsTags;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.Weighted;
-import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,14 +29,14 @@ public final class FloatingIslandType {
     private final String name;
     private final int weight;
     private final boolean fallback;
-    private final WeightedList<BlockState> cover;
+    private final SimpleWeightedRandomList<BlockState> cover;
     private final BlockState filler;
-    private final WeightedList<BlockState> core;
+    private final SimpleWeightedRandomList<BlockState> core;
     private final List<BlockState> coreBands;
     private final boolean snowCover;
-    private final WeightedList<BlockState> plants;
+    private final SimpleWeightedRandomList<BlockState> plants;
     private final int plantRate;
-    private final WeightedList<ResourceKey<Feature>> trees;
+    private final SimpleWeightedRandomList<ResourceKey<ConfiguredFeature<?, ?>>> trees;
     private final double treesPerColumn;
     private final int treeHeadroom;
     private final TagKey<Biome> biomes;
@@ -82,7 +82,7 @@ public final class FloatingIslandType {
 
     /** The top layer, rolled per column so a cover can be patchy. */
     public BlockState cover(RandomSource random) {
-        return this.cover.getRandomOrThrow(random);
+        return this.cover.getRandomValue(random).orElseThrow();
     }
 
     /** The few layers under the cover. */
@@ -98,7 +98,7 @@ public final class FloatingIslandType {
         if (!this.coreBands.isEmpty()) {
             return this.coreBands.get(Math.floorMod(y, this.coreBands.size()));
         }
-        return this.core.getRandomOrThrow(random);
+        return this.core.getRandomValue(random).orElseThrow();
     }
 
     /** Whether every open surface block gets a layer of snow. */
@@ -111,7 +111,7 @@ public final class FloatingIslandType {
         if (this.plants.isEmpty() || random.nextInt(this.plantRate) != 0) {
             return Optional.empty();
         }
-        return Optional.of(this.plants.getRandomOrThrow(random));
+        return Optional.of(this.plants.getRandomValue(random).orElseThrow());
     }
 
     public boolean hasTrees() {
@@ -119,8 +119,8 @@ public final class FloatingIslandType {
     }
 
     /** A vanilla configured feature to grow: a tree, a huge mushroom, a bush or a fallen log. */
-    public ResourceKey<Feature> tree(RandomSource random) {
-        return this.trees.getRandomOrThrow(random);
+    public ResourceKey<ConfiguredFeature<?, ?>> tree(RandomSource random) {
+        return this.trees.getRandomValue(random).orElseThrow();
     }
 
     /** How many trees an island of {@code columns} surface blocks tries to grow. */
@@ -137,26 +137,26 @@ public final class FloatingIslandType {
 
     /** Every block the cover can be, for checking trees have soil to stand on. */
     public List<BlockState> allCovers() {
-        return this.cover.unwrap().stream().map(Weighted::value).toList();
+        return this.cover.unwrap().stream().map(WeightedEntry.Wrapper::data).toList();
     }
 
     /** Every tree feature this kind can grow, for checking they all exist. */
-    public List<ResourceKey<Feature>> allTrees() {
-        return this.trees.unwrap().stream().map(Weighted::value).toList();
+    public List<ResourceKey<ConfiguredFeature<?, ?>>> allTrees() {
+        return this.trees.unwrap().stream().map(WeightedEntry.Wrapper::data).toList();
     }
 
     public static final class Builder {
         private final String name;
         private final int weight;
         private boolean fallback;
-        private final WeightedList.Builder<BlockState> cover = WeightedList.builder();
+        private final SimpleWeightedRandomList.Builder<BlockState> cover = SimpleWeightedRandomList.builder();
         private BlockState filler;
-        private final WeightedList.Builder<BlockState> core = WeightedList.builder();
+        private final SimpleWeightedRandomList.Builder<BlockState> core = SimpleWeightedRandomList.builder();
         private List<BlockState> coreBands = List.of();
         private boolean snowCover;
-        private final WeightedList.Builder<BlockState> plants = WeightedList.builder();
+        private final SimpleWeightedRandomList.Builder<BlockState> plants = SimpleWeightedRandomList.builder();
         private int plantRate = 1;
-        private final WeightedList.Builder<ResourceKey<Feature>> trees = WeightedList.builder();
+        private final SimpleWeightedRandomList.Builder<ResourceKey<ConfiguredFeature<?, ?>>> trees = SimpleWeightedRandomList.builder();
         private double treesPerColumn;
         private int treeHeadroom;
 
@@ -229,7 +229,7 @@ public final class FloatingIslandType {
 
         /** A vanilla configured feature by its id, like {@code "jungle_tree"}. */
         public Builder tree(String id, int weight) {
-            this.trees.add(ResourceKey.create(Registries.FEATURE, Identifier.withDefaultNamespace(id)), weight);
+            this.trees.add(ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.withDefaultNamespace(id)), weight);
             return this;
         }
 

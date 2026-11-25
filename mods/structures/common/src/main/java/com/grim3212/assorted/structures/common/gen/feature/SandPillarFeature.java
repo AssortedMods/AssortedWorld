@@ -2,19 +2,20 @@ package com.grim3212.assorted.structures.common.gen.feature;
 
 import com.grim3212.assorted.structures.StructuresCommonMod;
 import com.grim3212.assorted.structures.common.block.StructuresBlocks;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.entity.BlockEntityTypes;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 
 import java.util.ArrayList;
@@ -28,13 +29,15 @@ import java.util.List;
  * Some also have a block of suspicious sand worked into the plinth, or a single rune buried in the
  * middle of the shaft; both are off by default odds in the config rather than guaranteed.
  */
-public class SandPillarFeature implements Feature {
+public class SandPillarFeature extends Feature<NoneFeatureConfiguration> {
 
-    public static final MapCodec<SandPillarFeature> CODEC = MapCodec.unit(SandPillarFeature::new);
+    public SandPillarFeature() {
+        super(NoneFeatureConfiguration.CODEC);
+    }
 
     @Override
-    public MapCodec<SandPillarFeature> codec() {
-        return CODEC;
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+        return this.place(context.level(), context.chunkGenerator(), context.random(), context.origin());
     }
 
     private static final int MIN_SHAFT = 4;
@@ -92,8 +95,7 @@ public class SandPillarFeature implements Feature {
         }
     }
 
-    @Override
-    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
+    private boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
         BlockPos base = origin;
 
         BlockState ground = level.getBlockState(base.below());
@@ -118,7 +120,7 @@ public class SandPillarFeature implements Feature {
         int capitalHeight = width >= 2 ? 2 : 1;
         int total = plinthHeight + shaft + capitalHeight;
 
-        if (base.getY() + total + 1 > level.getMaxY() || !isOpenGround(level, base, min - 1, max + 1, total)) {
+        if (base.getY() + total + 1 >= level.getMaxBuildHeight() || !isOpenGround(level, base, min - 1, max + 1, total)) {
             return false;
         }
 
@@ -207,7 +209,7 @@ public class SandPillarFeature implements Feature {
         BlockPos pos = plinthBottom.offset(at.getX(), random.nextInt(Math.max(1, plinthHeight - 1)), at.getZ());
 
         level.setBlock(pos, Blocks.SUSPICIOUS_SAND.defaultBlockState(), Block.UPDATE_ALL);
-        level.getBlockEntity(pos, BlockEntityTypes.BRUSHABLE_BLOCK).ifPresent(sand -> sand.setLootTable(BuiltInLootTables.DESERT_PYRAMID_ARCHAEOLOGY, pos.asLong()));
+        level.getBlockEntity(pos, BlockEntityType.BRUSHABLE_BLOCK).ifPresent(sand -> sand.setLootTable(BuiltInLootTables.DESERT_PYRAMID_ARCHAEOLOGY, pos.asLong()));
     }
 
     private static BlockState plinth(Style style, Stone stone, int y) {

@@ -6,6 +6,7 @@
     }
   ],
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "fabric:load_conditions": [
     {
       "condition": "assortedlib:part_enabled",
@@ -13,8 +14,12 @@
     }
   ],
   "key": {
-    "R": "minecraft:sugar_cane",
-    "X": "#c:gunpowders"
+    "R": {
+      "item": "minecraft:sugar_cane"
+    },
+    "X": {
+      "tag": "c:gunpowders"
+    }
   },
   "pattern": [
     "XXX",
@@ -22,6 +27,7 @@
     "XXX"
   ],
   "result": {
+    "count": 1,
     "id": "assortedplants:gunpowder_reed"
   }
 }

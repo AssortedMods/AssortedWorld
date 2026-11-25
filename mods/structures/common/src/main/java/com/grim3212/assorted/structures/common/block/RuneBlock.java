@@ -3,7 +3,7 @@ package com.grim3212.assorted.structures.common.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
@@ -47,8 +47,7 @@ public class RuneBlock extends Block {
     }
 
     private MobEffectInstance getPotionEffect(int xpLevel, float durationMod, float amplifierMod) {
-        // TODO: Add in config options for modifiers
-        // XPLVLMOD, DURATIONMOD, AMPLIFIERMOD
+        // Both modifiers are fixed by the callers; the experience level is what scales the effect.
         int duration = (int) (1000F + (float) (500F + (xpLevel * 100)) * durationMod);
         int amplifier = (int) (0.0D + Math.floor(amplifierMod * (float) xpLevel));
 
@@ -103,11 +102,11 @@ public class RuneBlock extends Block {
             }
         }
 
-        // MobEffectInstance takes a Holder now, so the lookup has to come back as one. The library
+        // MobEffectInstance takes a Holder, so the lookup has to come back as one. The library
         // registry wrapper only hands out bare values, so this goes straight at the vanilla
         // registry - it is the same registry on both loaders.
         public static Holder<MobEffect> get(String loc) {
-            return BuiltInRegistries.MOB_EFFECT.get(Identifier.parse(loc)).orElse(null);
+            return BuiltInRegistries.MOB_EFFECT.getHolder(ResourceLocation.parse(loc)).orElse(null);
         }
 
         @Override

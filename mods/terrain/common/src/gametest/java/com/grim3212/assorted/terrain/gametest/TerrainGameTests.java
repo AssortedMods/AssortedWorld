@@ -24,6 +24,7 @@ public final class TerrainGameTests {
         OreTests.register(out);
         WorldgenTests.register(out);
         DesertWellTests.register(out);
+        CactusFieldTests.register(out);
         BiomeWoodsTests.register(out);
         FamilyTests.register(out);
         CommonTests.register(out, Constants.MOD_ID);

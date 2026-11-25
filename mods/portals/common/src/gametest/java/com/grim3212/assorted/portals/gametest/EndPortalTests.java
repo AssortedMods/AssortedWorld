@@ -9,12 +9,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
@@ -24,7 +31,9 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -55,6 +64,8 @@ final class EndPortalTests {
         out.accept("void_portal_frame_is_as_hard_as_obsidian", EndPortalTests::voidPortalFrameIsAsHardAsObsidian);
         out.accept("void_crystal_ore_needs_an_iron_tool", EndPortalTests::voidCrystalOreNeedsAnIronTool);
         out.accept("end_city_chests_can_hold_void_crystal", EndPortalTests::endCityChestsCanHoldVoidCrystal);
+        out.accept("floor_portal_sends_a_mob_to_the_end", EndPortalTests::floorPortalSendsAMobToTheEnd);
+        out.accept("wall_portal_sends_a_mob_to_the_end", EndPortalTests::wallPortalSendsAMobToTheEnd);
     }
 
     /** Lit from a corner of the interior, and the frames are left facing as they were placed. */
@@ -96,7 +107,7 @@ final class EndPortalTests {
         helper.getLevel().destroyBlock(helper.absolutePos(FLOOR.ring().get(4)), true);
 
         assertPortal(helper, FLOOR, false);
-        helper.assertFalse(helper.getEntities(EntityTypes.ITEM).isEmpty(), "the broken frame dropped nothing");
+        helper.assertFalse(helper.getEntities(EntityType.ITEM).isEmpty(), "the broken frame dropped nothing");
         helper.succeed();
     }
 
@@ -172,6 +183,9 @@ final class EndPortalTests {
         });
     }
 
+    // NeoForge deprecates the plain resistance for its level-aware overload, which Fabric does not have;
+    // the overload's default reads this same value.
+    @SuppressWarnings("deprecation")
     private static void voidPortalFrameIsAsHardAsObsidian(GameTestHelper helper) {
         helper.setBlock(CENTRE, PortalsBlocks.VOID_PORTAL_FRAME.get());
         BlockState frame = helper.getBlockState(CENTRE);
@@ -190,7 +204,7 @@ final class EndPortalTests {
         helper.assertTrue(new ItemStack(Items.IRON_PICKAXE).isCorrectToolForDrops(ore), "an iron pickaxe does not harvest void crystal ore");
 
         helper.getLevel().destroyBlock(helper.absolutePos(CENTRE), true);
-        boolean dropped = helper.getEntities(EntityTypes.ITEM).stream().anyMatch(item -> item.getItem().is(PortalsItems.VOID_CRYSTAL.get()));
+        boolean dropped = helper.getEntities(EntityType.ITEM).stream().anyMatch(item -> item.getItem().is(PortalsItems.VOID_CRYSTAL.get()));
         helper.assertTrue(dropped, "void crystal ore dropped no void crystal");
         helper.succeed();
     }
@@ -211,6 +225,81 @@ final class EndPortalTests {
         // One chest in four; 8 to 45 of 100 is a safe margin either side of 25.
         helper.assertTrue(withCrystal >= 8 && withCrystal <= 45, withCrystal + " of 100 end city chests held void crystal, not about one in four");
         helper.succeed();
+    }
+
+    /** A lit floor ring takes a mob standing in it to the End's spawn platform, as vanilla's end portal does. */
+    private static void floorPortalSendsAMobToTheEnd(GameTestHelper helper) {
+        placeRing(helper, FLOOR, Direction.UP);
+        helper.setBlock(CENTRE, PortalsBlocks.ENDER_FLAMES.get());
+        assertPortal(helper, FLOOR, true);
+
+        assertTravelsToTheEnd(helper, CENTRE, null);
+    }
+
+    /**
+     * An upright portal only takes what touches its slab through the middle of the block: the pig in
+     * it goes, an item dropped down the portal's west column against its north face, clear of the
+     * slab, stays.
+     */
+    private static void wallPortalSendsAMobToTheEnd(GameTestHelper helper) {
+        VoidPortalRect wall = new VoidPortalRect(new BlockPos(3, 2, 4), Direction.Axis.Z, Direction.EAST, Direction.UP, 3, 5);
+        placeRing(helper, wall, Direction.NORTH);
+        strike(helper, wall.ring().get(0));
+        assertPortal(helper, wall, true);
+
+        BlockPos top = wall.corner().relative(wall.up(), wall.height() - 1);
+        assertTravelsToTheEnd(helper, wall.centre(), new Vec3(top.getX() + 0.5, top.getY() + 0.5, top.getZ() + 0.15));
+    }
+
+    /**
+     * A pig let go in the portal block leaves this level and turns up, same uuid, on the End's spawn
+     * platform. An entity sent into an End chunk whose entities have not loaded yet stays out of sight
+     * until they have, and the test server ticks far ahead of chunk generation, so the platform's chunk
+     * is held loaded with the portal ticket the trip itself places, and the pig only goes in once it is.
+     * An item dropped at {@code offSlab}, with no push of its own, must still be here when the pig arrives.
+     */
+    private static void assertTravelsToTheEnd(GameTestHelper helper, BlockPos portal, @Nullable Vec3 offSlab) {
+        ServerLevel end = helper.getLevel().getServer().getLevel(Level.END);
+        helper.assertTrue(end != null, "the test server has no End");
+        ChunkPos platform = new ChunkPos(ServerLevel.END_SPAWN_POINT);
+        AtomicReference<Pig> pig = new AtomicReference<>();
+        AtomicReference<ItemEntity> item = new AtomicReference<>();
+
+        helper.startSequence()
+                .thenExecute(() -> {
+                    // The test server runs its ticks back to back, leaving little of the idle time chunk
+                    // generation finishes in, so the platform's chunk is generated here and now.
+                    end.getChunkSource().addRegionTicket(TicketType.PORTAL, platform, 3, ServerLevel.END_SPAWN_POINT);
+                    end.getChunk(platform.x, platform.z);
+                })
+                .thenWaitUntil(() -> {
+                    // A portal ticket lapses after 300 ticks; renewing it keeps the chunk loading however long generation takes.
+                    end.getChunkSource().addRegionTicket(TicketType.PORTAL, platform, 3, ServerLevel.END_SPAWN_POINT);
+                    helper.assertTrue(end.areEntitiesLoaded(platform.toLong()), "the End's spawn platform has not loaded");
+                })
+                .thenExecute(() -> {
+                    pig.set(helper.spawn(EntityType.PIG, Vec3.atCenterOf(portal)));
+                    if (offSlab != null) {
+                        Vec3 at = helper.absoluteVec(offSlab);
+                        item.set(new ItemEntity(helper.getLevel(), at.x, at.y, at.z, new ItemStack(Items.ENDER_EYE), 0.0, 0.0, 0.0));
+                        helper.getLevel().addFreshEntity(item.get());
+                    }
+                })
+                .thenWaitUntil(() -> {
+                    helper.assertTrue(pig.get().isRemoved(), "the pig is still beside the portal at " + helper.relativeVec(pig.get().position()));
+                    helper.assertTrue(end.getEntity(pig.get().getUUID()) != null, "the pig left (" + pig.get().getRemovalReason() + ") but did not arrive in the End");
+                })
+                // Checked once, the tick the pig turns up, so a failure here names itself rather than timing out.
+                .thenExecute(() -> {
+                    Entity arrived = end.getEntity(pig.get().getUUID());
+                    arrived.discard();
+                    helper.assertTrue(arrived.blockPosition().closerThan(ServerLevel.END_SPAWN_POINT, 3.0), "the pig reached the End at " + arrived.blockPosition() + ", not its spawn platform");
+                    if (item.get() != null) {
+                        helper.assertFalse(item.get().isRemoved(), "the item clear of the slab was taken too (" + item.get().getRemovalReason() + ")");
+                        item.get().discard();
+                    }
+                })
+                .thenSucceed();
     }
 
     /** The ring's frames all facing one way, on an end stone floor under a flat ring. */

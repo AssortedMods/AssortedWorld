@@ -19,7 +19,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipes": "assortedplants:glowstone_seeds"
+        "recipe": "assortedplants:glowstone_seeds"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

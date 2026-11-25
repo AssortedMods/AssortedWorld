@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedstructures:death_spire_lava_rises_with_the_tower",
+  "structure": "assortedstructures:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "sky_access": true,
+  "required": true
+}

@@ -3,12 +3,10 @@ package com.grim3212.assorted.structures.common.gen.feature;
 import com.grim3212.assorted.structures.StructuresCommonMod;
 import com.grim3212.assorted.structures.api.StructuresLootTables;
 import com.grim3212.assorted.structures.common.util.RuinUtil;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
@@ -19,14 +17,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class RuinFeature implements Feature {
+public class RuinFeature extends Feature<NoneFeatureConfiguration> {
 
-    public static final MapCodec<RuinFeature> CODEC = MapCodec.unit(RuinFeature::new);
+    public RuinFeature() {
+        super(NoneFeatureConfiguration.CODEC);
+    }
 
     @Override
-    public MapCodec<RuinFeature> codec() {
-        return CODEC;
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+        return this.place(context.level(), context.chunkGenerator(), context.random(), context.origin());
     }
 
     /**
@@ -51,8 +53,7 @@ public class RuinFeature implements Feature {
         }
     }
 
-    @Override
-    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
+    private boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
         RandomSource rand = random;
         BlockPos pos = origin;
 
@@ -293,7 +294,7 @@ public class RuinFeature implements Feature {
             SpawnerBlockEntity tileentitymobspawner = (SpawnerBlockEntity) level.getBlockEntity(pos);
             EntityType<?> type = RuinUtil.getRandomRuneMob(random);
             if (type == null) {
-                type = EntityTypes.ZOMBIE;
+                type = EntityType.ZOMBIE;
             }
 
             tileentitymobspawner.setEntityId(type, random);

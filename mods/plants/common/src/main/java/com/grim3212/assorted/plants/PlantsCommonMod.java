@@ -6,7 +6,7 @@ import com.grim3212.assorted.plants.common.block.PlantsBlocks;
 import com.grim3212.assorted.plants.common.gen.PlantsBiomeModifiers;
 import com.grim3212.assorted.plants.common.handlers.PlantsCreativeItems;
 import com.grim3212.assorted.plants.config.PlantsCommonConfig;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class PlantsCommonMod {
 
@@ -15,7 +15,7 @@ public class PlantsCommonMod {
     public static void init() {
         Constants.LOG.info(Constants.MOD_NAME + " starting up...");
         Families.join(Constants.MOD_ID, Constants.FAMILY_ID)
-                .icon(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "gunpowder_reed"), 20)
+                .icon(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "gunpowder_reed"), 20)
                 .manualOrder(140);
 
         PlantsBlocks.init();

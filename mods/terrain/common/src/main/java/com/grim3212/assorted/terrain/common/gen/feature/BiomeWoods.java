@@ -25,8 +25,6 @@ public enum BiomeWoods {
     ACACIA("acacia", Blocks.ACACIA_SAPLING, Blocks.ACACIA_LOG, 3, false),
     DARK_OAK("dark_oak", Blocks.DARK_OAK_SAPLING, Blocks.DARK_OAK_LOG, 3, false),
     CHERRY("cherry", Blocks.CHERRY_SAPLING, Blocks.CHERRY_LOG, 2, false),
-    PALE_OAK("pale_oak", Blocks.PALE_OAK_SAPLING, Blocks.PALE_OAK_LOG, 2, false),
-    POPLAR("poplar", Blocks.POPLAR_SAPLING, Blocks.POPLAR_LOG, 2, false),
     MANGROVE("mangrove", Blocks.MANGROVE_PROPAGULE, Blocks.MANGROVE_LOG, 2, false);
 
     private static final List<BiomeWoods> VALUES = List.of(values());

@@ -8,14 +8,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTypes;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,10 +59,10 @@ public class PyramidPiece extends ScatteredFeaturePiece {
 
     public PyramidPiece(StructurePieceSerializationContext context, CompoundTag tagCompound) {
         super(StructuresTypes.PYRAMID_STRUCTURE_PIECE.get(), tagCompound);
-        this.maxHeight = tagCompound.getIntOr("maxHeight", 0);
-        this.type = tagCompound.getIntOr("type", 0);
-        this.runeIndex = tagCompound.getIntOr("runeIndex", 0);
-        this.baseY = tagCompound.getIntOr("baseY", LEGACY_BASE);
+        this.maxHeight = tagCompound.getInt("maxHeight");
+        this.type = tagCompound.getInt("type");
+        this.runeIndex = tagCompound.getInt("runeIndex");
+        this.baseY = tagCompound.contains("baseY") ? tagCompound.getInt("baseY") : LEGACY_BASE;
 
         // Not read back any more: postProcess regenerates them from a position-seeded source, so
         // they are working state for one pass rather than something that has to survive a reload.
@@ -142,7 +141,7 @@ public class PyramidPiece extends ScatteredFeaturePiece {
                 if (!bb.isInside(below)) {
                     continue;
                 }
-                while (below.getY() > reader.getMinY() && isHollow(reader.getBlockState(below))) {
+                while (below.getY() > reader.getMinBuildHeight() && isHollow(reader.getBlockState(below))) {
                     reader.setBlock(below, Blocks.SANDSTONE.defaultBlockState(), 2);
                     below = below.below();
                 }
@@ -166,7 +165,7 @@ public class PyramidPiece extends ScatteredFeaturePiece {
             }
 
         } else if (s.getBlock() == Blocks.SUSPICIOUS_SAND) {
-            world.getBlockEntity(p, BlockEntityTypes.BRUSHABLE_BLOCK).ifPresent(sand -> sand.setLootTable(BuiltInLootTables.DESERT_PYRAMID_ARCHAEOLOGY, p.asLong()));
+            world.getBlockEntity(p, BlockEntityType.BRUSHABLE_BLOCK).ifPresent(sand -> sand.setLootTable(BuiltInLootTables.DESERT_PYRAMID_ARCHAEOLOGY, p.asLong()));
 
         } else if (s.getBlock() == Blocks.SPAWNER) {
             BlockEntity te = world.getBlockEntity(p);
@@ -174,7 +173,7 @@ public class PyramidPiece extends ScatteredFeaturePiece {
             if (te instanceof SpawnerBlockEntity) {
                 EntityType<?> type = RuinUtil.getRandomRuneMob(rand);
                 if (type == null) {
-                    type = EntityTypes.ZOMBIE;
+                    type = EntityType.ZOMBIE;
                 }
                 ((SpawnerBlockEntity) te).setEntityId(type, rand);
             }

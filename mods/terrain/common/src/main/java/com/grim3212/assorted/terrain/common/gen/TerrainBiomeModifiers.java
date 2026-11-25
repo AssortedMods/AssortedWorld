@@ -7,7 +7,7 @@ import com.grim3212.assorted.terrain.Constants;
 import com.grim3212.assorted.terrain.TerrainCommonMod;
 import com.grim3212.assorted.terrain.api.TerrainTags;
 import com.grim3212.assorted.terrain.data.TerrainGenData;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 
 public class TerrainBiomeModifiers {
 
-    public static final Identifier VANILLA_DESERT_WELL = Identifier.withDefaultNamespace("desert_well");
+    public static final ResourceLocation VANILLA_DESERT_WELL = ResourceLocation.withDefaultNamespace("desert_well");
 
     public static void init() {
         Services.WORLD_GEN.addFeatureToBiomes(matchesTag(BiomeTags.IS_OVERWORLD), GenerationStep.Decoration.UNDERGROUND_ORES, TerrainGenData.RANDOMITE_KEY);

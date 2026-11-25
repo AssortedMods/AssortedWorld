@@ -6,7 +6,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.function.BiConsumer;
@@ -30,11 +30,11 @@ final class WorldgenTests {
     /** The reed patch is in the loaded datapack; a misrouted datagen run prunes its json silently. */
     private static void worldgenDatapackEntriesResolve(GameTestHelper helper) {
         RegistryAccess registries = helper.getLevel().registryAccess();
-        Registry<Feature> configured = registries.lookupOrThrow(Registries.FEATURE);
-        Registry<PlacedFeature> placed = registries.lookupOrThrow(Registries.PLACED_FEATURE);
+        Registry<ConfiguredFeature<?, ?>> configured = registries.registryOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<PlacedFeature> placed = registries.registryOrThrow(Registries.PLACED_FEATURE);
 
-        helper.assertTrue(configured.getValue(PlantsGenData.GUNPOWDER_REED_KEY) != null, "configured feature " + PlantsGenData.GUNPOWDER_REED_KEY + " is not in the registry");
-        helper.assertTrue(placed.getValue(PlantsGenData.GUNPOWDER_REED_KEY) != null, "placed feature " + PlantsGenData.GUNPOWDER_REED_KEY + " is not in the registry");
+        helper.assertTrue(configured.get(PlantsGenData.GUNPOWDER_REED_KEY) != null, "configured feature " + PlantsGenData.GUNPOWDER_REED_KEY + " is not in the registry");
+        helper.assertTrue(placed.get(PlantsGenData.GUNPOWDER_REED_KEY) != null, "placed feature " + PlantsGenData.GUNPOWDER_REED_KEY + " is not in the registry");
         helper.succeed();
     }
 
@@ -43,7 +43,7 @@ final class WorldgenTests {
      * different loader API on each side, so this is where the two could disagree.
      */
     private static void modFeaturesAreAttachedToBiomes(GameTestHelper helper) {
-        Registry<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
+        Registry<Biome> biomes = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
         boolean attached = false;
         for (Biome biome : biomes) {
             attached |= hasFeature(biome, PlantsGenData.GUNPOWDER_REED_KEY);

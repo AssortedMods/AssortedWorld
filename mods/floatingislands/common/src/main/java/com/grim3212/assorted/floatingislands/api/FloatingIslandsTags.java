@@ -2,7 +2,7 @@ package com.grim3212.assorted.floatingislands.api;
 
 import com.grim3212.assorted.floatingislands.Constants;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
@@ -18,7 +18,7 @@ public class FloatingIslandsTags {
         }
 
         private static TagKey<Biome> create(String n) {
-            return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(Constants.MOD_ID, n));
+            return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, n));
         }
     }
 }

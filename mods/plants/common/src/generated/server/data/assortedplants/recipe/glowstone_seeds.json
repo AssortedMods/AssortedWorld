@@ -6,6 +6,7 @@
     }
   ],
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "fabric:load_conditions": [
     {
       "condition": "assortedlib:part_enabled",
@@ -13,14 +14,19 @@
     }
   ],
   "key": {
-    "G": "#c:dusts/glowstone",
-    "S": "minecraft:soul_sand"
+    "G": {
+      "tag": "c:dusts/glowstone"
+    },
+    "S": {
+      "item": "minecraft:soul_sand"
+    }
   },
   "pattern": [
     "GSG",
     " G "
   ],
   "result": {
+    "count": 1,
     "id": "assortedplants:glowstone_seeds"
   }
 }

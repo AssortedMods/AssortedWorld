@@ -2,20 +2,23 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      },
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:apply_bonus",
               "enchantment": "minecraft:fortune",
-              "formula": "minecraft:ore_drops"
+              "formula": "minecraft:ore_drops",
+              "function": "minecraft:apply_bonus"
             },
             {
-              "type": "minecraft:explosion_decay"
+              "function": "minecraft:explosion_decay"
             }
           ],
           "name": "minecraft:coal",
@@ -33,35 +36,38 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:apply_bonus",
-            "enchantment": "minecraft:fortune",
-            "formula": "minecraft:ore_drops"
-          },
+          "functions": [
+            {
+              "enchantment": "minecraft:fortune",
+              "formula": "minecraft:ore_drops",
+              "function": "minecraft:apply_bonus"
+            }
+          ],
           "name": "minecraft:diamond",
           "weight": 10
         },
         {
           "type": "minecraft:item",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
+              "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 5,
-                "min": 4
-              }
+                "max": 5.0,
+                "min": 4.0
+              },
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:apply_bonus",
               "enchantment": "minecraft:fortune",
               "formula": "minecraft:uniform_bonus_count",
+              "function": "minecraft:apply_bonus",
               "parameters": {
                 "bonusMultiplier": 1
               }
             },
             {
-              "type": "minecraft:explosion_decay"
+              "function": "minecraft:explosion_decay"
             }
           ],
           "name": "minecraft:redstone",
@@ -69,22 +75,23 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
+              "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 9,
-                "min": 4
-              }
+                "max": 9.0,
+                "min": 4.0
+              },
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:apply_bonus",
               "enchantment": "minecraft:fortune",
-              "formula": "minecraft:ore_drops"
+              "formula": "minecraft:ore_drops",
+              "function": "minecraft:apply_bonus"
             },
             {
-              "type": "minecraft:explosion_decay"
+              "function": "minecraft:explosion_decay"
             }
           ],
           "name": "minecraft:lapis_lazuli",
@@ -92,22 +99,23 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:set_count",
+              "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 3,
-                "min": 2
-              }
+                "max": 3.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
             },
             {
-              "type": "minecraft:apply_bonus",
               "enchantment": "minecraft:fortune",
-              "formula": "minecraft:ore_drops"
+              "formula": "minecraft:ore_drops",
+              "function": "minecraft:apply_bonus"
             },
             {
-              "type": "minecraft:explosion_decay"
+              "function": "minecraft:explosion_decay"
             }
           ],
           "name": "minecraft:slime_ball",
@@ -115,14 +123,14 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:apply_bonus",
               "enchantment": "minecraft:fortune",
-              "formula": "minecraft:ore_drops"
+              "formula": "minecraft:ore_drops",
+              "function": "minecraft:apply_bonus"
             },
             {
-              "type": "minecraft:explosion_decay"
+              "function": "minecraft:explosion_decay"
             }
           ],
           "name": "minecraft:emerald",
@@ -130,14 +138,14 @@
         },
         {
           "type": "minecraft:item",
-          "modifier": [
+          "functions": [
             {
-              "type": "minecraft:apply_bonus",
               "enchantment": "minecraft:fortune",
-              "formula": "minecraft:ore_drops"
+              "formula": "minecraft:ore_drops",
+              "function": "minecraft:apply_bonus"
             },
             {
-              "type": "minecraft:explosion_decay"
+              "function": "minecraft:explosion_decay"
             }
           ],
           "name": "minecraft:quartz",
@@ -153,7 +161,7 @@
           "weight": 40
         }
       ],
-      "rolls": 3
+      "rolls": 3.0
     }
   ],
   "random_sequence": "assortedterrain:blocks/randomite_ore"

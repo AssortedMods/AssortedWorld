@@ -1,14 +1,9 @@
 # Changelog
 
-## 2.0.0
+## 21.1.0.0
 
-Updated to Minecraft 26.3, for NeoForge and Fabric.
+First release for Minecraft 1.21.1, for NeoForge and Fabric. Releases for 1.21.1 are numbered 21.1.x.y, where 21.1 is the Minecraft version.
 
-- Stray saplings and tree stumps in the Dappled Forest are Poplar
-- Requires Assorted Lib 5.0.0
-
-## 1.0.0
-
-- First release as its own mod. It used to only be part of Assorted World
-- Worlds from Assorted World 9.x keep their randomite ore, desert wells and everything else this mod adds
-- Requires Assorted Lib 4.3.0
+- Matches Assorted Terrain 2.0.1 for Minecraft 26.3
+- Without the poplar wood set, cactus flowers, firefly bushes and dry grass, which need a newer Minecraft; desert well loot uses the nearest 1.21.1 items
+- Requires Assorted Lib 21.1.0.0

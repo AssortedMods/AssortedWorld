@@ -1,18 +1,18 @@
 package com.grim3212.assorted.terrain.common.gen.feature;
 
 import com.grim3212.assorted.terrain.TerrainCommonMod;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.FarmlandBlock;
+import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,26 +28,26 @@ import java.util.Set;
  * One crop per field, so a field reads as a field of something rather than a seed drawer emptied
  * over a hillside.
  */
-public class CropFieldFeature implements Feature {
+public class CropFieldFeature extends Feature<NoneFeatureConfiguration> {
 
-    public static final MapCodec<CropFieldFeature> CODEC = MapCodec.unit(CropFieldFeature::new);
-
-    @Override
-    public MapCodec<CropFieldFeature> codec() {
-        return CODEC;
+    public CropFieldFeature() {
+        super(NoneFeatureConfiguration.CODEC);
     }
 
     /** The crops a wild field can be. Each carries its own age range, so beetroot tops out at 3. */
     private static final List<CropBlock> CROPS = List.of((CropBlock) Blocks.WHEAT, (CropBlock) Blocks.CARROTS, (CropBlock) Blocks.POTATOES, (CropBlock) Blocks.BEETROOTS);
 
     /**
-     * How far {@code FarmlandBlock.isNearWater} looks, in blocks. Farmland further than this from
+     * How far {@code FarmBlock.isNearWater} looks, in blocks. Farmland further than this from
      * every water block dries out, so the watering pass works to the same reach.
      */
     private static final int WATER_REACH = 4;
 
     @Override
-    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+        WorldGenLevel level = context.level();
+        RandomSource random = context.random();
+        BlockPos origin = context.origin();
         // Keyed by column so the watering pass can look a neighbour up without walking the field.
         Map<Long, BlockPos> field = tillable(level, origin, TerrainCommonMod.COMMON_CONFIG.cropFieldSize.get());
         if (field.isEmpty()) {
@@ -64,7 +64,7 @@ public class CropFieldFeature implements Feature {
                 continue;
             }
 
-            BlockState moist = Blocks.FARMLAND.defaultBlockState().setValue(FarmlandBlock.MOISTURE, FarmlandBlock.MAX_MOISTURE);
+            BlockState moist = Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, FarmBlock.MAX_MOISTURE);
             level.setBlock(farmland, moist, Block.UPDATE_CLIENTS);
             level.setBlock(farmland.above(), crop.getStateForAge(random.nextInt(crop.getMaxAge() + 1)), Block.UPDATE_CLIENTS);
         }
@@ -141,7 +141,7 @@ public class CropFieldFeature implements Feature {
         return water.stream().anyMatch(at -> hydrates(at, farmland));
     }
 
-    /** Matches what {@code FarmlandBlock.isNearWater} looks at: 4 blocks out, level or one up. */
+    /** Matches what {@code FarmBlock.isNearWater} looks at: 4 blocks out, level or one up. */
     private static boolean hydrates(BlockPos water, BlockPos farmland) {
         int dy = water.getY() - farmland.getY();
         return Math.abs(water.getX() - farmland.getX()) <= WATER_REACH && Math.abs(water.getZ() - farmland.getZ()) <= WATER_REACH && dy >= 0 && dy <= 1;

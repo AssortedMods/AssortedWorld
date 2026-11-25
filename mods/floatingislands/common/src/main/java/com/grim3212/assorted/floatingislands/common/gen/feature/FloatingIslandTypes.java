@@ -4,7 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SnowyBlock;
+import net.minecraft.world.level.block.SnowyDirtBlock;
 
 import java.util.List;
 
@@ -25,15 +25,15 @@ public final class FloatingIslandTypes {
 
     public static final FloatingIslandType MEADOW = FloatingIslandType.builder("meadow", 30).fallback()
             .cover(Blocks.GRASS_BLOCK).filler(Blocks.DIRT).core(Blocks.STONE)
-            .plantRate(3).plant(Blocks.SHORT_GRASS, 10).plant(Blocks.TALL_GRASS, 2).plant(Blocks.WILDFLOWERS, 2).plant(Blocks.POPPY, 2)
-            .plant(Blocks.DANDELION, 2).plant(Blocks.CORNFLOWER, 1).plant(Blocks.OXEYE_DAISY, 1).plant(Blocks.AZURE_BLUET, 1).plant(Blocks.BUSH, 1)
+            .plantRate(3).plant(Blocks.SHORT_GRASS, 10).plant(Blocks.TALL_GRASS, 2).plant(Blocks.POPPY, 2)
+            .plant(Blocks.DANDELION, 2).plant(Blocks.CORNFLOWER, 1).plant(Blocks.OXEYE_DAISY, 1).plant(Blocks.AZURE_BLUET, 1)
             .trees(0.01D, 8).tree("oak", 3).tree("birch", 1)
             .build();
 
     public static final FloatingIslandType FOREST = FloatingIslandType.builder("forest", 30).fallback()
             .cover(Blocks.GRASS_BLOCK).filler(Blocks.DIRT).core(Blocks.STONE)
-            .plantRate(4).plant(Blocks.SHORT_GRASS, 6).plant(Blocks.FERN, 2).plant(Blocks.LEAF_LITTER, 2).plant(Blocks.BUSH, 1).plant(Blocks.LILY_OF_THE_VALLEY, 1)
-            .trees(0.04D, 16).tree("oak", 4).tree("birch", 3).tree("fancy_oak", 1).tree("fallen_oak_tree", 1).tree("fallen_birch_tree", 1)
+            .plantRate(4).plant(Blocks.SHORT_GRASS, 6).plant(Blocks.FERN, 2).plant(Blocks.LILY_OF_THE_VALLEY, 1)
+            .trees(0.04D, 16).tree("oak", 4).tree("birch", 3).tree("fancy_oak", 1)
             .build();
 
     public static final FloatingIslandType CHERRY = FloatingIslandType.builder("cherry", 15)
@@ -44,26 +44,14 @@ public final class FloatingIslandTypes {
 
     public static final FloatingIslandType DARK_FOREST = FloatingIslandType.builder("dark_forest", 25)
             .cover(Blocks.GRASS_BLOCK).filler(Blocks.DIRT).core(Blocks.STONE)
-            .plantRate(5).plant(Blocks.SHORT_GRASS, 3).plant(Blocks.LEAF_LITTER, 2).plant(Blocks.RED_MUSHROOM, 1).plant(Blocks.BROWN_MUSHROOM, 1)
+            .plantRate(5).plant(Blocks.SHORT_GRASS, 3).plant(Blocks.RED_MUSHROOM, 1).plant(Blocks.BROWN_MUSHROOM, 1)
             .trees(0.05D, 14).tree("dark_oak", 6).tree("huge_red_mushroom", 1).tree("huge_brown_mushroom", 1)
-            .build();
-
-    public static final FloatingIslandType PALE_GARDEN = FloatingIslandType.builder("pale_garden", 15)
-            .cover(Blocks.PALE_MOSS_BLOCK.defaultBlockState(), 3).cover(Blocks.GRASS_BLOCK.defaultBlockState(), 1).filler(Blocks.DIRT).core(Blocks.STONE)
-            .plantRate(3).plant(Blocks.PALE_MOSS_CARPET, 6).plant(Blocks.CLOSED_EYEBLOSSOM, 2)
-            .trees(0.04D, 14).tree("pale_oak", 1)
-            .build();
-
-    public static final FloatingIslandType DAPPLED_FOREST = FloatingIslandType.builder("dappled_forest", 15)
-            .cover(Blocks.GRASS_BLOCK).filler(Blocks.DIRT).core(Blocks.STONE)
-            .plantRate(4).plant(Blocks.SHORT_GRASS, 6).plant(Blocks.LEAF_LITTER, 3).plant(Blocks.BUSH, 1).plant(Blocks.BROWN_MUSHROOM, 1)
-            .trees(0.04D, 14).tree("red_poplar_leaf_litter", 4).tree("orange_poplar_leaf_litter", 5).tree("yellow_poplar_leaf_litter", 2).tree("fallen_poplar_tree", 2)
             .build();
 
     // Cold.
 
     public static final FloatingIslandType SNOWY = FloatingIslandType.builder("snowy", 30)
-            .cover(Blocks.GRASS_BLOCK.defaultBlockState().setValue(SnowyBlock.SNOWY, true), 1).filler(Blocks.DIRT).core(Blocks.STONE)
+            .cover(Blocks.GRASS_BLOCK.defaultBlockState().setValue(SnowyDirtBlock.SNOWY, true), 1).filler(Blocks.DIRT).core(Blocks.STONE)
             .snowCover()
             .trees(0.03D, 14).tree("spruce", 3).tree("pine", 1)
             .build();
@@ -72,7 +60,7 @@ public final class FloatingIslandTypes {
             .cover(Blocks.PODZOL.defaultBlockState(), 2).cover(Blocks.GRASS_BLOCK.defaultBlockState(), 1).cover(Blocks.COARSE_DIRT.defaultBlockState(), 1)
             .filler(Blocks.DIRT).core(Blocks.STONE)
             .plantRate(3).plant(Blocks.FERN, 6).plant(Blocks.SHORT_GRASS, 3).plant(Blocks.LARGE_FERN, 2).plant(Blocks.SWEET_BERRY_BUSH, 1)
-            .trees(0.05D, 16).tree("spruce", 4).tree("pine", 2).tree("fallen_spruce_tree", 1)
+            .trees(0.05D, 16).tree("spruce", 4).tree("pine", 2)
             .build();
 
     public static final FloatingIslandType GLACIER = FloatingIslandType.builder("glacier", 20)
@@ -91,19 +79,19 @@ public final class FloatingIslandTypes {
 
     public static final FloatingIslandType DESERT = FloatingIslandType.builder("desert", 30)
             .cover(Blocks.SAND).filler(Blocks.SANDSTONE).core(Blocks.SANDSTONE)
-            .plantRate(6).plant(Blocks.DEAD_BUSH, 3).plant(Blocks.SHORT_DRY_GRASS, 3).plant(Blocks.TALL_DRY_GRASS, 2).plant(Blocks.CACTUS, 2)
+            .plantRate(6).plant(Blocks.DEAD_BUSH, 3).plant(Blocks.CACTUS, 2)
             .build();
 
     public static final FloatingIslandType SAVANNA = FloatingIslandType.builder("savanna", 30)
             .cover(Blocks.GRASS_BLOCK.defaultBlockState(), 6).cover(Blocks.COARSE_DIRT.defaultBlockState(), 2).filler(Blocks.DIRT).core(Blocks.STONE)
-            .plantRate(3).plant(Blocks.SHORT_GRASS, 6).plant(Blocks.TALL_GRASS, 2).plant(Blocks.SHORT_DRY_GRASS, 1)
+            .plantRate(3).plant(Blocks.SHORT_GRASS, 6).plant(Blocks.TALL_GRASS, 2)
             .trees(0.02D, 10).tree("acacia", 1)
             .build();
 
     public static final FloatingIslandType BADLANDS = FloatingIslandType.builder("badlands", 30)
             .cover(Blocks.RED_SAND).filler(Blocks.TERRACOTTA)
-            .coreBands(Blocks.TERRACOTTA, Blocks.DYED_TERRACOTTA.orange(), Blocks.DYED_TERRACOTTA.yellow(), Blocks.TERRACOTTA, Blocks.DYED_TERRACOTTA.white(),
-                    Blocks.DYED_TERRACOTTA.brown(), Blocks.DYED_TERRACOTTA.orange(), Blocks.DYED_TERRACOTTA.red(), Blocks.DYED_TERRACOTTA.lightGray(), Blocks.DYED_TERRACOTTA.orange())
+            .coreBands(Blocks.TERRACOTTA, Blocks.ORANGE_TERRACOTTA, Blocks.YELLOW_TERRACOTTA, Blocks.TERRACOTTA, Blocks.WHITE_TERRACOTTA,
+                    Blocks.BROWN_TERRACOTTA, Blocks.ORANGE_TERRACOTTA, Blocks.RED_TERRACOTTA, Blocks.LIGHT_GRAY_TERRACOTTA, Blocks.ORANGE_TERRACOTTA)
             .plantRate(8).plant(Blocks.DEAD_BUSH, 3).plant(Blocks.CACTUS, 1)
             .build();
 
@@ -111,7 +99,7 @@ public final class FloatingIslandTypes {
 
     public static final FloatingIslandType JUNGLE = FloatingIslandType.builder("jungle", 30)
             .cover(Blocks.GRASS_BLOCK).filler(Blocks.DIRT).core(Blocks.STONE)
-            .plantRate(3).plant(Blocks.FERN, 4).plant(Blocks.SHORT_GRASS, 4).plant(Blocks.LARGE_FERN, 1).plant(Blocks.MELON, 1).plant(Blocks.BUSH, 1)
+            .plantRate(3).plant(Blocks.FERN, 4).plant(Blocks.SHORT_GRASS, 4).plant(Blocks.LARGE_FERN, 1).plant(Blocks.MELON, 1)
             .trees(0.06D, 32).tree("jungle_tree", 4).tree("jungle_bush", 4).tree("mega_jungle_tree", 1)
             .build();
 
@@ -141,7 +129,7 @@ public final class FloatingIslandTypes {
             .trees(0.04D, 14).tree("huge_red_mushroom", 1).tree("huge_brown_mushroom", 1)
             .build();
 
-    public static final List<FloatingIslandType> ALL = List.of(MEADOW, FOREST, CHERRY, DARK_FOREST, PALE_GARDEN, DAPPLED_FOREST, SNOWY, TAIGA, GLACIER, ROCKY, DESERT, SAVANNA, BADLANDS,
+    public static final List<FloatingIslandType> ALL = List.of(MEADOW, FOREST, CHERRY, DARK_FOREST, SNOWY, TAIGA, GLACIER, ROCKY, DESERT, SAVANNA, BADLANDS,
             JUNGLE, SWAMP, MANGROVE, LUSH, MUSHROOM);
 
     /** The kinds that fit a biome, or the fallback kinds if none name it. */

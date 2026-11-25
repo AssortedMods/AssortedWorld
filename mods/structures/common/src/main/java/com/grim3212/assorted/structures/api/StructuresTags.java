@@ -2,7 +2,7 @@ package com.grim3212.assorted.structures.api;
 
 import com.grim3212.assorted.structures.Constants;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
@@ -14,7 +14,7 @@ public class StructuresTags {
         public static final TagKey<Block> RUNES = worldTag("runes");
 
         private static TagKey<Block> worldTag(String name) {
-            return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(Constants.MOD_ID, name));
+            return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name));
         }
     }
 
@@ -22,7 +22,7 @@ public class StructuresTags {
         public static final TagKey<Item> RUNES = worldTag("runes");
 
         private static TagKey<Item> worldTag(String name) {
-            return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Constants.MOD_ID, name));
+            return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name));
         }
     }
 
@@ -38,7 +38,7 @@ public class StructuresTags {
         public static final TagKey<Biome> HAS_SAND_PILLAR = create("has_feature/sand_pillar");
 
         private static TagKey<Biome> create(String n) {
-            return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(Constants.MOD_ID, n));
+            return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, n));
         }
     }
 }

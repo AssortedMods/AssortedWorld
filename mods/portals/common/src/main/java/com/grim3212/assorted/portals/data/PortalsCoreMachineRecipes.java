@@ -12,7 +12,7 @@ import com.grim3212.assorted.portals.common.item.PortalsItems;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -35,7 +35,7 @@ public class PortalsCoreMachineRecipes implements DataProvider {
     @Override
     public CompletableFuture<?> run(CachedOutput output) {
         CachedOutput bothLoaders = CrossLoaderData.wrap(output);
-        Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "void_crystal_from_grinding_mill");
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "void_crystal_from_grinding_mill");
         String oreTag = "#" + PortalsTags.Items.ORES_VOID_CRYSTAL.location();
 
         // Two for one, as Core's grinding mill gives for diamond and its own gem ores.
@@ -44,9 +44,12 @@ public class PortalsCoreMachineRecipes implements DataProvider {
                 DataProvider.saveStable(bothLoaders, HandWrittenData.advancement(unlockAdvancement(id, oreTag)), this.advancements.json(id.withPrefix("recipes/"))));
     }
 
-    private static JsonObject grindingMill(String oreTag, Identifier result, int count, float experience) {
+    private static JsonObject grindingMill(String oreTag, ResourceLocation result, int count, float experience) {
+        // 1.21.1 writes a tag ingredient as an object; the "#tag" string form came with 1.21.2.
+        JsonObject tag = new JsonObject();
+        tag.addProperty("tag", oreTag.substring(1));
         JsonObject ingredient = new JsonObject();
-        ingredient.addProperty("ingredient", oreTag);
+        ingredient.add("ingredient", tag);
 
         JsonObject output = new JsonObject();
         output.addProperty("count", count);
@@ -63,14 +66,14 @@ public class PortalsCoreMachineRecipes implements DataProvider {
     }
 
     /** What Core's recipe builders give a machine recipe: unlocked by holding the ingredient. */
-    private static JsonObject unlockAdvancement(Identifier recipe, String ingredient) {
+    private static JsonObject unlockAdvancement(ResourceLocation recipe, String ingredient) {
         JsonObject item = new JsonObject();
         item.addProperty("items", ingredient);
         JsonArray items = new JsonArray();
         items.add(item);
         JsonObject hasIngredient = criterion("minecraft:inventory_changed", "items", items);
 
-        JsonObject hasRecipe = criterion("minecraft:recipe_unlocked", "recipes", new JsonPrimitive(recipe.toString()));
+        JsonObject hasRecipe = criterion("minecraft:recipe_unlocked", "recipe", new JsonPrimitive(recipe.toString()));
 
         JsonObject criteria = new JsonObject();
         criteria.add("has_ingredient", hasIngredient);

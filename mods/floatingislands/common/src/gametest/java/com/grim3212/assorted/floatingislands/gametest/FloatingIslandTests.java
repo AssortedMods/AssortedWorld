@@ -13,8 +13,8 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.levelgen.feature.AbstractOreFeature;
-import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,25 +49,25 @@ final class FloatingIslandTests {
      * for them to stand on. Either going wrong is silent: the island just grows nothing.
      */
     private static void floatingIslandTreesExist(GameTestHelper helper) {
-        Registry<Feature> features = helper.getLevel().registryAccess().lookupOrThrow(Registries.FEATURE);
+        Registry<ConfiguredFeature<?, ?>> features = helper.getLevel().registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
         List<String> missing = new ArrayList<>();
 
         for (FloatingIslandType type : FloatingIslandTypes.ALL) {
-            for (ResourceKey<Feature> tree : type.allTrees()) {
-                if (features.get(tree).isEmpty()) {
-                    missing.add(type.name() + " -> " + tree.identifier());
+            for (ResourceKey<ConfiguredFeature<?, ?>> tree : type.allTrees()) {
+                if (features.getHolder(tree).isEmpty()) {
+                    missing.add(type.name() + " -> " + tree.location());
                 }
             }
-            // The feature only plants on #substrate_overworld; #dirt no longer holds grass in 26.2.
-            if (type.hasTrees() && type.allCovers().stream().noneMatch(cover -> cover.is(BlockTags.SUBSTRATE_OVERWORLD))) {
+            // The feature only plants on #dirt, which on 1.21.1 holds grass, podzol, mycelium, moss and mud.
+            if (type.hasTrees() && type.allCovers().stream().noneMatch(cover -> cover.is(BlockTags.DIRT))) {
                 missing.add(type.name() + " has trees but no cover they can grow on");
             }
         }
 
         // The ore veins are vanilla features by id too, and a renamed one would just never show.
-        for (ResourceKey<Feature> ore : FloatingIslandFeature.ores()) {
-            if (features.get(ore).filter(feature -> feature.value() instanceof AbstractOreFeature).isEmpty()) {
-                missing.add("ore -> " + ore.identifier() + " (missing, or no longer an ore feature)");
+        for (ResourceKey<ConfiguredFeature<?, ?>> ore : FloatingIslandFeature.ores()) {
+            if (features.getHolder(ore).filter(feature -> feature.value().config() instanceof OreConfiguration).isEmpty()) {
+                missing.add("ore -> " + ore.location() + " (missing, or no longer an ore feature)");
             }
         }
 
@@ -111,11 +111,11 @@ final class FloatingIslandTests {
     private static void expectOnly(List<String> problems, HolderLookup.RegistryLookup<Biome> biomes, ResourceKey<Biome> biome, Set<FloatingIslandType> allowed) {
         List<FloatingIslandType> fits = FloatingIslandTypes.fitting(biomes.getOrThrow(biome));
         if (fits.isEmpty()) {
-            problems.add(biome.identifier() + " gets no island kind at all");
+            problems.add(biome.location() + " gets no island kind at all");
         }
         for (FloatingIslandType type : fits) {
             if (!allowed.contains(type)) {
-                problems.add(biome.identifier() + " can roll " + type.name());
+                problems.add(biome.location() + " can roll " + type.name());
             }
         }
     }

@@ -9,8 +9,8 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.animal.pig.Pig;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -44,10 +44,10 @@ final class RuneTests {
      */
     private static void runeAppliesEffectWhenSteppedOn(GameTestHelper helper) {
         helper.setBlock(CENTRE, StructuresBlocks.UR_RUNE.get());
-        Pig pig = helper.spawn(EntityTypes.PIG, CENTRE.above());
+        Pig pig = helper.spawn(EntityType.PIG, CENTRE.above());
 
         // A non-player gets xpLevel 1, so the amplifier is floor(0.06 * 1) = 0.
-        helper.succeedWhen(() -> helper.assertLivingEntityHasMobEffect(pig, MobEffects.STRENGTH, 0));
+        helper.succeedWhen(() -> helper.assertLivingEntityHasMobEffect(pig, MobEffects.DAMAGE_BOOST, 0));
     }
 
     /**

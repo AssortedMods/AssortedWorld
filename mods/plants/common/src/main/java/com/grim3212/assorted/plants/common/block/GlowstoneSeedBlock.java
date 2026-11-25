@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,7 +35,7 @@ public class GlowstoneSeedBlock extends Block {
     /** One in this many random ticks advances a step, so a seed takes a while to ripen. */
     private static final int GROWTH_RATE = 10;
 
-    private static final VoxelShape SHAPE = Block.column(16.0D, 0.0D, 16.0D);
+    private static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 
     public GlowstoneSeedBlock(Properties props) {
         super(props);
@@ -54,8 +54,8 @@ public class GlowstoneSeedBlock extends Block {
 
     /**
      * Netherrack overhead, and under a sky only low enough that seeds stay something you plant in a
-     * cave rather than on a surface farm. {@code hasCeiling} is the Nether-shaped test that survived
-     * 26.2 dropping {@code ultraWarm}, and it is the right one anyway: a seed hangs from a ceiling.
+     * cave rather than on a surface farm. {@code hasCeiling} is the Nether-shaped test: a seed hangs
+     * from a ceiling.
      */
     @Override
     protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
@@ -67,8 +67,8 @@ public class GlowstoneSeedBlock extends Block {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
-        return !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
+    protected BlockState updateShape(BlockState state, Direction directionToNeighbour, BlockState neighbourState, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
+        return !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, directionToNeighbour, neighbourState, level, pos, neighbourPos);
     }
 
     @Override
@@ -90,13 +90,13 @@ public class GlowstoneSeedBlock extends Block {
         // The blob feature has to find the spot empty: it only starts from an air block under
         // netherrack, which is exactly where the ripe seed is standing.
         level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-        // The blob is data in 26.3: vanilla's own glowstone cluster from the nether's ceilings.
-        level.registryAccess().lookupOrThrow(Registries.FEATURE).get(NetherFeatures.GLOWSTONE_EXTRA)
+        // Vanilla's own configured glowstone cluster from the nether's ceilings.
+        level.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE).get(NetherFeatures.GLOWSTONE_EXTRA)
                 .ifPresent(blob -> blob.value().place(level, level.getChunkSource().getGenerator(), random, pos));
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
         return true;
     }
 

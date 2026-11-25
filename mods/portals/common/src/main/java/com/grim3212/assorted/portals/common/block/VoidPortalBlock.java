@@ -1,6 +1,7 @@
 package com.grim3212.assorted.portals.common.block;
 
 import com.grim3212.assorted.portals.common.block.entity.VoidPortalBlockEntity;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -8,7 +9,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -27,13 +27,13 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jspecify.annotations.Nullable;
 
-import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Vanilla's end portal on any of the three axes, so a ring of void portal frames can stand on a
@@ -41,13 +41,21 @@ import java.util.Map;
  */
 public class VoidPortalBlock extends BaseEntityBlock implements Portal {
 
+    public static final MapCodec<VoidPortalBlock> CODEC = simpleCodec(VoidPortalBlock::new);
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
-    private static final VoxelShape FLAT = Block.column(16.0, 6.0, 12.0);
-    private static final Map<Direction.Axis, VoxelShape> UPRIGHT = Shapes.rotateHorizontalAxis(Block.boxZ(16.0, 5.0, 11.0));
+    // Vanilla's end portal slab, and the same slab stood up across the X or Z axis.
+    private static final VoxelShape FLAT = Block.box(0.0, 6.0, 0.0, 16.0, 12.0, 16.0);
+    private static final VoxelShape ACROSS_X = Block.box(5.0, 0.0, 0.0, 11.0, 16.0, 16.0);
+    private static final VoxelShape ACROSS_Z = Block.box(0.0, 0.0, 5.0, 16.0, 16.0, 11.0);
 
     public VoidPortalBlock(BlockBehaviour.Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(AXIS, Direction.Axis.Y));
+    }
+
+    @Override
+    protected MapCodec<VoidPortalBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -57,18 +65,20 @@ public class VoidPortalBlock extends BaseEntityBlock implements Portal {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        Direction.Axis axis = state.getValue(AXIS);
-        return axis == Direction.Axis.Y ? FLAT : UPRIGHT.get(axis);
+        return switch (state.getValue(AXIS)) {
+            case X -> ACROSS_X;
+            case Y -> FLAT;
+            case Z -> ACROSS_Z;
+        };
     }
 
+    /**
+     * 1.21.1 calls this for anything inside the whole block space, so the entity has to touch the
+     * portal's own slab first, as vanilla's end portal checks.
+     */
     @Override
-    protected VoxelShape getEntityInsideCollisionShape(BlockState state, BlockGetter level, BlockPos pos, Entity entity) {
-        return state.getShape(level, pos);
-    }
-
-    @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
-        if (entity.canUsePortal(false)) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        if (entity.canUsePortal(false) && Shapes.joinIsNotEmpty(Shapes.create(entity.getBoundingBox().move(-pos.getX(), -pos.getY(), -pos.getZ())), state.getShape(level, pos), BooleanOp.AND)) {
             if (!level.isClientSide() && level.dimension() == Level.END && entity instanceof ServerPlayer player && !player.seenCredits) {
                 player.showEndCredits();
             } else {
@@ -79,7 +89,7 @@ public class VoidPortalBlock extends BaseEntityBlock implements Portal {
 
     // The same trip as vanilla's end portal, which uses nothing of its own block to plan it.
     @Override
-    public @Nullable TeleportTransition getPortalDestination(ServerLevel level, Entity entity, BlockPos portalEntryPos) {
+    public @Nullable DimensionTransition getPortalDestination(ServerLevel level, Entity entity, BlockPos portalEntryPos) {
         return ((Portal) Blocks.END_PORTAL).getPortalDestination(level, entity, portalEntryPos);
     }
 
@@ -92,8 +102,11 @@ public class VoidPortalBlock extends BaseEntityBlock implements Portal {
         level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0, 0.0, 0.0);
     }
 
+    // NeoForge deprecates this for its IBlockExtension overload, which is not in the vanilla jar common
+    // compiles against; that overload's default calls this one, so overriding it answers pick block on both loaders.
+    @SuppressWarnings("deprecation")
     @Override
-    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         return ItemStack.EMPTY;
     }
 

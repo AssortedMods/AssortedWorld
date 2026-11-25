@@ -3,7 +3,7 @@ package com.grim3212.assorted.terrain.api;
 import com.grim3212.assorted.lib.util.LibCommonTags;
 import com.grim3212.assorted.terrain.Constants;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
@@ -15,7 +15,7 @@ public class TerrainTags {
         public static final TagKey<Block> ORES_RANDOMITE = commonTag("ores/randomite");
 
         private static TagKey<Block> commonTag(String name) {
-            return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(LibCommonTags.COMMON_NAMESPACE, name));
+            return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(LibCommonTags.COMMON_NAMESPACE, name));
         }
     }
 
@@ -23,7 +23,7 @@ public class TerrainTags {
         public static final TagKey<Item> ORES_RANDOMITE = commonTag("ores/randomite");
 
         private static TagKey<Item> commonTag(String name) {
-            return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(LibCommonTags.COMMON_NAMESPACE, name));
+            return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(LibCommonTags.COMMON_NAMESPACE, name));
         }
     }
 
@@ -43,7 +43,7 @@ public class TerrainTags {
         }
 
         private static TagKey<Biome> create(String n) {
-            return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(Constants.MOD_ID, n));
+            return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, n));
         }
     }
 }

@@ -25,7 +25,9 @@
     }
   ],
   "ingredient": {
-    "ingredient": "#c:ores/void_crystal"
+    "ingredient": {
+      "tag": "c:ores/void_crystal"
+    }
   },
   "result": {
     "count": 2,

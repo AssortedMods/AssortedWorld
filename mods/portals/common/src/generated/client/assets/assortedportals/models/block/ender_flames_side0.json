@@ -1,5 +1,6 @@
 {
   "parent": "minecraft:block/template_fire_side",
+  "render_type": "minecraft:cutout",
   "textures": {
     "fire": "assortedportals:block/ender_flames_0"
   }

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedstructures:every_spire_can_get_a_rune",
+  "structure": "assortedstructures:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "sky_access": true,
+  "required": true
+}

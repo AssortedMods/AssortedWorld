@@ -2,17 +2,16 @@ package com.grim3212.assorted.structures.client.data;
 
 import com.grim3212.assorted.structures.Constants;
 import com.grim3212.assorted.structures.common.block.StructuresBlocks;
-import net.minecraft.client.data.models.BlockModelGenerators;
-import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 /** Block states, block models and the runes' item models, which are all this mod has. */
-public class StructuresBlockstateProvider extends ModelProvider {
+public class StructuresBlockstateProvider extends BlockStateProvider {
 
-    public StructuresBlockstateProvider(PackOutput output) {
-        super(output, Constants.MOD_ID);
+    public StructuresBlockstateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, Constants.MOD_ID, existingFileHelper);
     }
 
     @Override
@@ -21,9 +20,10 @@ public class StructuresBlockstateProvider extends ModelProvider {
     }
 
     @Override
-    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+    protected void registerStatesAndModels() {
+        // Every rune texture is fully opaque, so the models stay on the solid layer.
         for (Block rune : StructuresBlocks.runeBlocks()) {
-            blockModels.createTrivialCube(rune);
+            this.simpleBlockWithItem(rune, this.cubeAll(rune));
         }
     }
 }

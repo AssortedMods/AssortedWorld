@@ -63,7 +63,8 @@ final class GunpowderReedTests {
 
         BlockPos dry = new BlockPos(1, 1, 1);
         helper.setBlock(dry, PlantsBlocks.GUNPOWDER_REED.get());
-        helper.tickBlock(dry);
+        // A scheduled tick is where sugar cane checks its ground; run it now rather than waiting.
+        helper.getBlockState(dry).tick(helper.getLevel(), helper.absolutePos(dry), helper.getLevel().getRandom());
         helper.assertBlockNotPresent(PlantsBlocks.GUNPOWDER_REED.get(), dry);
 
         helper.succeed();

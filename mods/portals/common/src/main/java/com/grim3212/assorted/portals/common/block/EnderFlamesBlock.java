@@ -1,14 +1,15 @@
 package com.grim3212.assorted.portals.common.block;
 
 import com.grim3212.assorted.portals.api.PortalsTags;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -20,8 +21,15 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class EnderFlamesBlock extends BaseFireBlock {
 
+    public static final MapCodec<EnderFlamesBlock> CODEC = simpleCodec(EnderFlamesBlock::new);
+
     public EnderFlamesBlock(BlockBehaviour.Properties properties) {
         super(properties, 1.0F);
+    }
+
+    @Override
+    protected MapCodec<EnderFlamesBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -61,13 +69,13 @@ public class EnderFlamesBlock extends BaseFireBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+    protected BlockState updateShape(BlockState state, Direction directionToNeighbour, BlockState neighbourState, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
         if (!this.canSurvive(state, level, pos)) {
             return Blocks.AIR.defaultBlockState();
         }
         // The end stone underneath was swapped for something that does not keep it lit.
         if (directionToNeighbour == Direction.DOWN && !burnsForever(level, pos)) {
-            ticks.scheduleTick(pos, this, burnTime(random));
+            level.scheduleTick(pos, this, burnTime(level.getRandom()));
         }
         return state;
     }

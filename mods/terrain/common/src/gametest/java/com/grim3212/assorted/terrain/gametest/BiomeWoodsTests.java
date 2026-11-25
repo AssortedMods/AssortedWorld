@@ -5,7 +5,7 @@ import com.grim3212.assorted.terrain.common.gen.feature.BiomeWoods;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
@@ -32,8 +32,6 @@ final class BiomeWoodsTests {
             Biomes.SAVANNA, BiomeWoods.ACACIA,
             Biomes.DARK_FOREST, BiomeWoods.DARK_OAK,
             Biomes.CHERRY_GROVE, BiomeWoods.CHERRY,
-            Biomes.PALE_GARDEN, BiomeWoods.PALE_OAK,
-            Biomes.DAPPLED_FOREST, BiomeWoods.POPLAR,
             Biomes.MANGROVE_SWAMP, BiomeWoods.MANGROVE,
             Biomes.BIRCH_FOREST, BiomeWoods.BIRCH);
 
@@ -72,13 +70,13 @@ final class BiomeWoodsTests {
         EXPECTED.forEach((key, expected) -> {
             Holder<Biome> biome = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME).getOrThrow(key);
             if (!biome.is(expected.biomes())) {
-                problems.add(key.identifier() + " is not tagged for " + expected.woodName());
+                problems.add(key.location() + " is not tagged for " + expected.woodName());
             }
 
             for (int roll = 0; roll < 32; roll++) {
                 BiomeWoods picked = BiomeWoods.pick(biome, helper.getLevel().getRandom());
                 if (!biome.is(picked.biomes())) {
-                    problems.add(key.identifier() + " grew " + picked.woodName() + ", which does not belong there");
+                    problems.add(key.location() + " grew " + picked.woodName() + ", which does not belong there");
                     break;
                 }
             }
@@ -107,12 +105,12 @@ final class BiomeWoodsTests {
         List<String> problems = new ArrayList<>();
 
         for (String name : List.of("patch_saplings", "tree_stumps")) {
-            Identifier id = Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name);
 
             for (ResourceKey<Biome> key : WOODLANDS) {
-                Biome biome = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME).getValueOrThrow(key);
+                Biome biome = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME).getOrThrow(key).value();
                 if (!hasFeature(biome, id)) {
-                    problems.add(name + " never generates in " + key.identifier());
+                    problems.add(name + " never generates in " + key.location());
                 }
             }
 
